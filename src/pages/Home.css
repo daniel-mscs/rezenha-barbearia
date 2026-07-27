@@ -10,10 +10,14 @@
 .rz-topbar {
   background: #111;
   border-bottom: 1px solid #222;
-  padding: 12px 24px;
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .rz-logo-text {
@@ -68,34 +72,38 @@
 }
 
 .rz-hero-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #F07B00;
   color: #fff;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 4px 14px;
-  border-radius: 2px;
-  margin-bottom: 16px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(240, 123, 0, 0.3);
 }
 
 .rz-hero h1 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 56px;
-  line-height: 1;
-  letter-spacing: 3px;
-  margin-bottom: 8px;
+  font-size: 58px;
+  line-height: 1.05;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
   color: #fff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 }
 .rz-hero h1 span { color: #F07B00; }
 
 .rz-hero p {
-  font-size: 15px;
+  font-size: 16px;
   color: #aaa;
-  margin-bottom: 28px;
-  max-width: 340px;
-  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 380px;
+  line-height: 1.7;
 }
 
 .rz-hero-actions {
@@ -108,30 +116,47 @@
   background: #F07B00;
   color: #fff;
   border: none;
-  padding: 14px 28px;
+  padding: 16px 32px;
   font-family: 'Barlow', sans-serif;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   display: inline-block;
   text-decoration: none;
+  box-shadow: 0 4px 16px rgba(240, 123, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rz-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 123, 0, 0.45);
 }
 
 .rz-btn-outline {
   background: transparent;
   color: #fff;
   border: 1.5px solid #444;
-  padding: 13px 24px;
+  padding: 16px 28px;
   font-family: 'Barlow', sans-serif;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.rz-btn-outline:hover {
+  border-color: #F07B00;
+  color: #F07B00;
+  background: rgba(240, 123, 0, 0.06);
 }
 
 .rz-hero-logo {
@@ -144,6 +169,7 @@
 
 .rz-stats {
   display: flex;
+  flex-wrap: wrap;
   gap: 32px;
   padding: 24px 40px;
   background: #111;
@@ -233,13 +259,13 @@
 .rz-barbers { display: flex; gap: 16px; }
 
 .rz-barber-card {
+  position: relative;
   background: #161616;
   border: 1px solid #222;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  aspect-ratio: 3 / 4;
   cursor: pointer;
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -250,21 +276,21 @@
   box-shadow: 0 8px 20px rgba(240, 123, 0, 0.15);
 }
 
-.rz-barber-card:hover .rz-barber-avatar-img,
-.rz-barber-card:hover .rz-barber-avatar {
-  filter: brightness(1.05);
-}
-
 .rz-barber-avatar-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.3s ease;
 }
 
 .rz-barber-avatar {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 100%;
   background: #1f1f1f;
   display: flex;
   align-items: center;
@@ -272,12 +298,28 @@
   font-family: 'Bebas Neue', sans-serif;
   font-size: 48px;
   color: #F07B00;
-  border-bottom: 2px solid #F07B00;
 }
 
-.rz-barber-info { padding: 16px; text-align: center; }
-.rz-barber-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
-.rz-barber-role { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.rz-barber-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 16px 16px;
+  text-align: center;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 100%);
+}
+
+.rz-barber-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: #fff; text-transform: uppercase; transition: color 0.25s ease; }
+.rz-barber-role { font-size: 12px; color: #ccc; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; opacity: 0.7; transition: opacity 0.25s ease, color 0.25s ease; }
+
+.rz-barber-card:hover .rz-barber-name,
+.rz-barber-card:active .rz-barber-name { color: #F07B00; }
+
+.rz-barber-card:hover .rz-barber-role,
+.rz-barber-card:active .rz-barber-role { opacity: 1; color: #F07B00; }
+
+.rz-barber-card:hover .rz-barber-avatar-img { transform: scale(1.06); }
 
 .rz-cta {
   background: #111;
@@ -307,11 +349,13 @@
 
 .rz-footer {
   background: #080808;
-  padding: 16px 40px;
+  padding: 16px 200px 16px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid #1a1a1a;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .rz-footer-text { font-size: 12px; color: #444; }
@@ -370,9 +414,83 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    padding: 16px;
+    padding: 16px 16px 80px;
     text-align: center;
   }
 }
 
 .rz-topbar-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+
+
+.rz-footer-maps { text-decoration: none; }
+.rz-footer-maps:hover { color: #F07B00; }
+
+.rz-mapa-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #262626;
+}
+
+.rz-mapa-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: #F07B00;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rz-mapa-link:hover {
+  text-decoration: underline;
+}
+
+.rz-stat-estrelas { color: #F07B00; letter-spacing: 2px; text-align: center; }
+.rz-stat-avalie { display: block; text-align: center; margin-top: 6px; font-size: 11px; color: #F07B00; text-decoration: none; border-bottom: 1px solid transparent; }
+.rz-stat-avalie:hover { border-bottom-color: #F07B00; }
+
+.rz-depoimentos {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #F07B00 #1a1a1a;
+}
+
+.rz-depoimentos::-webkit-scrollbar { height: 6px; }
+.rz-depoimentos::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 10px; }
+.rz-depoimentos::-webkit-scrollbar-thumb { background: #F07B00; border-radius: 10px; }
+
+.rz-depoimento-card {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 10px;
+  padding: 24px;
+  width: 300px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.rz-depoimentos-vermais {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  color: #F07B00;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rz-depoimentos-vermais:hover { text-decoration: underline; }
+
+.rz-depoimento-card:hover {
+  border-color: #F07B00;
+  transform: translateY(-3px);
+}
+
+.rz-depoimento-estrelas { color: #F07B00; margin-bottom: 12px; letter-spacing: 2px; }
+.rz-depoimento-texto { color: #ccc; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.rz-depoimento-autor { color: #fff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+.rz-depoimento-tempo { color: #666; font-size: 11px; margin-top: 2px; }

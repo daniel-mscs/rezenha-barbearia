@@ -7,6 +7,7 @@ function paginaResposta(titulo: string, mensagem: string, cor: string) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="5;url=https://rezenha-barbearia.vercel.app" />
     <title>Rezenha Barbearia</title>
   </head>
   <body style="font-family: Arial, sans-serif; background: #0d0d0d; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">

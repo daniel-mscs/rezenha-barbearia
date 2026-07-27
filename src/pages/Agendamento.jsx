@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import Calendario from '../components/Calendario'
+import BotaoWhatsapp from '../components/BotaoWhatsapp'
+import { iconesDoServico } from '../components/Icons'
 import './Agendamento.css'
 
 function gerarHorarios(dataStr) {
   if (!dataStr) return []
-  const diaSemana = new Date(dataStr + 'T00:00:00').getDay() // 0 = domingo, 6 = sábado
-  if (diaSemana === 0) return [] // fechado aos domingos
-
-  const fechamento = diaSemana === 6 ? 18 : 19 // sábado fecha 1h mais cedo
+  const diaSemana = new Date(dataStr + 'T00:00:00').getDay()
+  if (diaSemana === 0) return []
+  const fechamento = diaSemana === 6 ? 18 : 19
   const slots = []
   let h = 9, m = 0
   while (h < fechamento) {
@@ -25,24 +26,31 @@ function horarioParaMinutos(horario) {
   return h * 60 + m
 }
 
-// Verifica se um barbeiro está livre num horário, considerando a duração do serviço
-// e os agendamentos que ele já tem naquele dia (que também ocupam um intervalo de tempo)
 function barbeiroDisponivel(barbeiroId, slot, duracaoMin, agendamentosDoDia, fechamentoMin) {
   const inicioNovo = horarioParaMinutos(slot)
   const fimNovo = inicioNovo + duracaoMin
-
-  if (fimNovo > fechamentoMin) return false // o serviço não cabe antes de fechar
+  if (fimNovo > fechamentoMin) return false
 
   const ocupacoesDoBarbeiro = agendamentosDoDia.filter((a) => a.barbeiro_id === barbeiroId)
-
   for (const a of ocupacoesDoBarbeiro) {
     const inicioExistente = horarioParaMinutos(a.horario.slice(0, 5))
     const fimExistente = inicioExistente + (a.servicos?.duracao_min || 30)
     const sobrepoe = inicioNovo < fimExistente && fimNovo > inicioExistente
     if (sobrepoe) return false
   }
-
   return true
+}
+
+function apenasLetras(valor) {
+  return valor.replace(/[^A-Za-zÀ-ÿ\s]/g, '')
+}
+
+function apenasNumeros(valor) {
+  return valor.replace(/\D/g, '')
+}
+
+function emailValido(valor) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)
 }
 
 function Agendamento() {
@@ -55,7 +63,7 @@ function Agendamento() {
   const [barbeirosLista, setBarbeirosLista] = useState([])
   const [servicosLista, setServicosLista] = useState([])
   const [agendamentosDoDia, setAgendamentosDoDia] = useState([])
-  const [avisoConflito, setAvisoConflito] = useState(null)
+  const [avisoConflito, setAvisoConflito] = useState(null) // { mensagem, horario, alternativos }
 
   const [step, setStep] = useState(0)
   const [barbeiro, setBarbeiro] = useState(null)
@@ -113,7 +121,6 @@ function Agendamento() {
     setAgendamentosDoDia(existentes || [])
   }
 
-  // Busca TODOS os agendamentos do dia (de todos os barbeiros), com a duração do serviço de cada um
   useEffect(() => {
     buscarAgendamentosDoDia(data)
   }, [data])
@@ -156,11 +163,19 @@ function Agendamento() {
       (b) => b.id !== barbeiro.id && barbeiroDisponivel(b.id, slot, servico.duracao_min, agendamentosDoDia, fechamentoMin)
     )
 
-    if (alternativos.length > 0) {
-      setAvisoConflito(`${barbeiro.nome} está indisponível às ${slot}. ${alternativos.map((b) => b.nome).join(' e ')} ${alternativos.length > 1 ? 'estão' : 'está'} disponível nesse horário.`)
-    } else {
-      setAvisoConflito(`Nenhum barbeiro está disponível às ${slot} para esse serviço.`)
-    }
+    setAvisoConflito({
+      horario: slot,
+      mensagem: alternativos.length > 0
+        ? `${barbeiro.nome} está indisponível às ${slot}.`
+        : `Nenhum barbeiro está disponível às ${slot} para esse serviço.`,
+      alternativos,
+    })
+  }
+
+  const trocarParaBarbeiroAlternativo = (novoBarbeiro) => {
+    setBarbeiro(novoBarbeiro)
+    setHorario(avisoConflito.horario)
+    setAvisoConflito(null)
   }
 
   const confirmarAgendamento = async () => {
@@ -204,14 +219,13 @@ function Agendamento() {
         await buscarAgendamentosDoDia(data)
         setHorario(null)
         setStep(3)
-        setAvisoConflito('Esse horário acabou de ser ocupado por outro cliente. Escolhe outro horário na grade abaixo.')
+        setAvisoConflito({ mensagem: 'Esse horário acabou de ser ocupado por outro cliente. Escolhe outro horário na grade abaixo.', horario: null, alternativos: [] })
       } else {
         setErroEnvio('Não foi possível confirmar o agendamento. Tenta outro horário.')
       }
       return
     }
 
-    // Dispara o e-mail de confirmação (não trava o fluxo se falhar)
     fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/enviar-confirmacao`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -231,14 +245,18 @@ function Agendamento() {
   }
 
   if (verificandoSessao) {
-    return <div className="rz-page-root"><div className="rz-page" style={{ textAlign: 'center', paddingTop: 80 }}>Carregando...</div></div>
+    return (
+      <div className="rz-page-root">
+        <div className="rz-page" style={{ textAlign: 'center', paddingTop: 80 }}>Carregando...</div>
+      </div>
+    )
   }
 
   if (step === 0) {
     return (
       <div className="rz-page-root">
         <header className="rz-topbar">
-          <Link to="/" className="rz-logo-text" style={{ textDecoration: 'none' }}>Re<span>Z</span>enha</Link>
+          <div className="rz-logo-text">Re<span>Z</span>enha</div>
           <div className="rz-topbar-right">
             <ul className="rz-nav">
               <li><Link to="/">Início</Link></li>
@@ -264,6 +282,7 @@ function Agendamento() {
             </div>
           </div>
         </div>
+        <BotaoWhatsapp />
       </div>
     )
   }
@@ -281,6 +300,7 @@ function Agendamento() {
           <p style={{ color: '#888', marginTop: 8 }}>Você receberá a confirmação por e-mail em breve.</p>
           <Link to="/" className="rz-btn-primary" style={{ display: 'inline-block', marginTop: 24, width: 'auto', padding: '14px 32px' }}>Voltar ao início</Link>
         </div>
+        <BotaoWhatsapp />
       </div>
     )
   }
@@ -399,9 +419,20 @@ function Agendamento() {
             </div>
 
             {avisoConflito && (
-              <div style={{ background: '#2b1e00', border: '1px solid #F07B00', color: '#F07B00', fontSize: 13, padding: '12px 16px', borderRadius: 8, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-                <span>{avisoConflito}</span>
-                <button onClick={() => setAvisoConflito(null)} style={{ background: 'none', border: 'none', color: '#F07B00', cursor: 'pointer', fontSize: 16 }}>✕</button>
+              <div className="rz-conflito-box">
+                <div className="rz-conflito-texto">
+                  <span>{avisoConflito.mensagem}</span>
+                  <button className="rz-conflito-fechar" onClick={() => setAvisoConflito(null)}>✕</button>
+                </div>
+                {avisoConflito.alternativos?.length > 0 && (
+                  <div className="rz-conflito-alternativas">
+                    {avisoConflito.alternativos.map((alt) => (
+                      <button key={alt.id} className="rz-conflito-btn" onClick={() => trocarParaBarbeiroAlternativo(alt)}>
+                        Agendar com {alt.nome} às {avisoConflito.horario}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -441,22 +472,31 @@ function Agendamento() {
         {step === 4 && !clienteLogado && (
           <div className="rz-section-block">
             <button className="rz-btn-back" onClick={voltar}>‹ Voltar</button>
-            <div className="rz-field-label">4. Seus dados</div>
-            <div className="rz-form-grid">
-              <div className="rz-input-group">
-                <div className="rz-field-label">Nome</div>
-                <input className="rz-input" type="text" placeholder="Seu nome" value={nome} onChange={(e) => setNome(e.target.value)} />
-              </div>
-              <div className="rz-input-group">
-                <div className="rz-field-label">Celular (WhatsApp)</div>
-                <input className="rz-input" type="text" placeholder="(55) 99999-9999" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
-              </div>
-              <div className="rz-input-group">
+            <div className="rz-field-label rz-field-label-centro">4. Seus dados</div>
+            <div className="rz-form-card">
+              <div className="rz-form-grid">
+                <div className="rz-input-group">
+                  <div className="rz-field-label">Nome</div>
+                  <input className="rz-input" type="text" placeholder="Seu nome" value={nome} onChange={(e) => setNome(apenasLetras(e.target.value))} />
+                </div>
+                <div className="rz-input-group">
+                  <div className="rz-field-label">Celular (WhatsApp)</div>
+                  <input className="rz-input" type="text" placeholder="(55) 99999-9999" value={telefone} onChange={(e) => setTelefone(apenasNumeros(e.target.value))} maxLength={11} />
+                </div>
+                <div className="rz-input-group">
                 <div className="rz-field-label">E-mail</div>
                 <input className="rz-input" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                {email && !emailValido(email) && (
+                  <div style={{ color: '#e53935', fontSize: 11, marginTop: 4 }}>Digite um e-mail válido</div>
+                )}
+              </div>
+              </div>
+              <div className="rz-email-destaque">
+                <i className="ti ti-mail" style={{ fontSize: 18 }}></i>
+                A confirmação do seu agendamento será enviada para esse e-mail
               </div>
             </div>
-            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!nome || !telefone || !email} onClick={irParaProximo}>Continuar</button>
+            <button className="rz-btn-primary" style={{ marginTop: 20, maxWidth: 500, margin: '20px auto 0', display: 'block' }} disabled={!nome || !telefone || !emailValido(email)} onClick={irParaProximo}>Continuar</button>
           </div>
         )}
 
@@ -481,13 +521,14 @@ function Agendamento() {
             <button className="rz-btn-primary" disabled={enviando} onClick={confirmarAgendamento}>
               {enviando ? 'Confirmando...' : 'Confirmar agendamento'}
             </button>
-            <div className="rz-wpp-note">
-              <i className="ti ti-mail" style={{ fontSize: 16, color: '#F07B00' }}></i>
-              Você receberá a confirmação por e-mail
+            <div className="rz-email-destaque" style={{ justifyContent: 'center' }}>
+              <i className="ti ti-mail" style={{ fontSize: 18 }}></i>
+              Você receberá a confirmação por e-mail em {emailFinal}
             </div>
           </div>
         )}
       </div>
+      <BotaoWhatsapp />
     </div>
   )
 }

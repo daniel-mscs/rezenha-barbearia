@@ -10,6 +10,9 @@ function Home() {
   const [logado, setLogado] = useState(false)
   const [servicosLista, setServicosLista] = useState([])
   const [barbeirosLista, setBarbeirosLista] = useState([])
+  const [barbeiroPopup, setBarbeiroPopup] = useState(null)
+  const [fotosPopup, setFotosPopup] = useState([])
+  const [carregandoFotos, setCarregandoFotos] = useState(false)
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -36,6 +39,24 @@ function Home() {
   const sair = async () => {
     await supabase.auth.signOut()
     navigate('/')
+  }
+
+  const abrirPortfolio = async (barbeiro) => {
+    setBarbeiroPopup(barbeiro)
+    setCarregandoFotos(true)
+    const { data } = await supabase
+      .from('portfolio_fotos')
+      .select('*')
+      .eq('barbeiro_id', barbeiro.id)
+      .order('created_at', { ascending: false })
+      .limit(5)
+    setFotosPopup(data || [])
+    setCarregandoFotos(false)
+  }
+
+  const fecharPortfolio = () => {
+    setBarbeiroPopup(null)
+    setFotosPopup([])
   }
 
   const [cliquesLogo, setCliquesLogo] = useState(0)
@@ -136,7 +157,7 @@ function Home() {
         <div className="rz-section-sub">Profissionais que entendem do assunto</div>
         <div className="rz-barbers">
           {barbeirosLista.map((b) => (
-            <div key={b.id} className="rz-barber-card">
+            <div key={b.id} className="rz-barber-card" onClick={() => abrirPortfolio(b)}>
               {b.foto_url ? (
                 <img src={b.foto_url} alt={b.nome} className="rz-barber-avatar-img" />
               ) : (
@@ -145,10 +166,31 @@ function Home() {
               <div className="rz-barber-info">
                 <div className="rz-barber-name">{b.nome}</div>
                 <div className="rz-barber-role">{b.especialidades || '—'}</div>
+                <div className="rz-barber-vercortes">Ver cortes</div>
               </div>
             </div>
           ))}
         </div>
+
+        {barbeiroPopup && (
+          <div className="rz-portfolio-overlay" onClick={fecharPortfolio}>
+            <div className="rz-portfolio-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="rz-portfolio-fechar" onClick={fecharPortfolio}>✕</button>
+              <div className="rz-portfolio-titulo">Cortes de {barbeiroPopup.nome}</div>
+              {carregandoFotos ? (
+                <p style={{ color: '#666', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>Carregando...</p>
+              ) : fotosPopup.length === 0 ? (
+                <p style={{ color: '#666', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>Esse barbeiro ainda não subiu fotos dos trabalhos.</p>
+              ) : (
+                <div className="rz-portfolio-grid">
+                  {fotosPopup.map((foto) => (
+                    <img key={foto.id} src={foto.foto_url} alt="Trabalho do barbeiro" />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* LOCALIZAÇÃO */}

@@ -68,6 +68,13 @@ function Clientes() {
     navigate('/admin/login')
   }
 
+  const compartilharConvite = (cliente) => {
+    const link = `${window.location.origin}/convite/${cliente.convite_token}`
+    const telefoneLimpo = cliente.telefone.replace(/\D/g, '')
+    const mensagem = encodeURIComponent(`Oi ${cliente.nome.split(' ')[0]}! Cria sua conta na Rezenha Barbearia pra acompanhar seus agendamentos: ${link}`)
+    window.open(`https://wa.me/55${telefoneLimpo}?text=${mensagem}`, '_blank')
+  }
+
   const clientesFiltrados = clientes.filter((c) =>
     c.nome.toLowerCase().includes(busca.toLowerCase()) || c.telefone.includes(busca)
   )
@@ -127,6 +134,7 @@ function Clientes() {
                       <td>{c.intervalo_lembrete_dias || 30} dias</td>
                       <td>
                         <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>Editar</button>
+                        <button className="rz-action-btn" onClick={() => compartilharConvite(c)}>Convite</button>
                       </td>
                     </tr>
                   ))}

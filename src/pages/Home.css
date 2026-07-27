@@ -453,7 +453,7 @@
   gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding-bottom: 12px;
+  padding: 4px 4px 12px;
   scrollbar-width: thin;
   scrollbar-color: #F07B00 #1a1a1a;
 }
@@ -494,3 +494,74 @@
 .rz-depoimento-texto { color: #ccc; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
 .rz-depoimento-autor { color: #fff; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
 .rz-depoimento-tempo { color: #666; font-size: 11px; margin-top: 2px; }
+
+.rz-barber-vercortes {
+  font-size: 11px;
+  color: #F07B00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.rz-barber-card:hover .rz-barber-vercortes,
+.rz-barber-card:active .rz-barber-vercortes { opacity: 1; }
+
+.rz-portfolio-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.rz-portfolio-modal {
+  background: #111;
+  border: 1px solid #262626;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.rz-portfolio-fechar {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #1f1f1f;
+  border: 1px solid #333;
+  color: #ccc;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.rz-portfolio-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  padding-right: 30px;
+}
+
+.rz-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.rz-portfolio-grid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+}

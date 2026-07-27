@@ -10,6 +10,8 @@ import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import Servicos from './pages/PainelAdmin/Servicos'
 import Barbeiros from './pages/PainelAdmin/Barbeiros'
 import Clientes from './pages/PainelAdmin/Clientes'
+import MeuPortfolio from './pages/PainelAdmin/MeuPortfolio'
+import Convite from './pages/Convite'
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         <Route path="/admin/servicos" element={<ProtectedAdminRoute><Servicos /></ProtectedAdminRoute>} />
         <Route path="/admin/barbeiros" element={<ProtectedAdminRoute><Barbeiros /></ProtectedAdminRoute>} />
         <Route path="/admin/clientes" element={<ProtectedAdminRoute><Clientes /></ProtectedAdminRoute>} />
+        <Route path="/admin/portfolio" element={<ProtectedAdminRoute><MeuPortfolio /></ProtectedAdminRoute>} />
+        <Route path="/convite/:token" element={<Convite />} />
       </Routes>
       <CookieBanner />
     </BrowserRouter>

@@ -1,0 +1,105 @@
+* { box-sizing: border-box; }
+
+.rz-admin-root { background: #0d0d0d; font-family: 'Barlow', sans-serif; color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+
+.rz-topbar { background: #111; border-bottom: 1px solid #222; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+.rz-logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: #fff; }
+.rz-logo-text span { color: #F07B00; }
+.rz-logo-sep { color: #333; font-size: 16px; letter-spacing: 1px; }
+.rz-topbar-right { display: flex; align-items: center; gap: 16px; }
+.rz-user-badge { display: flex; align-items: center; gap: 8px; background: #1a1a1a; border: 1px solid #222; border-radius: 6px; padding: 6px 12px; font-size: 13px; color: #aaa; }
+.rz-logout { font-size: 13px; color: #555; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; background: none; border: none; }
+.rz-logout:hover { color: #F07B00; }
+
+.rz-body { display: flex; flex: 1; }
+
+.rz-sidebar { width: 200px; background: #0f0f0f; border-right: 1px solid #1a1a1a; padding: 24px 0; flex-shrink: 0; }
+.rz-sidebar-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; font-size: 13px; color: #555; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; }
+.rz-sidebar-item.active { color: #fff; background: #1a1a1a; border-left: 2px solid #F07B00; }
+.rz-sidebar-item i { font-size: 16px; }
+
+.rz-main { flex: 1; padding: 28px 32px; min-width: 0; }
+
+.rz-page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.rz-page-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: #fff; }
+.rz-page-title span { color: #F07B00; }
+
+.rz-btn-primary { background: #F07B00; color: #fff; border: none; padding: 10px 20px; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border-radius: 6px; cursor: pointer; }
+.rz-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.rz-table-wrap { background: #111; border: 1px solid #1a1a1a; border-radius: 8px; overflow-x: auto; }
+.rz-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 500px; }
+.rz-table thead tr { background: #161616; border-bottom: 1px solid #222; }
+.rz-table th { text-align: left; padding: 12px 16px; font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.rz-table td { padding: 13px 16px; color: #ccc; border-bottom: 1px solid #1a1a1a; }
+.rz-table tr:last-child td { border-bottom: none; }
+.rz-table tr:hover td { background: #141414; }
+
+.rz-action-btn { background: transparent; border: 1px solid #222; border-radius: 4px; padding: 4px 10px; font-size: 11px; color: #666; cursor: pointer; font-family: 'Barlow', sans-serif; margin-right: 4px; }
+.rz-action-btn:hover { border-color: #F07B00; color: #F07B00; }
+.rz-action-btn.danger:hover { border-color: #e53935; color: #e53935; }
+
+.rz-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+.rz-modal { background: #111; border: 1px solid #222; border-radius: 10px; padding: 28px; width: 100%; max-width: 400px; }
+.rz-modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 20px; }
+.rz-field-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+.rz-input { width: 100%; background: #161616; border: 1px solid #222; border-radius: 8px; padding: 12px 16px; color: #fff; font-family: 'Barlow', sans-serif; font-size: 14px; margin-bottom: 16px; }
+.rz-modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+.rz-btn-outline { background: transparent; color: #aaa; border: 1px solid #333; padding: 10px 18px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 6px; cursor: pointer; flex: 1; }
+
+.rz-empty-state { text-align: center; padding: 40px; color: #555; font-size: 13px; }
+
+@media (max-width: 768px) {
+  .rz-sidebar { width: 52px; }
+  .rz-sidebar-item span { display: none; }
+  .rz-sidebar-item { padding: 12px; justify-content: center; }
+  .rz-main { padding: 16px; }
+}
+
+.rz-date-badge { background: #1a1a1a; border: 1px solid #222; border-radius: 6px; padding: 8px 14px; font-size: 13px; color: #aaa; display: flex; align-items: center; gap: 8px; }
+.rz-date-badge input { background: transparent; border: none; color: #aaa; font-family: 'Barlow', sans-serif; font-size: 13px; }
+
+.rz-stats-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+.rz-stat-card { background: #111; border: 1px solid #1a1a1a; border-radius: 8px; padding: 16px; }
+.rz-stat-label { font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.rz-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #F07B00; line-height: 1; }
+.rz-stat-sub { font-size: 11px; color: #444; margin-top: 4px; }
+
+.rz-filters { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+.rz-filter-btn { background: #161616; border: 1px solid #222; border-radius: 6px; padding: 7px 14px; font-size: 12px; color: #666; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Barlow', sans-serif; }
+.rz-filter-btn.active { background: #F07B00; border-color: #F07B00; color: #fff; }
+.rz-filters-right { margin-left: auto; display: flex; gap: 8px; }
+
+.rz-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.rz-barber-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+
+@media (max-width: 768px) {
+  .rz-stats-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .rz-stat-num { font-size: 22px; }
+  .rz-filters-right { margin-left: 0; }
+}
+
+.rz-view-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+.rz-view-toggle button { background: #161616; border: 1px solid #222; border-radius: 6px; padding: 8px 16px; font-size: 12px; color: #666; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Barlow', sans-serif; }
+.rz-view-toggle button.active { background: #F07B00; border-color: #F07B00; color: #fff; }
+
+.rz-agenda-wrap { background: #111; border: 1px solid #1a1a1a; border-radius: 8px; overflow-x: auto; }
+.rz-agenda-grid { display: grid; min-width: 600px; }
+.rz-agenda-header-row { display: contents; }
+.rz-agenda-col-header { background: #161616; border-bottom: 1px solid #222; padding: 12px; text-align: center; font-size: 12px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; }
+.rz-agenda-time-header { background: #161616; border-bottom: 1px solid #222; }
+
+.rz-agenda-time { padding: 8px 10px; font-size: 11px; color: #555; border-top: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; display: flex; align-items: flex-start; }
+.rz-agenda-cell { border-top: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 4px; min-height: 44px; position: relative; }
+.rz-agenda-cell.livre:hover { background: #141414; }
+
+.rz-agenda-agendamento { background: #1a1000; border: 1px solid #F07B00; border-radius: 6px; padding: 6px 8px; font-size: 11px; height: 100%; display: flex; flex-direction: column; gap: 2px; overflow: hidden; }
+.rz-agenda-agendamento.confirmado { border-color: #4caf50; background: #0d2b0d; }
+.rz-agenda-agendamento.cancelado { border-color: #e53935; background: #2b0d0d; opacity: 0.5; }
+.rz-agenda-cliente { font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rz-agenda-servico { color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.rz-agenda-ocupado-continuacao { background: repeating-linear-gradient(45deg, #161616, #161616 6px, #131313 6px, #131313 12px); border-radius: 4px; height: 100%; }
+
+.rz-sidebar-item { position: relative; }
+.rz-sidebar-badge { background: #F07B00; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 6px; }

@@ -1,0 +1,72 @@
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
+
+function AdminSidebar({ ativa }) {
+  const [isDono, setIsDono] = useState(false)
+  const [pendentes, setPendentes] = useState(0)
+
+  useEffect(() => {
+    const verificar = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+      const { data } = await supabase
+        .from('barbeiros')
+        .select('is_dono')
+        .eq('auth_id', session.user.id)
+        .maybeSingle()
+      setIsDono(data?.is_dono || false)
+    }
+    verificar()
+  }, [])
+
+  const carregarPendentes = async () => {
+    const { count } = await supabase
+      .from('agendamentos')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pendente')
+    setPendentes(count || 0)
+  }
+
+  useEffect(() => {
+    carregarPendentes()
+
+    const canal = supabase
+      .channel('agendamentos-novos')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'agendamentos' }, () => {
+        carregarPendentes()
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'agendamentos' }, () => {
+        carregarPendentes()
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(canal)
+    }
+  }, [])
+
+  return (
+    <aside className="rz-sidebar">
+      <Link to="/admin" className={`rz-sidebar-item ${ativa === 'agendamentos' ? 'active' : ''}`}>
+        <i className="ti ti-calendar"></i> <span>Agendamentos</span>
+        {pendentes > 0 && <span className="rz-sidebar-badge">{pendentes}</span>}
+      </Link>
+      {isDono && (
+        <>
+          <Link to="/admin/barbeiros" className={`rz-sidebar-item ${ativa === 'barbeiros' ? 'active' : ''}`}>
+            <i className="ti ti-users"></i> <span>Barbeiros</span>
+          </Link>
+          <Link to="/admin/servicos" className={`rz-sidebar-item ${ativa === 'servicos' ? 'active' : ''}`}>
+            <i className="ti ti-cut"></i> <span>Serviços</span>
+          </Link>
+        </>
+      )}
+      <Link to="/admin/clientes" className={`rz-sidebar-item ${ativa === 'clientes' ? 'active' : ''}`}>
+        <i className="ti ti-address-book"></i> <span>Clientes</span>
+      </Link>
+    </aside>
+  )
+}
+
+export default AdminSidebar

@@ -1,0 +1,378 @@
+* { box-sizing: border-box; }
+
+.rz-page-root {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  overflow-x: hidden;
+}
+
+.rz-topbar {
+  background: #111;
+  border-bottom: 1px solid #222;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rz-logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.rz-logo-text span { color: #F07B00; }
+
+.rz-nav {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rz-nav li {
+  font-size: 13px;
+  color: #aaa;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.rz-nav li.active { color: #F07B00; }
+.rz-nav a { color: inherit; text-decoration: none; }
+
+.rz-btn-nav {
+  background: #F07B00;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.rz-hero {
+  background: linear-gradient(135deg, #0d0d0d 60%, #1a1200 100%);
+  padding: 56px 40px 48px;
+  border-bottom: 2px solid #F07B00;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.rz-hero-badge {
+  display: inline-block;
+  background: #F07B00;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+
+.rz-hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.rz-hero h1 span { color: #F07B00; }
+
+.rz-hero p {
+  font-size: 15px;
+  color: #aaa;
+  margin-bottom: 28px;
+  max-width: 340px;
+  line-height: 1.6;
+}
+
+.rz-hero-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.rz-btn-primary {
+  background: #F07B00;
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.rz-btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid #444;
+  padding: 13px 24px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rz-hero-logo {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rz-stats {
+  display: flex;
+  gap: 32px;
+  padding: 24px 40px;
+  background: #111;
+  border-bottom: 1px solid #222;
+}
+
+.rz-stat { display: flex; flex-direction: column; gap: 2px; }
+
+.rz-stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  color: #F07B00;
+  line-height: 1;
+}
+
+.rz-stat-label {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rz-section {
+  padding: 40px 40px 32px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.rz-divider {
+  width: 40px;
+  height: 2px;
+  background: #F07B00;
+  margin-bottom: 20px;
+}
+
+.rz-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.rz-section-title span { color: #F07B00; }
+
+.rz-section-sub {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rz-services {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.rz-service-card {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  cursor: pointer;
+  flex: 1 1 260px;
+  max-width: 300px;
+  min-height: 150px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.rz-service-card:hover {
+  border-color: #F07B00;
+  background: #1c1c1c;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(240, 123, 0, 0.12);
+}
+
+.rz-service-icon { display: flex; gap: 6px; color: #F07B00; margin-bottom: 4px; }
+.rz-service-name { font-size: 13px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.3; }
+.rz-service-desc { font-size: 12px; color: #666; line-height: 1.5; }
+.rz-service-price { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: #F07B00; margin-top: 4px; }
+
+.rz-barbers { display: flex; gap: 16px; }
+
+.rz-barber-card {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 10px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rz-barber-card:hover {
+  border-color: #F07B00;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(240, 123, 0, 0.15);
+}
+
+.rz-barber-card:hover .rz-barber-avatar-img,
+.rz-barber-card:hover .rz-barber-avatar {
+  filter: brightness(1.05);
+}
+
+.rz-barber-avatar-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.rz-barber-avatar {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: #1f1f1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: #F07B00;
+  border-bottom: 2px solid #F07B00;
+}
+
+.rz-barber-info { padding: 16px; text-align: center; }
+.rz-barber-name { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
+.rz-barber-role { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+.rz-cta {
+  background: #111;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.rz-cta .rz-btn-primary {
+  width: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.rz-cta-text h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: 2px;
+}
+.rz-cta-text h2 span { color: #F07B00; }
+.rz-cta-text p { font-size: 13px; color: #666; }
+
+.rz-footer {
+  background: #080808;
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #1a1a1a;
+}
+
+.rz-footer-text { font-size: 12px; color: #444; }
+.rz-footer-text span { color: #F07B00; }
+
+@media (max-width: 768px) {
+  .rz-topbar { padding: 12px 16px; }
+  .rz-nav { display: none; }
+  .rz-btn-nav { font-size: 11px; padding: 7px 12px; }
+
+  .rz-hero {
+    flex-direction: column;
+    padding: 32px 16px 28px;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .rz-hero h1 { font-size: 40px; }
+  .rz-hero p { max-width: 100%; }
+  .rz-hero-logo {
+    width: 160px;
+    height: 160px;
+    align-self: center;
+    order: -1;
+  }
+  .rz-hero-actions { flex-direction: column; width: 100%; }
+  .rz-btn-primary { width: 100%; text-align: center; display: block; }
+  .rz-btn-outline { width: 100%; text-align: center; display: block; }
+
+  .rz-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 16px;
+  }
+  .rz-stat-label { font-size: 10px; }
+  .rz-stat-num { font-size: 24px; }
+
+  .rz-section { padding: 32px 16px; }
+  .rz-services { grid-template-columns: 1fr; }
+
+  .rz-barbers { flex-direction: row; gap: 8px; }
+  .rz-barber-card { flex: 1; }
+  .rz-barber-name { font-size: 12px; }
+  .rz-barber-role { font-size: 9px; }
+
+  .rz-cta {
+    flex-direction: column;
+    padding: 32px 16px;
+    text-align: center;
+    gap: 16px;
+  }
+  .rz-cta-text h2 { font-size: 24px; }
+  .rz-cta .rz-btn-primary { width: 100%; }
+
+  .rz-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+}
+
+.rz-topbar-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }

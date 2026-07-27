@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { iconesDoServico } from '../components/Icons'
+import { iconesParaExibir } from '../components/Icons'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import './Home.css'
 
@@ -119,7 +119,7 @@ function Home() {
               onClick={() => navigate('/agendamento', { state: { servicoId: s.id } })}
             >
               <div className="rz-service-icon">
-                {iconesDoServico(s.nome).map((Icone, i) => <Icone key={i} />)}
+                {iconesParaExibir(s).map((Icone, i) => <Icone key={i} />)}
               </div>
               <div className="rz-service-name">{s.nome}</div>
               <div className="rz-service-desc">~{s.duracao_min} min</div>

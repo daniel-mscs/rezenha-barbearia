@@ -56,12 +56,7 @@ export const IconScissors = (props) => (
 )
 
 export const IconRazor = (props) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <rect x="0.5" y="9.5" width="11.5" height="4" rx="2" transform="rotate(-4 6.25 11.5)" />
-    <circle cx="9.8" cy="9.3" r="0.9" fill="#0d0d0d" />
-    <path d="M11 10 22.3 6.2c.7-.24 1.3.55.85 1.15L13.5 20.2c-.75 1-1.9 1.65-3.1 1.9l-3.4.75c-.6.13-1.05-.55-.65-1.02L11 10Z" />
-    <circle cx="7" cy="20.7" r="0.85" fill="#0d0d0d" />
-  </svg>
+  <img src="/icons/navalha.png" alt="Navalha" width="22" height="22" style={{ objectFit: 'contain' }} {...props} />
 )
 
 export const IconEyebrows = (props) => (
@@ -71,6 +66,12 @@ export const IconEyebrows = (props) => (
   </svg>
 )
 
+export const ICONES_DISPONIVEIS = {
+  tesoura: { componente: IconScissors, label: 'Tesoura' },
+  navalha: { componente: IconRazor, label: 'Navalha' },
+  sobrancelha: { componente: IconEyebrows, label: 'Sobrancelha' },
+}
+
 export function iconesDoServico(nome) {
   const n = nome.toLowerCase()
   const icones = []
@@ -79,4 +80,14 @@ export function iconesDoServico(nome) {
   if (n.includes('sobrancelha')) icones.push(IconEyebrows)
   if (icones.length === 0) icones.push(IconScissors)
   return icones
+}
+
+// Usa os ícones escolhidos manualmente pelo dono; se o serviço não tiver nenhum salvo, cai no automático por nome (compatibilidade com serviços antigos)
+export function iconesParaExibir(servico) {
+  if (servico.icones && servico.icones.length > 0) {
+    return servico.icones
+      .map((chave) => ICONES_DISPONIVEIS[chave]?.componente)
+      .filter(Boolean)
+  }
+  return iconesDoServico(servico.nome)
 }

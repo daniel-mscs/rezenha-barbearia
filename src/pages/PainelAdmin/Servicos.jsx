@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/AdminSidebar'
+import { ICONES_DISPONIVEIS } from '../../components/Icons'
 import '../PainelAdmin/PainelAdmin.css'
 
 function Servicos() {
@@ -13,6 +14,7 @@ function Servicos() {
   const [nome, setNome] = useState('')
   const [duracao, setDuracao] = useState('')
   const [preco, setPreco] = useState('')
+  const [iconesSelecionados, setIconesSelecionados] = useState([])
   const [salvando, setSalvando] = useState(false)
 
   const carregarServicos = async () => {
@@ -44,6 +46,7 @@ function Servicos() {
     setNome('')
     setDuracao('')
     setPreco('')
+    setIconesSelecionados([])
     setModalAberto(true)
   }
 
@@ -52,6 +55,7 @@ function Servicos() {
     setNome(servico.nome)
     setDuracao(String(servico.duracao_min))
     setPreco(String(servico.preco))
+    setIconesSelecionados(servico.icones || [])
     setModalAberto(true)
   }
 
@@ -63,6 +67,7 @@ function Servicos() {
       nome,
       duracao_min: parseInt(duracao, 10),
       preco: parseFloat(preco),
+      icones: iconesSelecionados,
     }
 
     if (editando) {
@@ -162,6 +167,34 @@ function Servicos() {
 
               <label className="rz-field-label">Preço (R$)</label>
               <input className="rz-input" type="number" min="0" step="0.01" value={preco} onChange={(e) => setPreco(e.target.value)} required />
+
+              <label className="rz-field-label">Ícones</label>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+                {Object.entries(ICONES_DISPONIVEIS).map(([chave, { componente: Icone, label }]) => {
+                  const selecionado = iconesSelecionados.includes(chave)
+                  return (
+                    <button
+                      key={chave}
+                      type="button"
+                      onClick={() =>
+                        setIconesSelecionados((atual) =>
+                          selecionado ? atual.filter((i) => i !== chave) : [...atual, chave]
+                        )
+                      }
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        background: selecionado ? '#1a1000' : '#161616',
+                        border: selecionado ? '1px solid #F07B00' : '1px solid #222',
+                        color: selecionado ? '#F07B00' : '#888',
+                        borderRadius: 6, padding: '8px 12px', cursor: 'pointer', fontSize: 12,
+                      }}
+                    >
+                      <Icone />
+                      {label}
+                    </button>
+                  )
+                })}
+              </div>
 
               <div className="rz-modal-actions">
                 <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>Cancelar</button>

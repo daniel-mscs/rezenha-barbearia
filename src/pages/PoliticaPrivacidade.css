@@ -1,0 +1,59 @@
+.rz-politica-root {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+}
+
+.rz-politica-conteudo {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.rz-politica-conteudo h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.rz-politica-atualizado {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 32px;
+}
+
+.rz-politica-conteudo h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: #F07B00;
+  margin-top: 32px;
+  margin-bottom: 8px;
+}
+
+.rz-politica-conteudo p,
+.rz-politica-conteudo li {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.rz-politica-conteudo ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.rz-politica-voltar {
+  display: inline-block;
+  margin-top: 40px;
+  color: #F07B00;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.rz-politica-voltar:hover {
+  text-decoration: underline;
+}

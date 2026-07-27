@@ -1,0 +1,54 @@
+.rz-cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 998;
+  background: #111;
+  border-top: 1px solid #F07B00;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.rz-cookie-texto {
+  color: #ccc;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 700px;
+  font-family: 'Barlow', sans-serif;
+}
+
+.rz-cookie-btn {
+  background: #F07B00;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.rz-cookie-btn:hover {
+  background: #d96b00;
+}
+
+@media (max-width: 768px) {
+  .rz-cookie-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+  .rz-cookie-btn { width: 100%; }
+}

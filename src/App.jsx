@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import CookieBanner from './components/CookieBanner'
+import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import Home from './pages/Home'
 import Agendamento from './pages/Agendamento'
 import Login from './pages/Login'
@@ -14,6 +16,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/privacidade" element={<PoliticaPrivacidade />} />
         <Route path="/agendamento" element={<Agendamento />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -22,6 +25,7 @@ function App() {
         <Route path="/admin/barbeiros" element={<ProtectedAdminRoute><Barbeiros /></ProtectedAdminRoute>} />
         <Route path="/admin/clientes" element={<ProtectedAdminRoute><Clientes /></ProtectedAdminRoute>} />
       </Routes>
+      <CookieBanner />
     </BrowserRouter>
   )
 }

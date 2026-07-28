@@ -60,9 +60,9 @@ export const IconRazor = (props) => (
 )
 
 export const IconEyebrows = (props) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-    <path d="M2 9c1.5-2.5 4-3.5 6.5-3S12 8 12 8" />
-    <path d="M12 8s2-2.5 4.5-3S21 6.5 22 9" />
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M1,10 C3,4 8,3 11,6 C8,5 4,7 1,10 Z" />
+    <path d="M23,10 C21,4 16,3 13,6 C16,5 20,7 23,10 Z" />
   </svg>
 )
 

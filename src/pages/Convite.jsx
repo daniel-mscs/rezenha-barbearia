@@ -33,6 +33,12 @@ function Convite() {
   const criarConta = async (e) => {
     e.preventDefault()
     setErro('')
+
+    if (senha.length < 6 || !/\d/.test(senha)) {
+      setErro('A senha precisa ter no mínimo 6 caracteres e incluir pelo menos 1 número.')
+      return
+    }
+
     setEnviando(true)
 
     const { error } = await supabase.auth.signUp({

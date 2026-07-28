@@ -74,6 +74,7 @@ function AdminLogin() {
           <button className="rz-btn-primary" type="submit" disabled={carregando}>
             {carregando ? 'Entrando...' : 'Entrar no painel'}
           </button>
+          <Link to="/esqueci-senha?origem=admin" style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}>Esqueceu a senha?</Link>
         </form>
       </div>
     </div>

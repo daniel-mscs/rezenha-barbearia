@@ -4,6 +4,10 @@ import { supabase } from '../lib/supabase'
 import { IconEye, IconEyeOff, IconArrowLeft } from '../components/Icons'
 import './Login.css'
 
+function senhaValida(valor) {
+  return valor.length >= 6 && /\d/.test(valor)
+}
+
 function Login() {
   const navigate = useNavigate()
   const [aba, setAba] = useState('entrar')
@@ -59,6 +63,12 @@ function Login() {
     setErro('')
     setSucesso('')
     setCarregando(true)
+
+    if (!senhaValida(senha)) {
+      setCarregando(false)
+      setErro('A senha precisa ter no mínimo 6 caracteres e incluir pelo menos 1 número.')
+      return
+    }
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -122,6 +132,7 @@ function Login() {
             <button className="rz-btn-primary" type="submit" disabled={carregando}>
               {carregando ? 'Entrando...' : 'Entrar'}
             </button>
+            <Link to="/esqueci-senha" style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}>Esqueceu a senha?</Link>
           </form>
         ) : (
           <form onSubmit={criarConta}>

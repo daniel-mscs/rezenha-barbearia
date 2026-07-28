@@ -178,3 +178,5 @@
   .rz-filters-right { margin-left: 0; }
   .rz-date-badge { font-size: 11px; padding: 7px 12px; }
 }
+
+.rz-section-title-mini { font-size: 13px; font-weight: 700; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }

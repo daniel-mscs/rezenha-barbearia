@@ -127,6 +127,23 @@ function Home() {
         </div>
       </div>
 
+      {/* HORÁRIO + INSTAGRAM */}
+      <div className="rz-info-bar">
+        <div className="rz-info-bar-horarios">
+          <span><strong>Seg a Sex</strong> 9h às 19h</span>
+          <span><strong>Sáb</strong> 9h às 18h</span>
+          <span><strong>Dom</strong> Fechado</span>
+        </div>
+        <a href="https://www.instagram.com/rezenha_barbearia/" target="_blank" rel="noopener noreferrer" className="rz-info-bar-instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+          @rezenha_barbearia
+        </a>
+      </div>
+
       {/* SERVIÇOS */}
       <section id="servicos" className="rz-section">
         <div className="rz-divider"></div>
@@ -287,8 +304,22 @@ function Home() {
 
       {/* FOOTER */}
       <footer className="rz-footer">
-        <div className="rz-footer-text">© 2025 <span>ReZenha Barbearia</span> · Santa Maria, RS</div>
-        <div className="rz-footer-text">rezenhabarbearia.com.br</div>
+        <div className="rz-footer-coluna">
+          <div className="rz-footer-text">© 2025 <span>ReZenha Barbearia</span> · Santa Maria, RS</div>
+          <div className="rz-footer-horarios">
+            <span>Seg a Sex: 9h às 19h</span>
+            <span>Sáb: 9h às 18h</span>
+            <span>Dom: Fechado</span>
+          </div>
+        </div>
+        <a href="https://www.instagram.com/rezenha_barbearia/" target="_blank" rel="noopener noreferrer" className="rz-footer-instagram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+          @rezenha_barbearia
+        </a>
       </footer>
 
       <BotaoWhatsapp />

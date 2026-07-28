@@ -62,6 +62,9 @@ function AdminSidebar({ ativa }) {
           </Link>
         </>
       )}
+      <Link to="/admin/relatorios" className={`rz-sidebar-item ${ativa === 'relatorios' ? 'active' : ''}`}>
+        <i className="ti ti-chart-bar"></i> <span>Relatórios</span>
+      </Link>
       <Link to="/admin/clientes" className={`rz-sidebar-item ${ativa === 'clientes' ? 'active' : ''}`}>
         <i className="ti ti-address-book"></i> <span>Clientes</span>
       </Link>

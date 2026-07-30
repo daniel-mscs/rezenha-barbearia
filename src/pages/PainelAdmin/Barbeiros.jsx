@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/AdminSidebar'
+import { comprimirImagem } from '../../utils/comprimirImagem'
 import '../PainelAdmin/PainelAdmin.css'
 
 function Barbeiros() {
@@ -71,8 +72,9 @@ const salvar = async (e) => {
       let fotoUrl = editando.foto_url
 
       if (fotoFile) {
-        const nomeArquivo = `${editando.id}-${Date.now()}.${fotoFile.name.split('.').pop()}`
-        const { error: uploadError } = await supabase.storage.from('barbeiros').upload(nomeArquivo, fotoFile, { upsert: true })
+        const fotoComprimida = await comprimirImagem(fotoFile)
+        const nomeArquivo = `${editando.id}-${Date.now()}.jpg`
+        const { error: uploadError } = await supabase.storage.from('barbeiros').upload(nomeArquivo, fotoComprimida, { upsert: true })
         if (!uploadError) {
           const { data: urlData } = supabase.storage.from('barbeiros').getPublicUrl(nomeArquivo)
           fotoUrl = urlData.publicUrl

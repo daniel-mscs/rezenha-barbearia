@@ -385,3 +385,11 @@
     transition: transform 0.1s ease;
   }
 }
+
+.rz-seguranca-nota {
+  text-align: center;
+  font-size: 11px;
+  color: #666;
+  margin-top: 14px;
+  line-height: 1.5;
+}

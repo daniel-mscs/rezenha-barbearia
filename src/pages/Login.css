@@ -57,3 +57,11 @@
 .rz-icon-inline { vertical-align: -2px; margin-right: 4px; }
 
 .rz-input-sem-icone { padding-left: 16px; }
+
+.rz-seguranca-nota {
+  text-align: center;
+  font-size: 11px;
+  color: #666;
+  margin-top: 14px;
+  line-height: 1.5;
+}

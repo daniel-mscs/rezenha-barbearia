@@ -166,6 +166,9 @@ function Login() {
             <button className="rz-btn-primary" type="submit" disabled={carregando}>
               {carregando ? 'Criando...' : 'Criar conta'}
             </button>
+            <div className="rz-seguranca-nota">
+              🔒 Seus dados estão protegidos e seguros. Usamos suas informações só pra gerenciar seus agendamentos.
+            </div>
           </form>
         )}
       </div>

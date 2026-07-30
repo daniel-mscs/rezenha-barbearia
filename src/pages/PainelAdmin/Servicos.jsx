@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/AdminSidebar'
 import { ICONES_DISPONIVEIS } from '../../components/Icons'
+import { formatarDuracao } from '../../utils/formatarDuracao'
 import '../PainelAdmin/PainelAdmin.css'
 
 function Servicos() {
@@ -137,7 +138,7 @@ function Servicos() {
                   {servicos.map((s) => (
                     <tr key={s.id}>
                       <td><strong style={{ color: '#fff' }}>{s.nome}</strong></td>
-                      <td>{s.duracao_min} min</td>
+                      <td>{formatarDuracao(s.duracao_min)}</td>
                       <td>R$ {Number(s.preco).toFixed(2)}</td>
                       <td>{s.ativo ? 'Ativo' : 'Inativo'}</td>
                       <td>

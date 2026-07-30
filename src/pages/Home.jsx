@@ -6,6 +6,7 @@ import { iconesParaExibir } from '../components/Icons'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
 import ProximoHorario from '../components/ProximoHorario'
+import { formatarDuracao } from '../utils/formatarDuracao'
 import './Home.css'
 
 function FaqItem({ pergunta, resposta }) {
@@ -86,6 +87,17 @@ function Home() {
     window._logoClickTimer = setTimeout(() => setCliquesLogo(0), 1500)
   }
 
+  const [fechadoHoje, setFechadoHoje] = useState(null)
+
+  useEffect(() => {
+    const verificarFechado = async () => {
+      const hoje = new Date().toISOString().split('T')[0]
+      const { data } = await supabase.from('dias_fechados').select('motivo').eq('data', hoje).maybeSingle()
+      if (data) setFechadoHoje(data.motivo || 'Fechado hoje')
+    }
+    verificarFechado()
+  }, [])
+
   const [refServicos, visivelServicos] = useScrollReveal()
   const [refBarbeiros, visivelBarbeiros] = useScrollReveal()
   const [refDepoimentos, visivelDepoimentos] = useScrollReveal()
@@ -115,6 +127,12 @@ function Home() {
         </div>
       </header>
 
+      {fechadoHoje && (
+        <div className="rz-aviso-fechado">
+          🚫 Estamos fechados hoje — {fechadoHoje}. Volte outro dia ou agende para uma data futura!
+        </div>
+      )}
+
       {/* HERO */}
       <section className="rz-hero">
         <div>
@@ -129,7 +147,7 @@ function Home() {
             <a href="#servicos" className="rz-btn-outline">Ver serviços</a>
           </div>
         </div>
-        <img className="rz-hero-logo" src="/logo.png" alt="Logo Rezenha Barbearia" />
+        <img className="rz-hero-logo" src="/logo.png" alt="Logo Rezenha Barbearia" loading="eager" fetchPriority="high" />
       </section>
 
       {/* STATS */}
@@ -185,7 +203,7 @@ function Home() {
                 {iconesParaExibir(s).map((Icone, i) => <Icone key={i} />)}
               </div>
               <div className="rz-service-name">{s.nome}</div>
-              <div className="rz-service-desc">~{s.duracao_min} min</div>
+              <div className="rz-service-desc">~{formatarDuracao(s.duracao_min)}</div>
               <div className="rz-service-price">R$ {Number(s.preco).toFixed(2)}</div>
             </div>
           ))}
@@ -201,7 +219,7 @@ function Home() {
           {barbeirosLista.map((b) => (
             <div key={b.id} className="rz-barber-card" onClick={() => abrirPortfolio(b)}>
               {b.foto_url ? (
-                <img src={b.foto_url} alt={b.nome} className="rz-barber-avatar-img" />
+                <img src={b.foto_url} alt={b.nome} className="rz-barber-avatar-img" loading="lazy" />
               ) : (
                 <div className="rz-barber-avatar">{b.nome.charAt(0).toUpperCase()}</div>
               )}
@@ -335,6 +353,26 @@ function Home() {
           ))}
         </div>
       </section>
+
+      {/* SELOS DE CONFIANÇA */}
+      <div className="rz-selos">
+        <div className="rz-selo">
+          <span className="rz-selo-icone">🔒</span>
+          <span>Dados protegidos</span>
+        </div>
+        <div className="rz-selo">
+          <span className="rz-selo-icone">✅</span>
+          <span>Confirmação garantida</span>
+        </div>
+        <div className="rz-selo">
+          <span className="rz-selo-icone">📅</span>
+          <span>Cancele quando quiser</span>
+        </div>
+        <div className="rz-selo">
+          <span className="rz-selo-icone">⭐</span>
+          <span>Avaliação 5.0 no Google</span>
+        </div>
+      </div>
 
       {/* CTA */}
       <section className="rz-cta">

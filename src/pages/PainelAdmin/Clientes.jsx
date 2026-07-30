@@ -14,7 +14,9 @@ function Clientes() {
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
   const [obs, setObs] = useState('')
-  const [dataNascimento, setDataNascimento] = useState('')
+  const [diaNascimento, setDiaNascimento] = useState('')
+  const [mesNascimento, setMesNascimento] = useState('')
+  const [anoNascimento, setAnoNascimento] = useState('')
   const [intervaloLembrete, setIntervaloLembrete] = useState('30')
   const [salvando, setSalvando] = useState(false)
 
@@ -34,7 +36,9 @@ function Clientes() {
     setNome('')
     setTelefone('')
     setObs('')
-    setDataNascimento('')
+    setDiaNascimento('')
+    setMesNascimento('')
+    setAnoNascimento('')
     setIntervaloLembrete('30')
     setModalAberto(true)
   }
@@ -44,7 +48,16 @@ function Clientes() {
     setNome(c.nome)
     setTelefone(c.telefone)
     setObs(c.obs || '')
-    setDataNascimento(c.data_nascimento || '')
+    if (c.data_nascimento) {
+      const [ano, mes, dia] = c.data_nascimento.split('-')
+      setAnoNascimento(ano)
+      setMesNascimento(mes)
+      setDiaNascimento(dia)
+    } else {
+      setAnoNascimento('')
+      setMesNascimento('')
+      setDiaNascimento('')
+    }
     setIntervaloLembrete(String(c.intervalo_lembrete_dias || 30))
     setModalAberto(true)
   }
@@ -53,7 +66,11 @@ function Clientes() {
     e.preventDefault()
     setSalvando(true)
 
-    const payload = { nome, telefone, obs, data_nascimento: dataNascimento || null, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
+    const dataNascimentoMontada = diaNascimento && mesNascimento && anoNascimento
+      ? `${anoNascimento}-${mesNascimento.padStart(2, '0')}-${diaNascimento.padStart(2, '0')}`
+      : null
+
+    const payload = { nome, telefone, obs, data_nascimento: dataNascimentoMontada, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
 
     if (editando) {
       await supabase.from('clientes').update(payload).eq('id', editando.id)
@@ -165,7 +182,26 @@ function Clientes() {
               <input className="rz-input" type="text" placeholder='Ex: "Mora tal bairro..."' value={obs} onChange={(e) => setObs(e.target.value)} />
 
               <label className="rz-field-label">Data de nascimento</label>
-              <input className="rz-input" type="date" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr', gap: 8, marginBottom: 16 }}>
+                <select className="rz-input" style={{ marginBottom: 0 }} value={diaNascimento} onChange={(e) => setDiaNascimento(e.target.value)}>
+                  <option value="">Dia</option>
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+                <select className="rz-input" style={{ marginBottom: 0 }} value={mesNascimento} onChange={(e) => setMesNascimento(e.target.value)}>
+                  <option value="">Mês</option>
+                  {['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'].map((m, i) => (
+                    <option key={i} value={i + 1}>{m}</option>
+                  ))}
+                </select>
+                <select className="rz-input" style={{ marginBottom: 0 }} value={anoNascimento} onChange={(e) => setAnoNascimento(e.target.value)}>
+                  <option value="">Ano</option>
+                  {Array.from({ length: 90 }, (_, i) => new Date().getFullYear() - i).map((a) => (
+                    <option key={a} value={a}>{a}</option>
+                  ))}
+                </select>
+              </div>
 
               <label className="rz-field-label">Lembrete a cada</label>
               <select className="rz-input" value={intervaloLembrete} onChange={(e) => setIntervaloLembrete(e.target.value)}>

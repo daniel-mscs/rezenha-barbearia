@@ -32,6 +32,8 @@ function BotaoInstalarApp() {
     }
   }, [])
 
+  const [fechado, setFechado] = useState(false)
+
   const clicar = async () => {
     if (promptEvento) {
       promptEvento.prompt()
@@ -42,23 +44,36 @@ function BotaoInstalarApp() {
     setMostrarInstrucoes(true)
   }
 
-  if (instalado) return null
+  if (instalado || fechado) return null
 
   const dispositivo = detectarDispositivo()
 
   return (
     <>
-      <button
-        onClick={clicar}
-        style={{
-          position: 'fixed', bottom: 90, right: 20, zIndex: 998,
-          background: '#161616', color: '#fff', border: '1px solid #F07B00',
-          borderRadius: 30, padding: '10px 16px', fontSize: 12, fontWeight: 700,
-          cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
-        }}
-      >
-        📲 Instalar app
-      </button>
+      <div style={{ position: 'fixed', bottom: 90, right: 20, zIndex: 998 }}>
+        <button
+          onClick={() => setFechado(true)}
+          style={{
+            position: 'absolute', top: -8, right: -8, width: 20, height: 20,
+            borderRadius: '50%', background: '#333', color: '#fff',
+            border: '2px solid #0d0d0d', fontSize: 10, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+          }}
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+        <button
+          onClick={clicar}
+          style={{
+            background: '#161616', color: '#fff', border: '1px solid #F07B00',
+            borderRadius: 30, padding: '10px 16px', fontSize: 12, fontWeight: 700,
+            cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
+          }}
+        >
+          📲 Instalar app
+        </button>
+      </div>
 
       {mostrarInstrucoes && (
         <div

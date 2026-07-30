@@ -5,19 +5,30 @@ import Calendario from '../components/Calendario'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
 import { iconesDoServico } from '../components/Icons'
+import { formatarDuracao } from '../utils/formatarDuracao'
 import './Agendamento.css'
 
-function gerarHorarios(dataStr) {
-  if (!dataStr) return []
+function gerarHorarios(dataStr, config, diasFechados) {
+  if (!dataStr || !config) return []
   const diaSemana = new Date(dataStr + 'T00:00:00').getDay()
-  if (diaSemana === 0) return []
-  const fechamento = diaSemana === 6 ? 18 : 19
+  if (diaSemana === 0 && !config.domingo_aberto) return []
+  if (diasFechados.includes(dataStr)) return []
+
+  const [hAberturaSemana, mAberturaSemana] = config.horario_semana_abertura.split(':').map(Number)
+  const [hFechamentoSemana, mFechamentoSemana] = config.horario_semana_fechamento.split(':').map(Number)
+  const [hAberturaSabado, mAberturaSabado] = config.horario_sabado_abertura.split(':').map(Number)
+  const [hFechamentoSabado, mFechamentoSabado] = config.horario_sabado_fechamento.split(':').map(Number)
+
+  const abertura = diaSemana === 6 ? hAberturaSabado * 60 + mAberturaSabado : hAberturaSemana * 60 + mAberturaSemana
+  const fechamento = diaSemana === 6 ? hFechamentoSabado * 60 + mFechamentoSabado : hFechamentoSemana * 60 + mFechamentoSemana
+
   const slots = []
-  let h = 9, m = 0
-  while (h < fechamento) {
+  let minutoAtual = abertura
+  while (minutoAtual < fechamento) {
+    const h = Math.floor(minutoAtual / 60)
+    const m = minutoAtual % 60
     slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
-    m += 15
-    if (m >= 60) { m -= 60; h += 1 }
+    minutoAtual += 15
   }
   return slots
 }
@@ -71,6 +82,8 @@ function Agendamento() {
   const [servicosLista, setServicosLista] = useState([])
   const [agendamentosDoDia, setAgendamentosDoDia] = useState([])
   const [avisoConflito, setAvisoConflito] = useState(null) // { mensagem, horario, alternativos }
+  const [config, setConfig] = useState(null)
+  const [diasFechados, setDiasFechados] = useState([])
 
   const [step, setStep] = useState(0)
   const [barbeiro, setBarbeiro] = useState(null)
@@ -87,8 +100,12 @@ function Agendamento() {
     const carregarOpcoes = async () => {
       const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, especialidades, foto_url').eq('ativo', true).order('nome')
       const { data: servicosData } = await supabase.from('servicos').select('id, nome, duracao_min, preco').eq('ativo', true).order('nome')
+      const { data: configData } = await supabase.from('configuracoes').select('*').eq('id', 1).maybeSingle()
+      const { data: fechadosData } = await supabase.from('dias_fechados').select('data')
       setBarbeirosLista(barbeirosData || [])
       setServicosLista(servicosData || [])
+      setConfig(configData)
+      setDiasFechados((fechadosData || []).map((d) => d.data))
 
       const servicoPreSelecionadoId = location.state?.servicoId
       if (servicoPreSelecionadoId) {
@@ -154,11 +171,16 @@ function Agendamento() {
   const emailFinal = clienteLogado ? clienteLogado.email : email
 
   const diaSemana = data ? new Date(data + 'T00:00:00').getDay() : null
-  const fechamentoMin = diaSemana === 6 ? 18 * 60 : 19 * 60
+  const fechamentoMin = (() => {
+    if (!config) return 19 * 60
+    const horarioStr = diaSemana === 6 ? config.horario_sabado_fechamento : config.horario_semana_fechamento
+    const [h, m] = horarioStr.split(':').map(Number)
+    return h * 60 + m
+  })()
 
   const existeAlternativaNoDia = () => {
     if (!barbeiro || !servico) return false
-    const horarios = gerarHorarios(data)
+    const horarios = gerarHorarios(data, config, diasFechados)
     return horarios.some((h) => {
       const indisponivelAqui = !barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
       if (!indisponivelAqui) return false
@@ -425,7 +447,7 @@ function Agendamento() {
                   <div key={s.id} className={`rz-service-row ${servico?.id === s.id ? 'selected' : ''}`} onClick={() => setServico(s)}>
                     <div className="rz-service-info">
                       <div className="rz-service-name">{s.nome}</div>
-                      <div className="rz-service-duration">~{s.duracao_min} min</div>
+                      <div className="rz-service-duration">~{formatarDuracao(s.duracao_min)}</div>
                     </div>
                     <div className="rz-service-price">R$ {Number(s.preco).toFixed(2)}</div>
                   </div>
@@ -485,11 +507,11 @@ function Agendamento() {
                 )}
                 {!data ? (
                   <p style={{ color: '#666', fontSize: 13 }}>Escolha uma data primeiro.</p>
-                ) : gerarHorarios(data).length === 0 ? (
+                ) : gerarHorarios(data, config, diasFechados).length === 0 ? (
                   <p style={{ color: '#666', fontSize: 13 }}>Fechado nesse dia.</p>
                 ) : (
                   <div className="rz-slots">
-                    {gerarHorarios(data).map((h) => {
+                    {gerarHorarios(data, config, diasFechados).map((h) => {
                       const disponivel = !horarioJaPassou(data, h) && barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
                       return (
                         <div
@@ -534,6 +556,9 @@ function Agendamento() {
               <div className="rz-email-destaque">
                 <i className="ti ti-mail" style={{ fontSize: 18 }}></i>
                 A confirmação do seu agendamento será enviada para esse e-mail
+              </div>
+              <div className="rz-seguranca-nota">
+                🔒 Seus dados estão protegidos e seguros. Usamos suas informações só pra confirmar seu agendamento.
               </div>
             </div>
             <button className="rz-btn-primary" style={{ marginTop: 20, maxWidth: 500, margin: '20px auto 0', display: 'block' }} disabled={!nome || !telefone || !emailValido(email)} onClick={irParaProximo}>Continuar</button>

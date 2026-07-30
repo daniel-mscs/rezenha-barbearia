@@ -12,6 +12,7 @@ import Barbeiros from './pages/PainelAdmin/Barbeiros'
 import Clientes from './pages/PainelAdmin/Clientes'
 import MeuPortfolio from './pages/PainelAdmin/MeuPortfolio'
 import Relatorios from './pages/PainelAdmin/Relatorios'
+import Configuracoes from './pages/PainelAdmin/Configuracoes'
 import Convite from './pages/Convite'
 import EsqueciSenha from './pages/EsqueciSenha'
 import RedefinirSenha from './pages/RedefinirSenha'
@@ -31,6 +32,7 @@ function App() {
         <Route path="/admin/clientes" element={<ProtectedAdminRoute><Clientes /></ProtectedAdminRoute>} />
         <Route path="/admin/portfolio" element={<ProtectedAdminRoute><MeuPortfolio /></ProtectedAdminRoute>} />
         <Route path="/admin/relatorios" element={<ProtectedAdminRoute><Relatorios /></ProtectedAdminRoute>} />
+        <Route path="/admin/configuracoes" element={<ProtectedAdminRoute><Configuracoes /></ProtectedAdminRoute>} />
         <Route path="/convite/:token" element={<Convite />} />
         <Route path="/esqueci-senha" element={<EsqueciSenha />} />
         <Route path="/redefinir-senha" element={<RedefinirSenha />} />

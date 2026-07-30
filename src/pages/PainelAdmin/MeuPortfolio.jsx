@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/AdminSidebar'
+import { comprimirImagem } from '../../utils/comprimirImagem'
 import '../PainelAdmin/PainelAdmin.css'
 
 function MeuPortfolio() {
@@ -54,8 +55,9 @@ function MeuPortfolio() {
     setErro('')
     setEnviando(true)
 
-    const nomeArquivo = `${meuBarbeiroId}/${Date.now()}.${arquivo.name.split('.').pop()}`
-    const { error: uploadError } = await supabase.storage.from('portfolio').upload(nomeArquivo, arquivo)
+    const arquivoComprimido = await comprimirImagem(arquivo)
+    const nomeArquivo = `${meuBarbeiroId}/${Date.now()}.jpg`
+    const { error: uploadError } = await supabase.storage.from('portfolio').upload(nomeArquivo, arquivoComprimido)
 
     if (uploadError) {
       setEnviando(false)
@@ -120,7 +122,7 @@ function MeuPortfolio() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
               {fotos.map((foto) => (
                 <div key={foto.id} style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', aspectRatio: '1 / 1' }}>
-                  <img src={foto.foto_url} alt="Trabalho do barbeiro" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={foto.foto_url} alt="Trabalho do barbeiro" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                   <button
                     onClick={() => apagarFoto(foto)}
                     style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.7)', border: 'none', color: '#fff', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}

@@ -1,8 +1,31 @@
-.rz-wpp-flutuante {
+.rz-wpp-flutuante-wrap {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 999;
+}
+
+.rz-wpp-fechar {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #333;
+  color: #fff;
+  border: 2px solid #0d0d0d;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  padding: 0;
+}
+
+.rz-wpp-flutuante {
+  position: static;
   background: #25d366;
   color: #fff;
   display: flex;

@@ -64,6 +64,14 @@ function Agendamentos() {
     carregar()
   }, [filtroData])
 
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      carregar()
+    }, 2 * 60 * 1000) // atualiza a cada 2 minutos
+
+    return () => clearInterval(intervalo)
+  }, [filtroData])
+
   const [notificacao, setNotificacao] = useState(null)
 
   useEffect(() => {

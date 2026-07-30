@@ -349,6 +349,8 @@
 
 .rz-conflito-subtitulo { color: #ccc; font-size: 13px; margin: 4px 0 12px; line-height: 1.5; }
 
+.rz-conflito-alternativas { display: flex; flex-direction: column; gap: 8px; }
+
 .rz-conflito-btn {
   display: flex;
   flex-direction: row;
@@ -356,6 +358,9 @@
   gap: 12px;
   padding: 10px 20px 10px 10px;
   text-align: left;
+  width: 100%;
+  min-height: 76px;
+  box-sizing: border-box;
 }
 
 .rz-conflito-btn-foto { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }

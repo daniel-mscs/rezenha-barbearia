@@ -64,6 +64,41 @@ function Agendamentos() {
     carregar()
   }, [filtroData])
 
+  const [notificacao, setNotificacao] = useState(null)
+
+  useEffect(() => {
+    const canal = supabase
+      .channel('agendamentos-tela')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'agendamentos' }, async (payload) => {
+        // Busca os dados completos do agendamento novo pra mostrar na notificação
+        const { data: completo } = await supabase
+          .from('agendamentos')
+          .select('data, horario, clientes(nome), barbeiros(nome)')
+          .eq('id', payload.new.id)
+          .maybeSingle()
+
+        if (completo) {
+          setNotificacao(`Novo agendamento: ${completo.clientes?.nome || 'Cliente'} com ${completo.barbeiros?.nome || '—'} às ${completo.horario?.slice(0, 5)}`)
+          setTimeout(() => setNotificacao(null), 6000)
+        }
+
+        // Se o agendamento novo é da data que está sendo visualizada, recarrega a lista
+        if (payload.new.data === filtroData) {
+          carregar()
+        }
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'agendamentos' }, (payload) => {
+        if (payload.new.data === filtroData) {
+          carregar()
+        }
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(canal)
+    }
+  }, [filtroData])
+
   const atualizarStatus = async (id, novoStatus) => {
     await supabase.from('agendamentos').update({ status: novoStatus }).eq('id', id)
     carregar()
@@ -100,6 +135,11 @@ function Agendamentos() {
 
   return (
     <div className="rz-admin-root">
+      {notificacao && (
+        <div className="rz-toast-notificacao" onClick={() => setNotificacao(null)}>
+          🔔 {notificacao}
+        </div>
+      )}
       <header className="rz-topbar">
         <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
         <div className="rz-topbar-right">
@@ -178,6 +218,7 @@ function Agendamentos() {
                     <th>Barbeiro</th>
                     <th>Valor</th>
                     <th>Status</th>
+                    <th>Agendado em</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
@@ -194,6 +235,9 @@ function Agendamentos() {
                       <td data-label="Valor">R$ {Number(a.servicos?.preco || 0).toFixed(2)}</td>
                       <td data-label="Status">
                         <span className="rz-badge" style={badgeClasse(a.status)}>{a.status}</span>
+                      </td>
+                      <td data-label="Agendado em" style={{ fontSize: 12, color: '#888' }}>
+                        {new Date(a.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                       </td>
                       <td data-label="Ações">
                         {a.status !== 'confirmado' && (

@@ -208,3 +208,27 @@
 }
 
 .rz-section-title-mini { font-size: 13px; font-weight: 700; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+
+
+.rz-toast-notificacao {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #161616;
+  border: 1px solid #F07B00;
+  border-radius: 10px;
+  padding: 14px 20px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  cursor: pointer;
+  max-width: 340px;
+  animation: rz-toast-entrada 0.3s ease;
+}
+
+@keyframes rz-toast-entrada {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

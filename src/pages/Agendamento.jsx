@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import Calendario from '../components/Calendario'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
+import BotaoInstalarApp from '../components/BotaoInstalarApp'
 import { iconesDoServico } from '../components/Icons'
 import './Agendamento.css'
 
@@ -163,6 +164,7 @@ function Agendamento() {
 
   const tentarSelecionarSlot = (slot) => {
     if (!servico || !barbeiro) return
+
     const disponivel = barbeiroDisponivel(barbeiro.id, slot, servico.duracao_min, agendamentosDoDia, fechamentoMin)
 
     if (disponivel) {
@@ -295,6 +297,7 @@ function Agendamento() {
           </div>
         </div>
         <BotaoWhatsapp />
+        <BotaoInstalarApp />
       </div>
     )
   }
@@ -313,6 +316,7 @@ function Agendamento() {
           <Link to="/" className="rz-btn-primary" style={{ display: 'inline-block', marginTop: 24, width: 'auto', padding: '14px 32px' }}>Voltar ao início</Link>
         </div>
         <BotaoWhatsapp />
+        <BotaoInstalarApp />
       </div>
     )
   }
@@ -427,7 +431,7 @@ function Agendamento() {
             <div className="rz-field-label">3. Escolha a data e horário</div>
             <div className="rz-warning">
               <i className="ti ti-alert-circle" style={{ fontSize: 18, flexShrink: 0 }}></i>
-              Agendamentos com menos de 2 horas de antecedência não são permitidos.
+              Agendamentos com menos de 30 minutos de antecedência não são permitidos.
             </div>
 
             <div className="rz-datetime-grid">
@@ -557,6 +561,7 @@ function Agendamento() {
         )}
       </div>
       <BotaoWhatsapp />
+      <BotaoInstalarApp />
     </div>
   )
 }

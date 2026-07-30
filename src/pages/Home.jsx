@@ -4,7 +4,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { iconesParaExibir } from '../components/Icons'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
+import BotaoInstalarApp from '../components/BotaoInstalarApp'
 import './Home.css'
+
+function FaqItem({ pergunta, resposta }) {
+  const [aberto, setAberto] = useState(false)
+  return (
+    <div className={`rz-faq-item ${aberto ? 'aberto' : ''}`} onClick={() => setAberto((v) => !v)}>
+      <div className="rz-faq-pergunta">
+        {pergunta}
+        <span className="rz-faq-seta">{aberto ? '−' : '+'}</span>
+      </div>
+      {aberto && <div className="rz-faq-resposta">{resposta}</div>}
+    </div>
+  )
+}
 
 function Home() {
   const navigate = useNavigate()
@@ -86,6 +100,7 @@ function Home() {
             <li className="active"><a href="index.html">Início</a></li>
             <li><a href="#servicos">Serviços</a></li>
             <li><a href="#barbeiros">Barbeiros</a></li>
+            <li><a href="#faq">FAQ</a></li>
             <li><Link to="/agendamento">Agendar</Link></li>
           </ul>
           {logado ? (
@@ -299,6 +314,24 @@ function Home() {
         <a href="https://maps.app.goo.gl/rXFTAv5M6u3CmFeF6" target="_blank" rel="noopener noreferrer" className="rz-depoimentos-vermais">Ver todas as avaliações no Google →</a>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="rz-section">
+        <div className="rz-divider"></div>
+        <div className="rz-section-title">Perguntas <span>frequentes</span></div>
+        <div className="rz-section-sub">Tira suas dúvidas antes de vir</div>
+        <div className="rz-faq-lista">
+          {[
+            { pergunta: 'Preciso agendar horário ou atende sem hora marcada?', resposta: 'Atendemos das duas formas: você pode agendar pelo site pra garantir seu horário, ou vir por ordem de chegada quando há disponibilidade.' },
+            { pergunta: 'Quais formas de pagamento vocês aceitam?', resposta: 'Aceitamos Pix, dinheiro, cartão de crédito e débito.' },
+            { pergunta: 'Atendem crianças?', resposta: 'Sim, atendemos crianças — recomendamos entrar em contato pra confirmar o melhor horário.' },
+            { pergunta: 'Posso remarcar ou cancelar meu agendamento?', resposta: 'Sim! É só entrar em contato pelo WhatsApp (botão flutuante no site) com pelo menos 2 horas de antecedência.' },
+            { pergunta: 'Quanto tempo antes preciso chegar?', resposta: 'Recomendamos chegar com 5 a 10 minutos de antecedência do horário agendado.' },
+          ].map((item, i) => (
+            <FaqItem key={i} pergunta={item.pergunta} resposta={item.resposta} />
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="rz-cta">
         <div className="rz-cta-text">
@@ -324,6 +357,7 @@ function Home() {
       </footer>
 
       <BotaoWhatsapp />
+      <BotaoInstalarApp />
     </div>
   )
 }

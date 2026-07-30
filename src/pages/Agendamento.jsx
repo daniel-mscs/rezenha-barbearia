@@ -149,6 +149,18 @@ function Agendamento() {
   const diaSemana = data ? new Date(data + 'T00:00:00').getDay() : null
   const fechamentoMin = diaSemana === 6 ? 18 * 60 : 19 * 60
 
+  const existeAlternativaNoDia = () => {
+    if (!barbeiro || !servico) return false
+    const horarios = gerarHorarios(data)
+    return horarios.some((h) => {
+      const indisponivelAqui = !barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
+      if (!indisponivelAqui) return false
+      return barbeirosLista.some(
+        (b) => b.id !== barbeiro.id && barbeiroDisponivel(b.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
+      )
+    })
+  }
+
   const tentarSelecionarSlot = (slot) => {
     if (!servico || !barbeiro) return
     const disponivel = barbeiroDisponivel(barbeiro.id, slot, servico.duracao_min, agendamentosDoDia, fechamentoMin)
@@ -418,24 +430,6 @@ function Agendamento() {
               Agendamentos com menos de 2 horas de antecedência não são permitidos.
             </div>
 
-            {avisoConflito && (
-              <div className="rz-conflito-box">
-                <div className="rz-conflito-texto">
-                  <span>{avisoConflito.mensagem}</span>
-                  <button className="rz-conflito-fechar" onClick={() => setAvisoConflito(null)}>✕</button>
-                </div>
-                {avisoConflito.alternativos?.length > 0 && (
-                  <div className="rz-conflito-alternativas">
-                    {avisoConflito.alternativos.map((alt) => (
-                      <button key={alt.id} className="rz-conflito-btn" onClick={() => trocarParaBarbeiroAlternativo(alt)}>
-                        Agendar com {alt.nome} às {avisoConflito.horario}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
             <div className="rz-datetime-grid">
               <div>
                 <div className="rz-field-label">Data</div>
@@ -443,6 +437,40 @@ function Agendamento() {
               </div>
               <div>
                 <div className="rz-field-label">Horários disponíveis</div>
+
+                {avisoConflito && (
+                  <div className="rz-conflito-box">
+                    <div className="rz-conflito-texto">
+                      <span>{avisoConflito.mensagem}</span>
+                      <button className="rz-conflito-fechar" onClick={() => setAvisoConflito(null)}>✕</button>
+                    </div>
+                    {avisoConflito.alternativos?.length > 0 && (
+                      <>
+                        <p className="rz-conflito-subtitulo">
+                          O horário que você está precisando não está disponível? Clique e veja se tem algum outro barbeiro disponível:
+                        </p>
+                        <div className="rz-conflito-alternativas">
+                          {avisoConflito.alternativos.map((alt) => (
+                            <button key={alt.id} className="rz-conflito-btn" onClick={() => trocarParaBarbeiroAlternativo(alt)}>
+                              {alt.foto_url ? (
+                                <img src={alt.foto_url} alt={alt.nome} className="rz-conflito-btn-foto" />
+                              ) : (
+                                <span className="rz-conflito-btn-avatar">{alt.nome.charAt(0).toUpperCase()}</span>
+                              )}
+                              <span className="rz-conflito-btn-texto">Marcar com {alt.nome} às {avisoConflito.horario}?</span>
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {data && !avisoConflito && existeAlternativaNoDia() && (
+                  <div className="rz-dica-alternativa">
+                    💡 Alguns horários de {barbeiro.nome} estão ocupados hoje — outros barbeiros têm horários livres. Clica num horário riscado pra ver as opções.
+                  </div>
+                )}
                 {!data ? (
                   <p style={{ color: '#666', fontSize: 13 }}>Escolha uma data primeiro.</p>
                 ) : gerarHorarios(data).length === 0 ? (
@@ -477,7 +505,7 @@ function Agendamento() {
               <div className="rz-form-grid">
                 <div className="rz-input-group">
                   <div className="rz-field-label">Nome</div>
-                  <input className="rz-input" type="text" placeholder="Seu nome" value={nome} onChange={(e) => setNome(apenasLetras(e.target.value))} />
+                  <input className="rz-input" type="text" placeholder="Seu nome" value={nome} onChange={(e) => setNome(apenasLetras(e.target.value))} autoFocus />
                 </div>
                 <div className="rz-input-group">
                   <div className="rz-field-label">Celular (WhatsApp)</div>

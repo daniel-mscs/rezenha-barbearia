@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import CookieBanner from './components/CookieBanner'
+import BotaoInstalarApp from './components/BotaoInstalarApp'
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade'
 import Home from './pages/Home'
 import Agendamento from './pages/Agendamento'
@@ -36,6 +37,7 @@ function App() {
         <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       </Routes>
       <CookieBanner />
+      <BotaoInstalarApp />
     </BrowserRouter>
   )
 }

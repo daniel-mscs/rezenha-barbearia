@@ -163,20 +163,48 @@
 .rz-agenda-ocupado-continuacao { background: repeating-linear-gradient(45deg, #161616, #161616 6px, #131313 6px, #131313 12px); border-radius: 6px; height: 100%; }
 
 @media (max-width: 768px) {
+  .rz-logo-sep { display: none; }
+  .rz-topbar { padding: 12px 16px; }
   .rz-sidebar { width: 56px; padding: 16px 8px; }
   .rz-sidebar-item span { display: none; }
   .rz-sidebar-item { padding: 12px; justify-content: center; }
   .rz-sidebar-item.active { padding-left: 12px; }
   .rz-sidebar-badge { position: absolute; top: 4px; right: 4px; margin-left: 0; }
 
-  .rz-main { padding: 18px; }
-  .rz-page-title { font-size: 24px; }
+  .rz-main { padding: 14px; }
+  .rz-page-title { font-size: 20px; }
+  .rz-page-header { margin-bottom: 18px; }
 
-  .rz-stats-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .rz-stat-num { font-size: 24px; }
+  .rz-stats-cards { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 18px; }
+  .rz-stat-card { padding: 12px 14px; }
+  .rz-stat-num { font-size: 20px; }
+  .rz-stat-label { font-size: 10px; margin-bottom: 6px; }
+  .rz-stat-sub { font-size: 10px; }
 
-  .rz-filters-right { margin-left: 0; }
+  .rz-view-toggle { flex-wrap: wrap; }
+  .rz-view-toggle button { padding: 8px 12px; font-size: 11px; flex: 1; }
+
+  .rz-filters { gap: 6px; margin-bottom: 8px; }
+  .rz-filter-btn { padding: 7px 12px; font-size: 11px; }
+  .rz-filters-right {
+    margin-left: 0;
+    width: 100%;
+    padding-top: 8px;
+    margin-top: 4px;
+    border-top: 1px dashed #222;
+  }
+
   .rz-date-badge { font-size: 11px; padding: 7px 12px; }
+
+  .rz-table-wrap { position: relative; }
+  .rz-table-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 24px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.4));
+    pointer-events: none;
+  }
 }
 
 .rz-section-title-mini { font-size: 13px; font-weight: 700; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }

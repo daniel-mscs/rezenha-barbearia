@@ -15,6 +15,7 @@ function Barbeiros() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [fotoFile, setFotoFile] = useState(null)
+  const [cor, setCor] = useState('#F07B00')
   const [salvando, setSalvando] = useState(false)
   const [erroModal, setErroModal] = useState('')
 
@@ -57,6 +58,7 @@ function Barbeiros() {
     setNome(b.nome)
     setEspecialidades(b.especialidades || '')
     setFotoFile(null)
+    setCor(b.cor || '#F07B00')
     setModalAberto(true)
   }
 
@@ -77,7 +79,7 @@ const salvar = async (e) => {
         }
       }
 
-      await supabase.from('barbeiros').update({ nome, especialidades, foto_url: fotoUrl }).eq('id', editando.id)
+      await supabase.from('barbeiros').update({ nome, especialidades, foto_url: fotoUrl, cor }).eq('id', editando.id)
       setSalvando(false)
       setModalAberto(false)
       carregar()
@@ -202,6 +204,13 @@ const salvar = async (e) => {
 
               {editando && (
                 <>
+                  <label className="rz-field-label">Cor no painel</label>
+                  <input
+                    type="color"
+                    value={cor}
+                    onChange={(e) => setCor(e.target.value)}
+                    style={{ width: '100%', height: 42, borderRadius: 8, border: '1px solid #262626', background: '#161616', marginBottom: 16, cursor: 'pointer' }}
+                  />
                   <label className="rz-field-label">Foto</label>
                   {editando.foto_url && !fotoFile && (
                     <img src={editando.foto_url} alt="Foto atual" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', marginBottom: 10, display: 'block' }} />

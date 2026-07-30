@@ -53,7 +53,7 @@ function Agendamentos() {
     setAgendamentos(data || [])
 
     if (barbeiros.length === 0) {
-      const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome').eq('ativo', true).order('nome')
+      const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, cor').eq('ativo', true).order('nome')
       setBarbeiros(barbeirosData || [])
     }
 
@@ -81,8 +81,8 @@ function Agendamentos() {
   }
 
   const corBarbeiro = (barbeiroId) => {
-    const index = barbeiros.findIndex((b) => b.id === barbeiroId)
-    return CORES_BARBEIRO[index % CORES_BARBEIRO.length] || '#666'
+    const barbeiro = barbeiros.find((b) => b.id === barbeiroId)
+    return barbeiro?.cor || '#666'
   }
 
   const agendamentosFiltrados = agendamentos.filter((a) => {
@@ -184,18 +184,18 @@ function Agendamentos() {
                 <tbody>
                   {agendamentosFiltrados.map((a) => (
                     <tr key={a.id}>
-                      <td><strong style={{ color: '#fff' }}>{a.horario?.slice(0, 5)}</strong></td>
-                      <td>{a.clientes?.nome || '—'}</td>
-                      <td>{a.servicos?.nome || '—'}</td>
-                      <td>
+                      <td data-label="Horário"><strong style={{ color: '#fff' }}>{a.horario?.slice(0, 5)}</strong></td>
+                      <td data-label="Cliente">{a.clientes?.nome || '—'}</td>
+                      <td data-label="Serviço">{a.servicos?.nome || '—'}</td>
+                      <td data-label="Barbeiro">
                         <span className="rz-barber-dot" style={{ background: corBarbeiro(a.barbeiros?.id) }}></span>
                         {a.barbeiros?.nome || '—'}
                       </td>
-                      <td>R$ {Number(a.servicos?.preco || 0).toFixed(2)}</td>
-                      <td>
+                      <td data-label="Valor">R$ {Number(a.servicos?.preco || 0).toFixed(2)}</td>
+                      <td data-label="Status">
                         <span className="rz-badge" style={badgeClasse(a.status)}>{a.status}</span>
                       </td>
-                      <td>
+                      <td data-label="Ações">
                         {a.status !== 'confirmado' && (
                           <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>Confirmar</button>
                         )}

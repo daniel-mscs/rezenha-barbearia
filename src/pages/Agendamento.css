@@ -96,13 +96,58 @@
 .rz-section-block { margin-bottom: 28px; }
 
 .rz-barbers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.rz-barber-card { background: #161616; border: 1px solid #222; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color 0.2s ease; }
-.rz-barber-card.selected { border-color: #F07B00; background: #1a1000; }
-.rz-barber-avatar { width: 100%; aspect-ratio: 4 / 5; background: #1f1f1f; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: #aaa; }
-.rz-barber-card.selected .rz-barber-avatar { color: #F07B00; }
-.rz-barber-info-wrap { padding: 14px; text-align: center; }
-.rz-barber-name { font-size: 14px; font-weight: 600; color: #fff; text-transform: uppercase; }
-.rz-barber-role { font-size: 11px; color: #666; text-transform: uppercase; margin-top: 4px; }
+
+.rz-barber-card {
+  position: relative;
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 3 / 4;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rz-barber-card:hover {
+  border-color: #F07B00;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(240, 123, 0, 0.15);
+}
+
+.rz-barber-card.selected {
+  border-color: #F07B00;
+  box-shadow: 0 0 0 2px #F07B00;
+}
+
+.rz-barber-avatar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #1f1f1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  color: #F07B00;
+}
+
+.rz-barber-info-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 10px 12px;
+  text-align: center;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent 100%);
+}
+
+.rz-barber-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.5px; color: #fff; text-transform: uppercase; transition: color 0.2s ease; }
+.rz-barber-role { font-size: 10px; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; opacity: 0.8; }
+
+.rz-barber-card.selected .rz-barber-name,
+.rz-barber-card:hover .rz-barber-name { color: #F07B00; }
 
 .rz-services-list { display: flex; flex-direction: column; gap: 10px; }
 .rz-service-row { background: #161616; border: 1px solid #222; border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
@@ -186,7 +231,17 @@
 .rz-calendario-dia.selecionado { background: #F07B00; color: #fff; font-weight: 700; }
 .rz-calendario-dia.desabilitado { color: #333; cursor: not-allowed; }
 
-.rz-barber-avatar-foto { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+.rz-barber-avatar-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.rz-barber-card:hover .rz-barber-avatar-foto { transform: scale(1.05); }
 
 .rz-form-grid { grid-template-columns: 1fr 1fr 1fr; }
 

@@ -176,7 +176,7 @@
   border-bottom: 1px solid #222;
 }
 
-.rz-stat { display: flex; flex-direction: column; gap: 2px; }
+.rz-stat { display: flex; flex-direction: column; gap: 2px; align-items: center; text-align: center; }
 
 .rz-stat-num {
   font-family: 'Bebas Neue', sans-serif;
@@ -392,6 +392,7 @@
   }
   .rz-stat-label { font-size: 10px; }
   .rz-stat-num { font-size: 24px; }
+  .rz-stats .rz-stat:last-child { grid-column: 1 / -1; text-align: center; margin-top: 4px; }
 
   .rz-section { padding: 32px 16px; }
   .rz-services { grid-template-columns: 1fr; }

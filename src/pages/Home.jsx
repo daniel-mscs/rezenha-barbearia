@@ -130,8 +130,8 @@ function Home() {
       {/* HORÁRIO + INSTAGRAM */}
       <div className="rz-info-bar">
         <div className="rz-info-bar-horarios">
-          <span><strong>Seg a Sex</strong> 9h às 19h</span>
-          <span><strong>Sáb</strong> 9h às 18h</span>
+          <span><strong>Seg a Sex</strong> 9h às 19h (sem fechar ao meio-dia)</span>
+          <span><strong>Sáb</strong> 9h às 18h (sem fechar ao meio-dia)</span>
           <span><strong>Dom</strong> Fechado</span>
         </div>
         <a href="https://www.instagram.com/rezenha_barbearia/" target="_blank" rel="noopener noreferrer" className="rz-info-bar-instagram">
@@ -306,11 +306,6 @@ function Home() {
       <footer className="rz-footer">
         <div className="rz-footer-coluna">
           <div className="rz-footer-text">© 2025 <span>ReZenha Barbearia</span> · Santa Maria, RS</div>
-          <div className="rz-footer-horarios">
-            <span>Seg a Sex: 9h às 19h</span>
-            <span>Sáb: 9h às 18h</span>
-            <span>Dom: Fechado</span>
-          </div>
         </div>
         <a href="https://www.instagram.com/rezenha_barbearia/" target="_blank" rel="noopener noreferrer" className="rz-footer-instagram">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

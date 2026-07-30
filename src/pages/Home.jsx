@@ -86,7 +86,7 @@ function Home() {
             <button onClick={sair} className="rz-btn-nav" style={{ border: 'none', cursor: 'pointer' }}>Sair</button>
           ) : (
             <>
-              <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar</Link>
+              <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar / Login</Link>
               <Link to="/agendamento" className="rz-btn-nav">Agendar agora</Link>
             </>
           )}

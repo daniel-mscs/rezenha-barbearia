@@ -262,7 +262,7 @@ function Agendamento() {
               <li><Link to="/">Início</Link></li>
               <li className="active"><Link to="/agendamento">Agendar</Link></li>
             </ul>
-            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar</Link>
+            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar / Login</Link>
           </div>
         </header>
         <div className="rz-page">
@@ -317,7 +317,7 @@ function Agendamento() {
           {clienteLogado ? (
             <button onClick={async () => { await supabase.auth.signOut(); window.location.reload() }} className="rz-btn-nav" style={{ border: 'none', cursor: 'pointer' }}>Sair</button>
           ) : (
-            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar</Link>
+            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar / Login</Link>
           )}
         </div>
       </header>

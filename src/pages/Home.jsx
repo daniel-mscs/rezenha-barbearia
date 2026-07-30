@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { iconesParaExibir } from '../components/Icons'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
+import ProximoHorario from '../components/ProximoHorario'
 import './Home.css'
 
 function FaqItem({ pergunta, resposta }) {
@@ -117,7 +118,10 @@ function Home() {
       {/* HERO */}
       <section className="rz-hero">
         <div>
-          <div className="rz-hero-badge">Desde 2021 · Santa Maria, RS</div>
+          <div className="rz-hero-topo">
+            <div className="rz-hero-badge">Desde 2021 · Santa Maria, RS</div>
+            <ProximoHorario />
+          </div>
           <h1>Tem corte, tem<br />futebol, tem Re<span>Z</span>enha</h1>
           <p>Na Rezenha o corte é só desculpa pro papo render. Estilo de verdade, com futebol na tela e cerveja gelada.</p>
           <div className="rz-hero-actions">

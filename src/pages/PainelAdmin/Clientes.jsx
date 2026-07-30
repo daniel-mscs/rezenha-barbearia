@@ -14,6 +14,7 @@ function Clientes() {
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
   const [obs, setObs] = useState('')
+  const [dataNascimento, setDataNascimento] = useState('')
   const [intervaloLembrete, setIntervaloLembrete] = useState('30')
   const [salvando, setSalvando] = useState(false)
 
@@ -33,6 +34,7 @@ function Clientes() {
     setNome('')
     setTelefone('')
     setObs('')
+    setDataNascimento('')
     setIntervaloLembrete('30')
     setModalAberto(true)
   }
@@ -42,6 +44,7 @@ function Clientes() {
     setNome(c.nome)
     setTelefone(c.telefone)
     setObs(c.obs || '')
+    setDataNascimento(c.data_nascimento || '')
     setIntervaloLembrete(String(c.intervalo_lembrete_dias || 30))
     setModalAberto(true)
   }
@@ -50,7 +53,7 @@ function Clientes() {
     e.preventDefault()
     setSalvando(true)
 
-    const payload = { nome, telefone, obs, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
+    const payload = { nome, telefone, obs, data_nascimento: dataNascimento || null, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
 
     if (editando) {
       await supabase.from('clientes').update(payload).eq('id', editando.id)
@@ -119,6 +122,7 @@ function Clientes() {
                     <th>Nome</th>
                     <th>Telefone</th>
                     <th>Observação</th>
+                    <th>Nascimento</th>
                     <th>Último corte</th>
                     <th>Lembrete</th>
                     <th>Ações</th>
@@ -130,6 +134,7 @@ function Clientes() {
                       <td><strong style={{ color: '#fff' }}>{c.nome}</strong></td>
                       <td>{c.telefone}</td>
                       <td>{c.obs || '—'}</td>
+                      <td>{c.data_nascimento ? new Date(c.data_nascimento + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</td>
                       <td>{c.data_ultimo_corte || '—'}</td>
                       <td>{c.intervalo_lembrete_dias || 30} dias</td>
                       <td>
@@ -157,7 +162,10 @@ function Clientes() {
               <input className="rz-input" type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
 
               <label className="rz-field-label">Observação</label>
-              <input className="rz-input" type="text" placeholder='Ex: "Daniel da Farmácia Caridade"' value={obs} onChange={(e) => setObs(e.target.value)} />
+              <input className="rz-input" type="text" placeholder='Ex: "Mora tal bairro..."' value={obs} onChange={(e) => setObs(e.target.value)} />
+
+              <label className="rz-field-label">Data de nascimento</label>
+              <input className="rz-input" type="date" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} />
 
               <label className="rz-field-label">Lembrete a cada</label>
               <select className="rz-input" value={intervaloLembrete} onChange={(e) => setIntervaloLembrete(e.target.value)}>

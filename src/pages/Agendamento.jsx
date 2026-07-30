@@ -27,6 +27,12 @@ function horarioParaMinutos(horario) {
   return h * 60 + m
 }
 
+function horarioJaPassou(dataStr, horarioStr) {
+  const agora = new Date()
+  const dataHorario = new Date(`${dataStr}T${horarioStr}:00`)
+  return dataHorario <= agora
+}
+
 function barbeiroDisponivel(barbeiroId, slot, duracaoMin, agendamentosDoDia, fechamentoMin) {
   const inicioNovo = horarioParaMinutos(slot)
   const fimNovo = inicioNovo + duracaoMin
@@ -164,6 +170,11 @@ function Agendamento() {
 
   const tentarSelecionarSlot = (slot) => {
     if (!servico || !barbeiro) return
+
+    if (horarioJaPassou(data, slot)) {
+      setAvisoConflito({ mensagem: 'Esse horário já passou. Escolhe um horário futuro.', horario: null, alternativos: [] })
+      return
+    }
 
     const disponivel = barbeiroDisponivel(barbeiro.id, slot, servico.duracao_min, agendamentosDoDia, fechamentoMin)
 
@@ -450,9 +461,6 @@ function Agendamento() {
                     </div>
                     {avisoConflito.alternativos?.length > 0 && (
                       <>
-                        <p className="rz-conflito-subtitulo">
-                          O horário que você está precisando não está disponível? Clique e veja se tem algum outro barbeiro disponível:
-                        </p>
                         <div className="rz-conflito-alternativas">
                           {avisoConflito.alternativos.map((alt) => (
                             <button key={alt.id} className="rz-conflito-btn" onClick={() => trocarParaBarbeiroAlternativo(alt)}>
@@ -482,7 +490,7 @@ function Agendamento() {
                 ) : (
                   <div className="rz-slots">
                     {gerarHorarios(data).map((h) => {
-                      const disponivel = barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
+                      const disponivel = !horarioJaPassou(data, h) && barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
                       return (
                         <div
                           key={h}

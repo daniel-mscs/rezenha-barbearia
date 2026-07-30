@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useScrollReveal } from '../hooks/useScrollReveal'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { iconesParaExibir } from '../components/Icons'
@@ -69,6 +70,11 @@ function Home() {
     clearTimeout(window._logoClickTimer)
     window._logoClickTimer = setTimeout(() => setCliquesLogo(0), 1500)
   }
+
+  const [refServicos, visivelServicos] = useScrollReveal()
+  const [refBarbeiros, visivelBarbeiros] = useScrollReveal()
+  const [refDepoimentos, visivelDepoimentos] = useScrollReveal()
+  const [refLocalizacao, visivelLocalizacao] = useScrollReveal()
 
   return (
     <div className="rz-page-root">
@@ -145,7 +151,7 @@ function Home() {
       </div>
 
       {/* SERVIÇOS */}
-      <section id="servicos" className="rz-section">
+      <section id="servicos" className={`rz-section rz-revelar ${visivelServicos ? 'rz-visivel' : ''}`} ref={refServicos}>
         <div className="rz-divider"></div>
         <div className="rz-section-title">Nossos <span>serviços</span></div>
         <div className="rz-section-sub">Escolha o que você precisa</div>
@@ -168,7 +174,7 @@ function Home() {
       </section>
 
       {/* BARBEIROS */}
-      <section id="barbeiros" className="rz-section">
+      <section id="barbeiros" className={`rz-section rz-revelar ${visivelBarbeiros ? 'rz-visivel' : ''}`} ref={refBarbeiros}>
         <div className="rz-divider"></div>
         <div className="rz-section-title">Nosso <span>time</span></div>
         <div className="rz-section-sub">Profissionais que entendem do assunto</div>
@@ -211,7 +217,7 @@ function Home() {
       </section>
 
       {/* LOCALIZAÇÃO */}
-      <section id="localizacao" className="rz-section">
+      <section id="localizacao" className={`rz-section rz-revelar ${visivelLocalizacao ? 'rz-visivel' : ''}`} ref={refLocalizacao}>
         <div className="rz-divider"></div>
         <div className="rz-section-title">Onde <span>estamos</span></div>
         <div className="rz-section-sub">Vem nos visitar</div>
@@ -230,7 +236,7 @@ function Home() {
       </section>
 
       {/* DEPOIMENTOS */}
-      <section id="depoimentos" className="rz-section">
+      <section id="depoimentos" className={`rz-section rz-revelar ${visivelDepoimentos ? 'rz-visivel' : ''}`} ref={refDepoimentos}>
         <div className="rz-divider"></div>
         <div className="rz-section-title">O que dizem <span>sobre a gente</span></div>
         <div className="rz-section-sub">Avaliações reais de clientes no Google</div>

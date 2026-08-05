@@ -19,6 +19,7 @@ function Clientes() {
   const [anoNascimento, setAnoNascimento] = useState('')
   const [intervaloLembrete, setIntervaloLembrete] = useState('30')
   const [salvando, setSalvando] = useState(false)
+  const [clienteParaExcluir, setClienteParaExcluir] = useState(null)
 
   const carregar = async () => {
     setCarregando(true)
@@ -80,6 +81,13 @@ function Clientes() {
 
     setSalvando(false)
     setModalAberto(false)
+    carregar()
+  }
+
+  const confirmarExcluir = async () => {
+    if (!clienteParaExcluir) return
+    await supabase.from('clientes').delete().eq('id', clienteParaExcluir.id)
+    setClienteParaExcluir(null)
     carregar()
   }
 
@@ -157,6 +165,7 @@ function Clientes() {
                       <td>
                         <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>Editar</button>
                         <button className="rz-action-btn" onClick={() => compartilharConvite(c)}>Convite</button>
+                        <button className="rz-action-btn danger" onClick={() => setClienteParaExcluir(c)}>Excluir</button>
                       </td>
                     </tr>
                   ))}
@@ -217,6 +226,21 @@ function Clientes() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {clienteParaExcluir && (
+        <div className="rz-modal-overlay" onClick={() => setClienteParaExcluir(null)}>
+          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>Excluir {clienteParaExcluir.nome}?</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>
+              Isso apaga o cadastro do cliente e todo o histórico de agendamentos vinculado a ele. Essa ação não pode ser desfeita.
+            </p>
+            <div className="rz-modal-actions">
+              <button className="rz-btn-outline" onClick={() => setClienteParaExcluir(null)}>Cancelar</button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>Excluir</button>
+            </div>
           </div>
         </div>
       )}

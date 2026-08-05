@@ -107,6 +107,9 @@ function MeuPortfolio() {
               <input type="file" accept="image/*" onChange={enviarFoto} disabled={enviando || fotos.length >= 5} style={{ display: 'none' }} />
             </label>
           </div>
+          <p style={{ fontSize: 11, color: '#666', marginTop: -12, marginBottom: 20 }}>
+            💡 Pra foto não ficar cortada, use uma imagem quadrada (ex: 1080x1080px).
+          </p>
 
           {erro && (
             <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>

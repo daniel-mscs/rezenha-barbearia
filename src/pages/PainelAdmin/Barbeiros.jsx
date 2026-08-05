@@ -218,6 +218,9 @@ const salvar = async (e) => {
                     <img src={editando.foto_url} alt="Foto atual" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', marginBottom: 10, display: 'block' }} />
                   )}
                   <input className="rz-input" type="file" accept="image/*" onChange={(e) => setFotoFile(e.target.files[0])} />
+                  <p style={{ fontSize: 11, color: '#666', marginTop: -10, marginBottom: 16 }}>
+                    💡 Pra foto não ficar cortada, use uma imagem no formato retrato (ex: 900x1200px, proporção 3:4).
+                  </p>
                 </>
               )}
 

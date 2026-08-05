@@ -571,7 +571,8 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   max-height: 65vh;
-  object-fit: cover;
+  object-fit: contain;
+  background: #0a0a0a;
   display: block;
 }
 

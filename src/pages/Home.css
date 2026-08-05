@@ -557,18 +557,55 @@
   padding-right: 30px;
 }
 
-.rz-portfolio-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
+.rz-portfolio-carrossel { display: flex; flex-direction: column; gap: 14px; }
+
+.rz-portfolio-carrossel-imagem-wrap {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.rz-portfolio-grid img {
+.rz-portfolio-carrossel-imagem {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: 8px;
+  display: block;
 }
+
+.rz-portfolio-seta {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rz-portfolio-seta:hover { background: #F07B00; }
+.rz-portfolio-seta-esquerda { left: 10px; }
+.rz-portfolio-seta-direita { right: 10px; }
+
+.rz-portfolio-pontos { display: flex; justify-content: center; gap: 6px; }
+
+.rz-portfolio-ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #333;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.rz-portfolio-ponto.ativo { background: #F07B00; width: 20px; border-radius: 4px; }
 
 .rz-footer-coluna { display: flex; flex-direction: column; gap: 6px; }
 .rz-footer-horarios { display: flex; gap: 14px; flex-wrap: wrap; }

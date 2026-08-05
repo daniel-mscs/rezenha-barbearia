@@ -30,6 +30,7 @@ function Home() {
   const [barbeiroPopup, setBarbeiroPopup] = useState(null)
   const [fotosPopup, setFotosPopup] = useState([])
   const [carregandoFotos, setCarregandoFotos] = useState(false)
+  const [indiceCarrossel, setIndiceCarrossel] = useState(0)
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -61,6 +62,7 @@ function Home() {
   const abrirPortfolio = async (barbeiro) => {
     setBarbeiroPopup(barbeiro)
     setCarregandoFotos(true)
+    setIndiceCarrossel(0)
     const { data } = await supabase
       .from('portfolio_fotos')
       .select('*')
@@ -70,6 +72,9 @@ function Home() {
     setFotosPopup(data || [])
     setCarregandoFotos(false)
   }
+
+  const fotoAnterior = () => setIndiceCarrossel((i) => (i === 0 ? fotosPopup.length - 1 : i - 1))
+  const proximaFoto = () => setIndiceCarrossel((i) => (i === fotosPopup.length - 1 ? 0 : i + 1))
 
   const fecharPortfolio = () => {
     setBarbeiroPopup(null)
@@ -242,10 +247,27 @@ function Home() {
               ) : fotosPopup.length === 0 ? (
                 <p style={{ color: '#666', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>Esse barbeiro ainda não subiu fotos dos trabalhos.</p>
               ) : (
-                <div className="rz-portfolio-grid">
-                  {fotosPopup.map((foto) => (
-                    <img key={foto.id} src={foto.foto_url} alt="Trabalho do barbeiro" />
-                  ))}
+                <div className="rz-portfolio-carrossel">
+                  <div className="rz-portfolio-carrossel-imagem-wrap">
+                    <img src={fotosPopup[indiceCarrossel].foto_url} alt="Trabalho do barbeiro" className="rz-portfolio-carrossel-imagem" loading="lazy" />
+                    {fotosPopup.length > 1 && (
+                      <>
+                        <button className="rz-portfolio-seta rz-portfolio-seta-esquerda" onClick={fotoAnterior}>‹</button>
+                        <button className="rz-portfolio-seta rz-portfolio-seta-direita" onClick={proximaFoto}>›</button>
+                      </>
+                    )}
+                  </div>
+                  {fotosPopup.length > 1 && (
+                    <div className="rz-portfolio-pontos">
+                      {fotosPopup.map((_, i) => (
+                        <button
+                          key={i}
+                          className={`rz-portfolio-ponto ${i === indiceCarrossel ? 'ativo' : ''}`}
+                          onClick={() => setIndiceCarrossel(i)}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

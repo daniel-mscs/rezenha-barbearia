@@ -241,7 +241,10 @@ function Home() {
           <div className="rz-portfolio-overlay" onClick={fecharPortfolio}>
             <div className="rz-portfolio-modal" onClick={(e) => e.stopPropagation()}>
               <button className="rz-portfolio-fechar" onClick={fecharPortfolio}>✕</button>
-              <div className="rz-portfolio-titulo">Cortes de {barbeiroPopup.nome}</div>
+              <div className="rz-portfolio-titulo">
+                <span className="rz-portfolio-titulo-linha1">Cortes de</span>
+                <span className="rz-portfolio-titulo-nome">{barbeiroPopup.nome}</span>
+              </div>
               {carregandoFotos ? (
                 <p style={{ color: '#666', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>Carregando...</p>
               ) : fotosPopup.length === 0 ? (

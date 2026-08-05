@@ -539,8 +539,9 @@
 
 .rz-portfolio-fechar {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
   background: #1f1f1f;
   border: 1px solid #333;
   color: #ccc;
@@ -552,11 +553,35 @@
 }
 
 .rz-portfolio-titulo {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-right: 0;
+}
+
+.rz-portfolio-titulo-linha1 {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.rz-portfolio-titulo-nome {
+  display: block;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
+  font-size: 30px;
   letter-spacing: 1px;
-  margin-bottom: 20px;
-  padding-right: 30px;
+  color: #fff;
+}
+
+.rz-portfolio-titulo-nome::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: #F07B00;
+  margin: 8px auto 0;
 }
 
 .rz-portfolio-carrossel { display: flex; flex-direction: column; gap: 14px; }

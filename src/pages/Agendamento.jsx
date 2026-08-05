@@ -232,22 +232,17 @@ function Agendamento() {
     let clienteId = clienteLogado?.id
 
     if (!clienteId) {
-      const { data: existente } = await supabase.from('clientes').select('id').eq('telefone', telefoneFinal).maybeSingle()
-      if (existente) {
-        clienteId = existente.id
-      } else {
-        const { data: novoCliente, error: erroCliente } = await supabase
-          .from('clientes')
-          .insert({ nome: nomeFinal, telefone: telefoneFinal, email: emailFinal })
-          .select('id')
-          .single()
-        if (erroCliente) {
-          setEnviando(false)
-          setErroEnvio('Não foi possível salvar seus dados. Tenta de novo.')
-          return
-        }
-        clienteId = novoCliente.id
+      const { data: idCliente, error: erroCliente } = await supabase.rpc('criar_cliente_publico', {
+        p_nome: nomeFinal,
+        p_telefone: telefoneFinal,
+        p_email: emailFinal,
+      })
+      if (erroCliente || !idCliente) {
+        setEnviando(false)
+        setErroEnvio('Não foi possível salvar seus dados. Tenta de novo.')
+        return
       }
+      clienteId = idCliente
     }
 
     const { data: novoAgendamento, error } = await supabase.from('agendamentos').insert({

@@ -12,6 +12,7 @@ function MeuPortfolio() {
   const [carregando, setCarregando] = useState(true)
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState('')
+  const [fotoParaApagar, setFotoParaApagar] = useState(null)
 
   const carregarFotos = async (barbeiroId) => {
     const { data } = await supabase
@@ -76,9 +77,10 @@ function MeuPortfolio() {
     carregarFotos(meuBarbeiroId)
   }
 
-  const apagarFoto = async (foto) => {
-    if (!confirm('Apagar essa foto do seu portfólio?')) return
-    await supabase.from('portfolio_fotos').delete().eq('id', foto.id)
+  const confirmarApagarFoto = async () => {
+    if (!fotoParaApagar) return
+    await supabase.from('portfolio_fotos').delete().eq('id', fotoParaApagar.id)
+    setFotoParaApagar(null)
     carregarFotos(meuBarbeiroId)
   }
 
@@ -127,7 +129,7 @@ function MeuPortfolio() {
                 <div key={foto.id} style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', aspectRatio: '1 / 1' }}>
                   <img src={foto.foto_url} alt="Trabalho do barbeiro" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                   <button
-                    onClick={() => apagarFoto(foto)}
+                    onClick={() => setFotoParaApagar(foto)}
                     style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.7)', border: 'none', color: '#fff', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}
                   >
                     Apagar
@@ -138,6 +140,26 @@ function MeuPortfolio() {
           )}
         </main>
       </div>
+
+      {fotoParaApagar && (
+        <div className="rz-modal-overlay" onClick={() => setFotoParaApagar(null)}>
+          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+            <img src={fotoParaApagar.foto_url} alt="Foto a apagar" style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 10, margin: '0 auto 16px' }} />
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>Apagar essa foto?</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>Essa ação não pode ser desfeita.</p>
+            <div className="rz-modal-actions">
+              <button className="rz-btn-outline" onClick={() => setFotoParaApagar(null)}>Cancelar</button>
+              <button
+                className="rz-btn-primary"
+                style={{ flex: 1, background: '#e53935' }}
+                onClick={confirmarApagarFoto}
+              >
+                Apagar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

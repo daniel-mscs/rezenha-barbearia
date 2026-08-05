@@ -16,6 +16,7 @@ function Barbeiros() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [fotoFile, setFotoFile] = useState(null)
+  const [barbeiroParaExcluir, setBarbeiroParaExcluir] = useState(null)
   const [cor, setCor] = useState('#F07B00')
   const [salvando, setSalvando] = useState(false)
   const [erroModal, setErroModal] = useState('')
@@ -120,9 +121,10 @@ const salvar = async (e) => {
     carregar()
   }
 
-  const excluir = async (b) => {
-    if (!confirm(`Remover o barbeiro "${b.nome}"? Isso também derruba o acesso dele ao painel, se tiver login vinculado.`)) return
-    await supabase.from('barbeiros').delete().eq('id', b.id)
+  const confirmarExcluir = async () => {
+    if (!barbeiroParaExcluir) return
+    await supabase.from('barbeiros').delete().eq('id', barbeiroParaExcluir.id)
+    setBarbeiroParaExcluir(null)
     carregar()
   }
 
@@ -177,7 +179,7 @@ const salvar = async (e) => {
                       <td>
                         <button className="rz-action-btn" onClick={() => abrirEdicao(b)}>Editar</button>
                         <button className="rz-action-btn" onClick={() => alternarAtivo(b)}>{b.ativo ? 'Desativar' : 'Ativar'}</button>
-                        <button className="rz-action-btn danger" onClick={() => excluir(b)}>Excluir</button>
+                        <button className="rz-action-btn danger" onClick={() => setBarbeiroParaExcluir(b)}>Excluir</button>
                       </td>
                     </tr>
                   ))}
@@ -242,6 +244,21 @@ const salvar = async (e) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {barbeiroParaExcluir && (
+        <div className="rz-modal-overlay" onClick={() => setBarbeiroParaExcluir(null)}>
+          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>Remover {barbeiroParaExcluir.nome}?</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>
+              Isso também derruba o acesso dele ao painel, se tiver login vinculado. Essa ação não pode ser desfeita.
+            </p>
+            <div className="rz-modal-actions">
+              <button className="rz-btn-outline" onClick={() => setBarbeiroParaExcluir(null)}>Cancelar</button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>Remover</button>
+            </div>
           </div>
         </div>
       )}

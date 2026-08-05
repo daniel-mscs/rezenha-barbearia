@@ -17,6 +17,7 @@ function Servicos() {
   const [preco, setPreco] = useState('')
   const [iconesSelecionados, setIconesSelecionados] = useState([])
   const [salvando, setSalvando] = useState(false)
+  const [servicoParaExcluir, setServicoParaExcluir] = useState(null)
 
   const carregarServicos = async () => {
     setCarregando(true)
@@ -87,9 +88,10 @@ function Servicos() {
     carregarServicos()
   }
 
-  const excluir = async (servico) => {
-    if (!confirm(`Excluir o serviço "${servico.nome}"? Essa ação não pode ser desfeita.`)) return
-    await supabase.from('servicos').delete().eq('id', servico.id)
+  const confirmarExcluir = async () => {
+    if (!servicoParaExcluir) return
+    await supabase.from('servicos').delete().eq('id', servicoParaExcluir.id)
+    setServicoParaExcluir(null)
     carregarServicos()
   }
 
@@ -144,7 +146,7 @@ function Servicos() {
                       <td>
                         <button className="rz-action-btn" onClick={() => abrirEdicao(s)}>Editar</button>
                         <button className="rz-action-btn" onClick={() => alternarAtivo(s)}>{s.ativo ? 'Desativar' : 'Ativar'}</button>
-                        <button className="rz-action-btn danger" onClick={() => excluir(s)}>Excluir</button>
+                        <button className="rz-action-btn danger" onClick={() => setServicoParaExcluir(s)}>Excluir</button>
                       </td>
                     </tr>
                   ))}
@@ -204,6 +206,19 @@ function Servicos() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {servicoParaExcluir && (
+        <div className="rz-modal-overlay" onClick={() => setServicoParaExcluir(null)}>
+          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>Excluir "{servicoParaExcluir.nome}"?</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>Essa ação não pode ser desfeita.</p>
+            <div className="rz-modal-actions">
+              <button className="rz-btn-outline" onClick={() => setServicoParaExcluir(null)}>Cancelar</button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>Excluir</button>
+            </div>
           </div>
         </div>
       )}

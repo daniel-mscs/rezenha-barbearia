@@ -13,6 +13,7 @@ function Clientes() {
   const [editando, setEditando] = useState(null)
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
+  const [cpf, setCpf] = useState('')
   const [obs, setObs] = useState('')
   const [diaNascimento, setDiaNascimento] = useState('')
   const [mesNascimento, setMesNascimento] = useState('')
@@ -36,6 +37,7 @@ function Clientes() {
     setEditando(null)
     setNome('')
     setTelefone('')
+    setCpf('')
     setObs('')
     setDiaNascimento('')
     setMesNascimento('')
@@ -48,6 +50,7 @@ function Clientes() {
     setEditando(c)
     setNome(c.nome)
     setTelefone(c.telefone)
+    setCpf(c.cpf || '')
     setObs(c.obs || '')
     if (c.data_nascimento) {
       const [ano, mes, dia] = c.data_nascimento.split('-')
@@ -71,7 +74,7 @@ function Clientes() {
       ? `${anoNascimento}-${mesNascimento.padStart(2, '0')}-${diaNascimento.padStart(2, '0')}`
       : null
 
-    const payload = { nome, telefone, obs, data_nascimento: dataNascimentoMontada, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
+    const payload = { nome, telefone, cpf: cpf || null, obs, data_nascimento: dataNascimentoMontada, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
 
     if (editando) {
       await supabase.from('clientes').update(payload).eq('id', editando.id)
@@ -186,6 +189,9 @@ function Clientes() {
 
               <label className="rz-field-label">Telefone</label>
               <input className="rz-input" type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
+
+              <label className="rz-field-label">CPF</label>
+              <input className="rz-input" type="text" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(e.target.value)} maxLength={14} />
 
               <label className="rz-field-label">Observação</label>
               <input className="rz-input" type="text" placeholder='Ex: "Mora tal bairro..."' value={obs} onChange={(e) => setObs(e.target.value)} />

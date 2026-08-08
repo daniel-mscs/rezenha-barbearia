@@ -71,6 +71,14 @@ function emailValido(valor) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)
 }
 
+function formatarCpf(valor) {
+  const numeros = valor.replace(/\D/g, '').slice(0, 11)
+  return numeros
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+}
+
 function Agendamento() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -93,6 +101,7 @@ function Agendamento() {
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
   const [email, setEmail] = useState('')
+  const [cpf, setCpf] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [erroEnvio, setErroEnvio] = useState('')
 
@@ -236,6 +245,7 @@ function Agendamento() {
         p_nome: nomeFinal,
         p_telefone: telefoneFinal,
         p_email: emailFinal,
+        p_cpf: cpf || null,
       })
       if (erroCliente || !idCliente) {
         setEnviando(false)
@@ -546,6 +556,10 @@ function Agendamento() {
                 {email && !emailValido(email) && (
                   <div style={{ color: '#e53935', fontSize: 11, marginTop: 4 }}>Digite um e-mail válido</div>
                 )}
+              </div>
+              <div className="rz-input-group">
+                <div className="rz-field-label">CPF</div>
+                <input className="rz-input" type="text" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(formatarCpf(e.target.value))} maxLength={14} />
               </div>
               </div>
               <div className="rz-email-destaque">

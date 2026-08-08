@@ -232,3 +232,37 @@
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.rz-bloqueios-futuros {
+  background: #1a1000;
+  border: 1px solid #F07B00;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+}
+
+.rz-bloqueios-futuros-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  color: #F07B00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.rz-bloqueios-futuros-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rz-bloqueio-chip {
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.rz-bloqueio-chip strong { color: #fff; }

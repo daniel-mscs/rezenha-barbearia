@@ -1,10 +1,58 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+
+let contextoAudioGlobal = null
+
+function obterContextoAudio() {
+  if (!contextoAudioGlobal) {
+    const AudioContextClasse = window.AudioContext || window.webkitAudioContext
+    contextoAudioGlobal = new AudioContextClasse()
+  }
+  return contextoAudioGlobal
+}
+
+function tocarAlertaSonoro() {
+  try {
+    const contexto = obterContextoAudio()
+    if (contexto.state === 'suspended') {
+      contexto.resume()
+    }
+    const tocarBeep = (inicioEm) => {
+      const oscilador = contexto.createOscillator()
+      const ganho = contexto.createGain()
+      oscilador.connect(ganho)
+      ganho.connect(contexto.destination)
+      oscilador.type = 'sine'
+      oscilador.frequency.value = 880
+      ganho.gain.setValueAtTime(0.2, contexto.currentTime + inicioEm)
+      oscilador.start(contexto.currentTime + inicioEm)
+      oscilador.stop(contexto.currentTime + inicioEm + 0.15)
+    }
+    tocarBeep(0)
+    tocarBeep(0.2)
+  } catch (e) {
+    // navegador bloqueou áudio automático, ignora
+  }
+}
 
 function AdminSidebar({ ativa }) {
   const [isDono, setIsDono] = useState(false)
   const [pendentes, setPendentes] = useState(0)
+
+  useEffect(() => {
+    const destravarAudio = () => {
+      obterContextoAudio()
+      window.removeEventListener('click', destravarAudio)
+      window.removeEventListener('touchstart', destravarAudio)
+    }
+    window.addEventListener('click', destravarAudio)
+    window.addEventListener('touchstart', destravarAudio)
+    return () => {
+      window.removeEventListener('click', destravarAudio)
+      window.removeEventListener('touchstart', destravarAudio)
+    }
+  }, [])
 
   useEffect(() => {
     const verificar = async () => {
@@ -35,6 +83,7 @@ function AdminSidebar({ ativa }) {
       .channel('agendamentos-novos')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'agendamentos' }, () => {
         carregarPendentes()
+        tocarAlertaSonoro()
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'agendamentos' }, () => {
         carregarPendentes()

@@ -79,6 +79,15 @@ function formatarCpf(valor) {
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
 }
 
+function formatarTelefone(valor) {
+  const numeros = valor.replace(/\D/g, '').slice(0, 11)
+  if (numeros.length === 0) return ''
+  if (numeros.length <= 2) return numeros.replace(/(\d{0,2})/, '($1')
+  if (numeros.length <= 3) return numeros.replace(/(\d{2})(\d{0,1})/, '($1) $2')
+  if (numeros.length <= 7) return numeros.replace(/(\d{2})(\d{1})(\d{0,4})/, '($1) $2 $3')
+  return numeros.replace(/(\d{2})(\d{1})(\d{4})(\d{0,4})/, '($1) $2 $3-$4')
+}
+
 function Agendamento() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -278,21 +287,6 @@ function Agendamento() {
       return
     }
 
-    fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/enviar-confirmacao`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        paraEmail: emailFinal,
-        nomeCliente: nomeFinal,
-        barbeiro: barbeiro.nome,
-        servico: servico.nome,
-        data,
-        horario,
-        preco: Number(total).toFixed(2),
-        agendamentoId: novoAgendamento?.id,
-      }),
-    }).catch(() => {})
-
     setStep(6)
   }
 
@@ -340,7 +334,14 @@ function Agendamento() {
     )
   }
 
-  if (step === 6) {
+if (step === 6) {
+    const numeroBarbearia = '5555991975065'
+    const dataFormatada = data ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
+    const mensagemConfirmacao = encodeURIComponent(
+      `Olá! Confirmando meu agendamento na Rezenha Barbearia:\n\n💈 Barbeiro: ${barbeiro?.nome}\n✂️ Serviço: ${servico?.nome}\n📅 Data: ${dataFormatada}\n🕒 Horário: ${horario}\n👤 Nome: ${nomeFinal}`
+    )
+    const linkConfirmacao = `https://wa.me/${numeroBarbearia}?text=${mensagemConfirmacao}`
+
     return (
       <div className="rz-page-root">
         <header className="rz-topbar">
@@ -350,11 +351,20 @@ function Agendamento() {
         <div className="rz-page" style={{ textAlign: 'center', paddingTop: 60 }}>
           <i className="ti ti-circle-check" style={{ fontSize: 56, color: '#4caf50' }}></i>
           <div className="rz-page-title" style={{ marginTop: 16 }}>Agendamento <span>confirmado!</span></div>
-          <p style={{ color: '#888', marginTop: 8 }}>Você receberá a confirmação por e-mail em breve.</p>
-          <Link to="/" className="rz-btn-primary" style={{ display: 'inline-block', marginTop: 24, width: 'auto', padding: '14px 32px' }}>Voltar ao início</Link>
+          <p style={{ color: '#888', marginTop: 8 }}>Confirma pelo WhatsApp pra garantir seu horário.</p>
+          <a
+            href={linkConfirmacao}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rz-btn-primary"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 24, width: 'auto', padding: '14px 32px', background: '#25d366', textDecoration: 'none' }}
+          >
+            💬 Confirmar pelo WhatsApp
+          </a>
+          <br />
+          <Link to="/" style={{ display: 'inline-block', marginTop: 16, color: '#888', fontSize: 13, textDecoration: 'none' }}>Voltar ao início</Link>
         </div>
         <BotaoWhatsapp />
-        <BotaoInstalarApp />
       </div>
     )
   }
@@ -548,29 +558,18 @@ function Agendamento() {
                 </div>
                 <div className="rz-input-group">
                   <div className="rz-field-label">Celular (WhatsApp)</div>
-                  <input className="rz-input" type="text" placeholder="(55) 99999-9999" value={telefone} onChange={(e) => setTelefone(apenasNumeros(e.target.value))} maxLength={11} />
+                  <input className="rz-input" type="text" placeholder="(55) 9 9999-9999" value={formatarTelefone(telefone)} onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))} maxLength={16} />
                 </div>
                 <div className="rz-input-group">
-                <div className="rz-field-label">E-mail</div>
-                <input className="rz-input" type="email" placeholder="seu@email.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-                {email && !emailValido(email) && (
-                  <div style={{ color: '#e53935', fontSize: 11, marginTop: 4 }}>Digite um e-mail válido</div>
-                )}
-              </div>
-              <div className="rz-input-group">
                 <div className="rz-field-label">CPF</div>
                 <input className="rz-input" type="text" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(formatarCpf(e.target.value))} maxLength={14} />
               </div>
-              </div>
-              <div className="rz-email-destaque">
-                <i className="ti ti-mail" style={{ fontSize: 18 }}></i>
-                A confirmação do seu agendamento será enviada para esse e-mail
               </div>
               <div className="rz-seguranca-nota">
                 🔒 Seus dados estão protegidos e seguros. Usamos suas informações só pra confirmar seu agendamento.
               </div>
             </div>
-            <button className="rz-btn-primary" style={{ marginTop: 20, maxWidth: 500, margin: '20px auto 0', display: 'block' }} disabled={!nome || !telefone || !emailValido(email)} onClick={irParaProximo}>Continuar</button>
+            <button className="rz-btn-primary" style={{ marginTop: 20, maxWidth: 500, margin: '20px auto 0', display: 'block' }} disabled={!nome || telefone.length < 11 || cpf.replace(/\D/g, '').length < 11} onClick={irParaProximo}>Continuar</button>
           </div>
         )}
 
@@ -595,10 +594,6 @@ function Agendamento() {
             <button className="rz-btn-primary" disabled={enviando} onClick={confirmarAgendamento}>
               {enviando ? 'Confirmando...' : 'Confirmar agendamento'}
             </button>
-            <div className="rz-email-destaque" style={{ justifyContent: 'center' }}>
-              <i className="ti ti-mail" style={{ fontSize: 18 }}></i>
-              Você receberá a confirmação por e-mail em {emailFinal}
-            </div>
           </div>
         )}
       </div>

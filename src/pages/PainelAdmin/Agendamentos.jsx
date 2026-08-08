@@ -40,6 +40,7 @@ function Agendamentos() {
   const [filtroData, setFiltroData] = useState(hoje())
   const [filtroStatus, setFiltroStatus] = useState('todos')
   const [filtroBarbeiro, setFiltroBarbeiro] = useState(null)
+  const [proximosBloqueios, setProximosBloqueios] = useState([])
   const [visualizacao, setVisualizacao] = useState('tabela') // 'tabela' | 'agenda'
 
   const carregar = async () => {
@@ -63,6 +64,20 @@ function Agendamentos() {
   useEffect(() => {
     carregar()
   }, [filtroData])
+
+  useEffect(() => {
+    const carregarBloqueios = async () => {
+      const hoje = new Date().toISOString().split('T')[0]
+      const { data } = await supabase
+        .from('dias_fechados')
+        .select('*')
+        .gte('data', hoje)
+        .order('data')
+        .limit(10)
+      setProximosBloqueios(data || [])
+    }
+    carregarBloqueios()
+  }, [])
 
   useEffect(() => {
     const intervalo = setInterval(() => {
@@ -189,6 +204,20 @@ function Agendamentos() {
               <div className="rz-stat-sub">estimado nessa data</div>
             </div>
           </div>
+
+          {proximosBloqueios.length > 0 && (
+            <div className="rz-bloqueios-futuros">
+              <div className="rz-bloqueios-futuros-titulo">🚫 Próximos dias fechados</div>
+              <div className="rz-bloqueios-futuros-lista">
+                {proximosBloqueios.map((b) => (
+                  <div key={b.id} className="rz-bloqueio-chip">
+                    <strong>{new Date(b.data + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</strong>
+                    {b.motivo && <span> — {b.motivo}</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="rz-view-toggle">
             <button className={visualizacao === 'tabela' ? 'active' : ''} onClick={() => setVisualizacao('tabela')}>Tabela</button>

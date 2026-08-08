@@ -35,7 +35,7 @@ function Home() {
   useEffect(() => {
     const carregarDados = async () => {
       const { data: servicosData } = await supabase.from('servicos').select('id, nome, duracao_min, preco').eq('ativo', true).order('nome')
-      const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, foto_url, especialidades').eq('ativo', true).order('nome')
+      const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, foto_url').eq('ativo', true).order('nome')
       setServicosLista(servicosData || [])
       setBarbeirosLista(barbeirosData || [])
     }
@@ -230,7 +230,6 @@ function Home() {
               )}
               <div className="rz-barber-info">
                 <div className="rz-barber-name">{b.nome}</div>
-                <div className="rz-barber-role">{b.especialidades || '—'}</div>
                 <div className="rz-barber-vercortes">Ver cortes</div>
               </div>
             </div>

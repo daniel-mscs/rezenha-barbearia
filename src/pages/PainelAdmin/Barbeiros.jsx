@@ -12,7 +12,6 @@ function Barbeiros() {
   const [modalAberto, setModalAberto] = useState(false)
   const [editando, setEditando] = useState(null)
   const [nome, setNome] = useState('')
-  const [especialidades, setEspecialidades] = useState('')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [fotoFile, setFotoFile] = useState(null)
@@ -48,7 +47,6 @@ function Barbeiros() {
   const abrirNovo = () => {
     setEditando(null)
     setNome('')
-    setEspecialidades('')
     setEmail('')
     setSenha('')
     setErroModal('')
@@ -58,7 +56,6 @@ function Barbeiros() {
   const abrirEdicao = (b) => {
     setEditando(b)
     setNome(b.nome)
-    setEspecialidades(b.especialidades || '')
     setFotoFile(null)
     setCor(b.cor || '#F07B00')
     setModalAberto(true)
@@ -82,7 +79,7 @@ const salvar = async (e) => {
         }
       }
 
-      await supabase.from('barbeiros').update({ nome, especialidades, foto_url: fotoUrl, cor }).eq('id', editando.id)
+      await supabase.from('barbeiros').update({ nome, foto_url: fotoUrl, cor }).eq('id', editando.id)
       setSalvando(false)
       setModalAberto(false)
       carregar()
@@ -100,7 +97,7 @@ const salvar = async (e) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ nome, especialidades, email, senha }),
+        body: JSON.stringify({ nome, email, senha }),
       }
     )
 
@@ -163,7 +160,6 @@ const salvar = async (e) => {
                 <thead>
                   <tr>
                     <th>Nome</th>
-                    <th>Especialidades</th>
                     <th>Login vinculado</th>
                     <th>Status</th>
                     <th>Ações</th>
@@ -173,7 +169,6 @@ const salvar = async (e) => {
                   {barbeiros.map((b) => (
                     <tr key={b.id}>
                       <td><strong style={{ color: '#fff' }}>{b.nome}</strong>{b.is_dono && ' 👑'}</td>
-                      <td>{b.especialidades || '—'}</td>
                       <td>{b.auth_id ? 'Sim' : 'Não'}</td>
                       <td>{b.ativo ? 'Ativo' : 'Inativo'}</td>
                       <td>
@@ -202,9 +197,6 @@ const salvar = async (e) => {
             <form onSubmit={salvar}>
               <label className="rz-field-label">Nome</label>
               <input className="rz-input" type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
-
-              <label className="rz-field-label">Especialidades</label>
-              <input className="rz-input" type="text" placeholder="Ex: Degradê, barba" value={especialidades} onChange={(e) => setEspecialidades(e.target.value)} />
 
               {editando && (
                 <>

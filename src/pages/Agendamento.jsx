@@ -116,7 +116,7 @@ function Agendamento() {
 
   useEffect(() => {
     const carregarOpcoes = async () => {
-      const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, especialidades, foto_url').eq('ativo', true).order('nome')
+      const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, foto_url').eq('ativo', true).order('nome')
       const { data: servicosData } = await supabase.from('servicos').select('id, nome, duracao_min, preco').eq('ativo', true).order('nome')
       const { data: configData } = await supabase.from('configuracoes').select('*').eq('id', 1).maybeSingle()
       const { data: fechadosData } = await supabase.from('dias_fechados').select('data')
@@ -440,7 +440,6 @@ if (step === 6) {
                     )}
                     <div className="rz-barber-info-wrap">
                       <div className="rz-barber-name">{b.nome}</div>
-                      <div className="rz-barber-role">{b.especialidades || '—'}</div>
                     </div>
                   </div>
                 ))}

@@ -27,6 +27,12 @@ function horarioParaMinutos(horario) {
   return h * 60 + m
 }
 
+function horarioJaPassou(dataStr, horarioStr) {
+  const agora = new Date()
+  const dataHorario = new Date(`${dataStr}T${horarioStr}:00`)
+  return dataHorario <= agora
+}
+
 function formatarDataExtenso(dataStr) {
   const data = new Date(dataStr + 'T00:00:00')
   return data.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })
@@ -123,9 +129,15 @@ function Agendamentos() {
   }, [filtroData])
 
   const atualizarStatus = async (id, novoStatus) => {
-    await supabase.from('agendamentos').update({ status: novoStatus }).eq('id', id)
+    const { error } = await supabase.from('agendamentos').update({ status: novoStatus }).eq('id', id)
+    if (error) {
+      console.error('Erro ao atualizar status:', error)
+      alert('Não foi possível atualizar: ' + error.message)
+      return
+    }
     carregar()
   }
+
 
   const sair = async () => {
     await supabase.auth.signOut()
@@ -148,6 +160,10 @@ function Agendamentos() {
     if (filtroBarbeiro && a.barbeiros?.id !== filtroBarbeiro) return false
     return true
   })
+
+  const pendentesAtrasados = agendamentos.filter(
+    (a) => a.status === 'pendente' && horarioJaPassou(filtroData, a.horario.slice(0, 5))
+  )
 
   const totalHoje = agendamentos.length
   const confirmados = agendamentos.filter((a) => a.status === 'confirmado').length
@@ -204,6 +220,23 @@ function Agendamentos() {
               <div className="rz-stat-sub">estimado nessa data</div>
             </div>
           </div>
+
+          {pendentesAtrasados.length > 0 && (
+            <div className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00' }}>
+              <div className="rz-bloqueios-futuros-titulo">⏰ Pendentes que já passaram do horário — revisar</div>
+              <div className="rz-bloqueios-futuros-lista">
+                {pendentesAtrasados.map((a) => (
+                  <div key={a.id} className="rz-bloqueio-chip" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span>
+                      <strong>{a.horario?.slice(0, 5)}</strong> — {a.clientes?.nome || 'Cliente'} com {a.barbeiros?.nome || '—'}
+                    </span>
+                    <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>Confirmar</button>
+                    <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>Cancelar</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {proximosBloqueios.length > 0 && (
             <div className="rz-bloqueios-futuros">

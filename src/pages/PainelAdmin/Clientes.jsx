@@ -99,11 +99,52 @@ function Clientes() {
     navigate('/admin/login')
   }
 
-  const compartilharConvite = (cliente) => {
-    const link = `${window.location.origin}/convite/${cliente.convite_token}`
-    const telefoneLimpo = cliente.telefone.replace(/\D/g, '')
-    const mensagem = encodeURIComponent(`Oi ${cliente.nome.split(' ')[0]}! Cria sua conta na Rezenha Barbearia pra acompanhar seus agendamentos: ${link}`)
+  const [clienteParaConvite, setClienteParaConvite] = useState(null)
+  const [senhaConvite, setSenhaConvite] = useState('')
+  const [enviandoConvite, setEnviandoConvite] = useState(false)
+  const [erroConvite, setErroConvite] = useState('')
+
+  const gerarSenhaAleatoria = () => {
+    const numeros = Math.floor(1000 + Math.random() * 9000)
+    return `Rezenha${numeros}`
+  }
+
+  const abrirConvite = (cliente) => {
+    setClienteParaConvite(cliente)
+    setSenhaConvite(gerarSenhaAleatoria())
+    setErroConvite('')
+  }
+
+  const confirmarConvite = async () => {
+    if (!senhaConvite || senhaConvite.length < 6) {
+      setErroConvite('A senha precisa ter no mínimo 6 caracteres.')
+      return
+    }
+    setEnviandoConvite(true)
+    setErroConvite('')
+
+    const { data: { session } } = await supabase.auth.getSession()
+    const resposta = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/criar-login-cliente-admin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ cliente_id: clienteParaConvite.id, senha: senhaConvite }),
+    })
+    const resultado = await resposta.json()
+    setEnviandoConvite(false)
+
+    if (!resposta.ok) {
+      setErroConvite(resultado.erro || 'Não foi possível criar o login.')
+      return
+    }
+
+    const telefoneLimpo = clienteParaConvite.telefone.replace(/\D/g, '')
+    const mensagem = encodeURIComponent(
+      `Oi ${clienteParaConvite.nome.split(' ')[0]}! Sua conta na Rezenha Barbearia já está pronta.\n\nEntre em https://rezenha-barbearia.vercel.app/login com:\nWhatsApp: ${clienteParaConvite.telefone}\nSenha: ${senhaConvite}`
+    )
     window.open(`https://wa.me/55${telefoneLimpo}?text=${mensagem}`, '_blank')
+
+    setClienteParaConvite(null)
+    carregar()
   }
 
   const clientesFiltrados = clientes.filter((c) =>
@@ -167,7 +208,7 @@ function Clientes() {
                       <td>{c.intervalo_lembrete_dias || 30} dias</td>
                       <td>
                         <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>Editar</button>
-                        <button className="rz-action-btn" onClick={() => compartilharConvite(c)}>Convite</button>
+                        <button className="rz-action-btn" onClick={() => abrirConvite(c)}>Criar login</button>
                         <button className="rz-action-btn danger" onClick={() => setClienteParaExcluir(c)}>Excluir</button>
                       </td>
                     </tr>
@@ -232,6 +273,30 @@ function Clientes() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {clienteParaConvite && (
+        <div className="rz-modal-overlay" onClick={() => setClienteParaConvite(null)}>
+          <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="rz-modal-title">Criar login para {clienteParaConvite.nome}</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 16 }}>
+              Define uma senha (ou usa a sugerida) — a conta já nasce pronta, e o cliente recebe telefone+senha pelo WhatsApp pra entrar direto.
+            </p>
+            {erroConvite && (
+              <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+                {erroConvite}
+              </div>
+            )}
+            <label className="rz-field-label">Senha</label>
+            <input className="rz-input" type="text" value={senhaConvite} onChange={(e) => setSenhaConvite(e.target.value)} />
+            <div className="rz-modal-actions">
+              <button className="rz-btn-outline" onClick={() => setClienteParaConvite(null)}>Cancelar</button>
+              <button className="rz-btn-primary" style={{ flex: 1 }} onClick={confirmarConvite} disabled={enviandoConvite}>
+                {enviandoConvite ? 'Criando...' : 'Criar e enviar pelo WhatsApp'}
+              </button>
+            </div>
           </div>
         </div>
       )}

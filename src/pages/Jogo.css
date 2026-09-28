@@ -33,7 +33,9 @@
 
 .rz-jogo-campo {
   position: relative;
-  height: 260px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 320px;
   background: linear-gradient(180deg, #163a1a 0%, #0d2410 100%);
   border: 2px solid #2a5c3a;
   border-radius: 12px;
@@ -43,35 +45,83 @@
   cursor: grab;
 }
 
-.rz-jogo-trave {
+.rz-jogo-gol-estrutura {
   position: absolute;
-  top: 20px;
+  top: 8%;
   left: 10%;
   right: 10%;
-  height: 70px;
-  border: 4px solid #fff;
-  border-bottom: none;
-  opacity: 0.85;
+  height: 32%;
 }
 
-.rz-jogo-goleiro-indicador {
+.rz-jogo-gol-trave-topo {
   position: absolute;
-  top: 20px;
-  width: 33%;
-  height: 70px;
-  background: rgba(229, 57, 53, 0.35);
-  transition: opacity 0.2s ease;
-  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.rz-jogo-goleiro-indicador.visivel { opacity: 1; }
-.rz-jogo-goleiro-indicador.esquerda { left: 10%; }
-.rz-jogo-goleiro-indicador.centro { left: calc(10% + 33%); }
-.rz-jogo-goleiro-indicador.direita { right: 10%; }
+.rz-jogo-gol-trave-esquerda,
+.rz-jogo-gol-trave-direita {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.rz-jogo-gol-trave-esquerda { left: 0; }
+.rz-jogo-gol-trave-direita { right: 0; }
+
+.rz-jogo-gol-rede {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 0;
+  opacity: 0.35;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 1px, transparent 1px, transparent 12px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.6) 0, rgba(255, 255, 255, 0.6) 1px, transparent 1px, transparent 12px);
+}
+
+.rz-jogo-maozinha {
+  position: absolute;
+  top: 14%;
+  font-size: 34px;
+  animation: rz-jogo-pulo 0.4s ease;
+  z-index: 2;
+}
+
+.rz-jogo-maozinha.esquerda { left: 14%; }
+.rz-jogo-maozinha.centro { left: calc(50% - 17px); }
+.rz-jogo-maozinha.direita { right: 14%; }
+
+@keyframes rz-jogo-pulo {
+  from { transform: translateY(10px) scale(0.7); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.rz-jogo-chuteira {
+  position: absolute;
+  bottom: 16%;
+  left: calc(50% - 14px);
+  font-size: 28px;
+  animation: rz-jogo-chute 0.35s ease forwards;
+  z-index: 2;
+}
+
+@keyframes rz-jogo-chute {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-30px) rotate(-25deg); opacity: 0; }
+}
 
 .rz-jogo-bola {
   position: absolute;
-  bottom: 20px;
+  bottom: 16px;
   left: calc(50% - 18px);
   width: 36px;
   height: 36px;
@@ -81,9 +131,9 @@
   transition: transform 0.35s ease;
 }
 
-.rz-jogo-bola.esquerda { transform: translate(-90px, -190px); }
-.rz-jogo-bola.centro { transform: translate(0, -190px); }
-.rz-jogo-bola.direita { transform: translate(90px, -190px); }
+.rz-jogo-bola.esquerda { transform: translate(-100px, -170px); }
+.rz-jogo-bola.centro { transform: translate(0, -170px); }
+.rz-jogo-bola.direita { transform: translate(100px, -170px); }
 
 .rz-jogo-resultado-wrap {
   min-height: 32px;

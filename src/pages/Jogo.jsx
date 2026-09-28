@@ -158,11 +158,18 @@ function Jogo() {
                 onPointerDown={iniciarArraste}
                 onPointerUp={finalizarArraste}
               >
-                <div className="rz-jogo-trave"></div>
-                <div className={`rz-jogo-goleiro-indicador esquerda ${goleiroLado === 'esquerda' ? 'visivel' : ''}`}></div>
-                <div className={`rz-jogo-goleiro-indicador centro ${goleiroLado === 'centro' ? 'visivel' : ''}`}></div>
-                <div className={`rz-jogo-goleiro-indicador direita ${goleiroLado === 'direita' ? 'visivel' : ''}`}></div>
-                <div className={`rz-jogo-bola ${zonaBola || ''}`}></div>
+                <div className="rz-jogo-gol-estrutura">
+                  <div className="rz-jogo-gol-trave-topo"></div>
+                  <div className="rz-jogo-gol-trave-esquerda"></div>
+                  <div className="rz-jogo-gol-trave-direita"></div>
+                  <div className="rz-jogo-gol-rede"></div>
+                </div>
+
+                {resultado === 'defendeu' && goleiroLado && <div className={`rz-jogo-maozinha ${goleiroLado}`}>🧤</div>}
+
+                {chutando && <div className={`rz-jogo-chuteira ${zonaBola || 'centro'}`}>👟</div>}
+
+                <div className={`rz-jogo-bola ${zonaBola || ''} ${chutando ? 'chutando' : ''}`}></div>
               </div>
 
               <div className="rz-jogo-resultado-wrap">

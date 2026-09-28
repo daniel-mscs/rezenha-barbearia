@@ -8,6 +8,28 @@ function telefoneParaEmail(telefone) {
   return `${telefone.replace(/\D/g, '')}@whatsapp.cliente`
 }
 
+function apenasNumeros(valor) {
+  return valor.replace(/\D/g, '')
+}
+
+function formatarTelefone(valor) {
+  const numeros = valor.replace(/\D/g, '').slice(0, 11)
+  if (numeros.length === 0) return ''
+  if (numeros.length <= 2) return numeros.replace(/(\d{0,2})/, '($1')
+  if (numeros.length <= 3) return numeros.replace(/(\d{2})(\d{0,1})/, '($1) $2')
+  if (numeros.length <= 7) return numeros.replace(/(\d{2})(\d{1})(\d{0,4})/, '($1) $2 $3')
+  return numeros.replace(/(\d{2})(\d{1})(\d{4})(\d{0,4})/, '($1) $2 $3-$4')
+}
+
+            
+              href={linkEsqueciSenha}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}
+            >
+              Esqueceu a senha? Fale com a gente pelo WhatsApp
+            </a>
+
 function Login() {
   const navigate = useNavigate()
   const [aba, setAba] = useState('entrar')
@@ -133,9 +155,10 @@ function Login() {
                 <input
                   className="rz-input rz-input-sem-icone"
                   type="text"
-                  placeholder="(55) 99999-9999"
-                  value={telefone}
-                  onChange={(e) => setTelefone(e.target.value)}
+                  placeholder="(55) 9 9999-9999"
+                  value={formatarTelefone(telefone)}
+                  onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))}
+                  maxLength={16}
                   required
                 />
               </div>
@@ -160,7 +183,7 @@ function Login() {
               {carregando ? 'Entrando...' : 'Entrar'}
             </button>
             <Link
-              to="/esqueci-senha"
+              to="/recuperar-senha"
               style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}
             >
               Esqueceu a senha?
@@ -188,9 +211,10 @@ function Login() {
                 <input
                   className="rz-input rz-input-sem-icone"
                   type="text"
-                  placeholder="(55) 99999-9999"
-                  value={telefone}
-                  onChange={(e) => setTelefone(e.target.value)}
+                  placeholder="(55) 9 9999-9999"
+                  value={formatarTelefone(telefone)}
+                  onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))}
+                  maxLength={16}
                   required
                 />
               </div>

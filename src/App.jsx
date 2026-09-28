@@ -17,6 +17,7 @@ import Relatorios from './pages/PainelAdmin/Relatorios'
 import Configuracoes from './pages/PainelAdmin/Configuracoes'
 import Caixa from './pages/PainelAdmin/Caixa'
 import EsqueciSenha from './pages/EsqueciSenha'
+import EsqueciSenhaCliente from './pages/EsqueciSenhaCliente'
 import ConfirmarPresenca from './pages/ConfirmarPresenca'
 import RedefinirSenha from './pages/RedefinirSenha'
 
@@ -105,6 +106,7 @@ function App() {
           }
         />
         <Route path="/admin/meu-perfil" element={<ProtectedAdminRoute><MeuPerfil /></ProtectedAdminRoute>} />
+  <Route path="/recuperar-senha" element={<EsqueciSenhaCliente />} />
 </Routes>
       <CookieBanner />
     </BrowserRouter>

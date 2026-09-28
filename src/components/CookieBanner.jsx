@@ -22,9 +22,16 @@ function CookieBanner() {
   return (
     <div className="rz-cookie-banner">
       <p className="rz-cookie-texto">
-        Usamos cookies essenciais para o funcionamento do site, como manter você conectado após o login. Ao continuar navegando, você concorda com isso. <Link to="/privacidade" style={{ color: '#F07B00' }}>Saiba mais</Link>.
+        Usamos cookies essenciais para o funcionamento do site, como manter você conectado após o login. Ao continuar navegando, você
+        concorda com isso.{' '}
+        <Link to="/privacidade" style={{ color: '#F07B00' }}>
+          Saiba mais
+        </Link>
+        .
       </p>
-      <button className="rz-cookie-btn" onClick={aceitar}>Entendi</button>
+      <button className="rz-cookie-btn" onClick={aceitar}>
+        Entendi
+      </button>
     </div>
   )
 }

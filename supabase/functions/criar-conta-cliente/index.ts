@@ -16,10 +16,7 @@ serve(async (req) => {
     const telefoneLimpo = telefone.replace(/\D/g, "")
     const emailSintetico = `${telefoneLimpo}@whatsapp.cliente`
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    )
+    const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "")
 
     const { data: existente } = await supabaseAdmin
       .from("clientes")
@@ -40,19 +37,28 @@ serve(async (req) => {
     if (erroCriar) throw erroCriar
 
     if (existente) {
-      await supabaseAdmin.from("clientes").update({ auth_id: novoUsuario.user.id, nome, email: email || null }).eq("id", existente.id)
+      await supabaseAdmin
+        .from("clientes")
+        .update({ auth_id: novoUsuario.user.id, nome, email: email || null })
+        .eq("id", existente.id)
     } else {
       await supabaseAdmin.from("clientes").insert({
-        nome, telefone: telefoneLimpo, email: email || null, cpf: cpf || null, auth_id: novoUsuario.user.id,
+        nome,
+        telefone: telefoneLimpo,
+        email: email || null,
+        cpf: cpf || null,
+        auth_id: novoUsuario.user.id,
       })
     }
 
     return new Response(JSON.stringify({ sucesso: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
     })
   } catch (error) {
     return new Response(JSON.stringify({ erro: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
     })
   }
 })

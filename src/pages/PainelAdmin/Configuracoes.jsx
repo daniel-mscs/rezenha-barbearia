@@ -22,12 +22,10 @@ function Configuracoes() {
 
   useEffect(() => {
     const verificarPermissao = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      const { data } = await supabase
-        .from('barbeiros')
-        .select('is_dono')
-        .eq('auth_id', session.user.id)
-        .maybeSingle()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      const { data } = await supabase.from('barbeiros').select('is_dono').eq('auth_id', session.user.id).maybeSingle()
       if (!data?.is_dono) {
         navigate('/admin')
         return
@@ -59,13 +57,16 @@ function Configuracoes() {
     setSalvando(true)
     setSucesso(false)
 
-    await supabase.from('configuracoes').update({
-      horario_semana_abertura: horarioSemanaAbertura,
-      horario_semana_fechamento: horarioSemanaFechamento,
-      horario_sabado_abertura: horarioSabadoAbertura,
-      horario_sabado_fechamento: horarioSabadoFechamento,
-      domingo_aberto: domingoAberto,
-    }).eq('id', 1)
+    await supabase
+      .from('configuracoes')
+      .update({
+        horario_semana_abertura: horarioSemanaAbertura,
+        horario_semana_fechamento: horarioSemanaFechamento,
+        horario_sabado_abertura: horarioSabadoAbertura,
+        horario_sabado_fechamento: horarioSabadoFechamento,
+        domingo_aberto: domingoAberto,
+      })
+      .eq('id', 1)
 
     setSalvando(false)
     setSucesso(true)
@@ -102,9 +103,13 @@ function Configuracoes() {
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
-          <button onClick={sair} className="rz-logout"><i className="ti ti-logout"></i> Sair</button>
+          <button onClick={sair} className="rz-logout">
+            <i className="ti ti-logout"></i> Sair
+          </button>
         </div>
       </header>
 
@@ -117,35 +122,69 @@ function Configuracoes() {
           </div>
 
           <div className="rz-table-wrap" style={{ padding: 24, marginBottom: 20 }}>
-            <div className="rz-section-title-mini" style={{ fontSize: 15, marginBottom: 20 }}>Horário de funcionamento</div>
+            <div className="rz-section-title-mini" style={{ fontSize: 15, marginBottom: 20 }}>
+              Horário de funcionamento
+            </div>
 
             <form onSubmit={salvarHorarios}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                 <div>
                   <label className="rz-field-label">Segunda a sexta — abre</label>
-                  <input className="rz-input" type="time" value={horarioSemanaAbertura} onChange={(e) => setHorarioSemanaAbertura(e.target.value)} />
+                  <input
+                    className="rz-input"
+                    type="time"
+                    value={horarioSemanaAbertura}
+                    onChange={(e) => setHorarioSemanaAbertura(e.target.value)}
+                  />
                 </div>
                 <div>
                   <label className="rz-field-label">Segunda a sexta — fecha</label>
-                  <input className="rz-input" type="time" value={horarioSemanaFechamento} onChange={(e) => setHorarioSemanaFechamento(e.target.value)} />
+                  <input
+                    className="rz-input"
+                    type="time"
+                    value={horarioSemanaFechamento}
+                    onChange={(e) => setHorarioSemanaFechamento(e.target.value)}
+                  />
                 </div>
                 <div>
                   <label className="rz-field-label">Sábado — abre</label>
-                  <input className="rz-input" type="time" value={horarioSabadoAbertura} onChange={(e) => setHorarioSabadoAbertura(e.target.value)} />
+                  <input
+                    className="rz-input"
+                    type="time"
+                    value={horarioSabadoAbertura}
+                    onChange={(e) => setHorarioSabadoAbertura(e.target.value)}
+                  />
                 </div>
                 <div>
                   <label className="rz-field-label">Sábado — fecha</label>
-                  <input className="rz-input" type="time" value={horarioSabadoFechamento} onChange={(e) => setHorarioSabadoFechamento(e.target.value)} />
+                  <input
+                    className="rz-input"
+                    type="time"
+                    value={horarioSabadoFechamento}
+                    onChange={(e) => setHorarioSabadoFechamento(e.target.value)}
+                  />
                 </div>
               </div>
 
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, fontSize: 13, color: '#ccc', cursor: 'pointer' }}>
+              <label
+                style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, fontSize: 13, color: '#ccc', cursor: 'pointer' }}
+              >
                 <input type="checkbox" checked={domingoAberto} onChange={(e) => setDomingoAberto(e.target.checked)} />
                 Abrir aos domingos
               </label>
 
               {sucesso && (
-                <div style={{ background: '#0d2b0d', border: '1px solid #4caf50', color: '#7ee787', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+                <div
+                  style={{
+                    background: '#0d2b0d',
+                    border: '1px solid #4caf50',
+                    color: '#7ee787',
+                    fontSize: 12,
+                    padding: '10px 14px',
+                    borderRadius: 6,
+                    marginBottom: 16,
+                  }}
+                >
                   Horários salvos com sucesso!
                 </div>
               )}
@@ -157,18 +196,39 @@ function Configuracoes() {
           </div>
 
           <div className="rz-table-wrap" style={{ padding: 24 }}>
-            <div className="rz-section-title-mini" style={{ fontSize: 15, marginBottom: 20 }}>Dias fechados (feriados, folgas)</div>
+            <div className="rz-section-title-mini" style={{ fontSize: 15, marginBottom: 20 }}>
+              Dias fechados (feriados, folgas)
+            </div>
 
-            <form onSubmit={adicionarDiaFechado} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 12, marginBottom: 24, alignItems: 'end' }}>
+            <form
+              onSubmit={adicionarDiaFechado}
+              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 12, marginBottom: 24, alignItems: 'end' }}
+            >
               <div>
                 <label className="rz-field-label">Data</label>
-                <input className="rz-input" type="date" value={novaData} onChange={(e) => setNovaData(e.target.value)} required style={{ marginBottom: 0 }} />
+                <input
+                  className="rz-input"
+                  type="date"
+                  value={novaData}
+                  onChange={(e) => setNovaData(e.target.value)}
+                  required
+                  style={{ marginBottom: 0 }}
+                />
               </div>
               <div>
                 <label className="rz-field-label">Motivo (opcional)</label>
-                <input className="rz-input" type="text" placeholder="Ex: Natal" value={novoMotivo} onChange={(e) => setNovoMotivo(e.target.value)} style={{ marginBottom: 0 }} />
+                <input
+                  className="rz-input"
+                  type="text"
+                  placeholder="Ex: Natal"
+                  value={novoMotivo}
+                  onChange={(e) => setNovoMotivo(e.target.value)}
+                  style={{ marginBottom: 0 }}
+                />
               </div>
-              <button className="rz-btn-primary" type="submit" style={{ height: 44 }}>+ Adicionar</button>
+              <button className="rz-btn-primary" type="submit" style={{ height: 44 }}>
+                + Adicionar
+              </button>
             </form>
 
             {diasFechados.length === 0 ? (
@@ -176,12 +236,32 @@ function Configuracoes() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {diasFechados.map((d) => (
-                  <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#161616', border: '1px solid #222', borderRadius: 8, padding: '10px 16px' }}>
+                  <div
+                    key={d.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: '#161616',
+                      border: '1px solid #222',
+                      borderRadius: 8,
+                      padding: '10px 16px',
+                    }}
+                  >
                     <div>
-                      <strong style={{ color: '#fff', fontSize: 13 }}>{new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })}</strong>
+                      <strong style={{ color: '#fff', fontSize: 13 }}>
+                        {new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR', {
+                          weekday: 'long',
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })}
+                      </strong>
                       {d.motivo && <span style={{ color: '#888', fontSize: 12, marginLeft: 10 }}>— {d.motivo}</span>}
                     </div>
-                    <button className="rz-action-btn danger" onClick={() => removerDiaFechado(d.id)}>Remover</button>
+                    <button className="rz-action-btn danger" onClick={() => removerDiaFechado(d.id)}>
+                      Remover
+                    </button>
                   </div>
                 ))}
               </div>

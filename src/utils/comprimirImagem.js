@@ -24,7 +24,7 @@ export function comprimirImagem(arquivo, larguraMaxima = 1000, qualidade = 0.8) 
             resolve(arquivoComprimido)
           },
           'image/jpeg',
-          qualidade
+          qualidade,
         )
       }
       img.src = e.target.result

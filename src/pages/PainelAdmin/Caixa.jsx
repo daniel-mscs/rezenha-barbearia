@@ -35,11 +35,7 @@ function Caixa() {
       .select('*, caixa_categorias(nome)')
       .order('data', { ascending: false })
       .order('created_at', { ascending: false })
-    const { data: catData } = await supabase
-      .from('caixa_categorias')
-      .select('*')
-      .eq('ativo', true)
-      .order('nome')
+    const { data: catData } = await supabase.from('caixa_categorias').select('*').eq('ativo', true).order('nome')
     setLancamentos(lancData || [])
     setCategorias(catData || [])
     setCarregando(false)
@@ -47,12 +43,10 @@ function Caixa() {
 
   useEffect(() => {
     const verificarPermissao = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      const { data } = await supabase
-        .from('barbeiros')
-        .select('is_dono')
-        .eq('auth_id', session.user.id)
-        .maybeSingle()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      const { data } = await supabase.from('barbeiros').select('is_dono').eq('auth_id', session.user.id).maybeSingle()
       if (!data?.is_dono) {
         navigate('/admin')
         return
@@ -136,7 +130,9 @@ function Caixa() {
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
           <button onClick={sair} className="rz-logout">
             <i className="ti ti-logout"></i> Sair
@@ -150,11 +146,15 @@ function Caixa() {
         <main className="rz-main">
           <div className="rz-page-header">
             <div className="rz-page-title">Caixa</div>
-            <button className="rz-btn-primary" onClick={abrirNovo}>+ Novo lançamento</button>
+            <button className="rz-btn-primary" onClick={abrirNovo}>
+              + Novo lançamento
+            </button>
           </div>
 
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20 }}>
-            <label className="rz-field-label" style={{ margin: 0 }}>Mês</label>
+            <label className="rz-field-label" style={{ margin: 0 }}>
+              Mês
+            </label>
             <input
               className="rz-input"
               type="month"
@@ -167,15 +167,11 @@ function Caixa() {
           <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
             <div className="rz-summary" style={{ flex: 1, minWidth: 180 }}>
               <div className="rz-summary-title">Entradas</div>
-              <div style={{ color: '#4caf50', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>
-                R$ {totalEntradas.toFixed(2)}
-              </div>
+              <div style={{ color: '#4caf50', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>R$ {totalEntradas.toFixed(2)}</div>
             </div>
             <div className="rz-summary" style={{ flex: 1, minWidth: 180 }}>
               <div className="rz-summary-title">Saídas</div>
-              <div style={{ color: '#e53935', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>
-                R$ {totalSaidas.toFixed(2)}
-              </div>
+              <div style={{ color: '#e53935', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>R$ {totalSaidas.toFixed(2)}</div>
             </div>
             <div className="rz-summary" style={{ flex: 1, minWidth: 180 }}>
               <div className="rz-summary-title">Saldo do mês</div>
@@ -207,9 +203,7 @@ function Caixa() {
                   {lancamentosDoMes.map((l) => (
                     <tr key={l.id}>
                       <td>{new Date(l.data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
-                      <td style={{ color: l.tipo === 'entrada' ? '#4caf50' : '#e53935' }}>
-                        {l.tipo === 'entrada' ? 'Entrada' : 'Saída'}
-                      </td>
+                      <td style={{ color: l.tipo === 'entrada' ? '#4caf50' : '#e53935' }}>{l.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
                       <td>{l.caixa_categorias?.nome || '—'}</td>
                       <td>{l.descricao || '—'}</td>
                       <td>{l.origem === 'agendamento' ? 'Agendamento' : 'Manual'}</td>
@@ -218,7 +212,9 @@ function Caixa() {
                       </td>
                       <td>
                         {l.origem === 'manual' && (
-                          <button className="rz-action-btn danger" onClick={() => setParaExcluir(l)}>Excluir</button>
+                          <button className="rz-action-btn danger" onClick={() => setParaExcluir(l)}>
+                            Excluir
+                          </button>
                         )}
                       </td>
                     </tr>
@@ -235,7 +231,17 @@ function Caixa() {
           <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
             <div className="rz-modal-title">Novo lançamento</div>
             {erroModal && (
-              <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+              <div
+                style={{
+                  background: '#2b0d0d',
+                  border: '1px solid #e53935',
+                  color: '#ff6b6b',
+                  fontSize: 12,
+                  padding: '10px 14px',
+                  borderRadius: 6,
+                  marginBottom: 16,
+                }}
+              >
                 {erroModal}
               </div>
             )}
@@ -246,7 +252,10 @@ function Caixa() {
                   type="button"
                   className={tipo === 'entrada' ? 'rz-btn-primary' : 'rz-btn-outline'}
                   style={{ flex: 1 }}
-                  onClick={() => { setTipo('entrada'); setCategoriaId('') }}
+                  onClick={() => {
+                    setTipo('entrada')
+                    setCategoriaId('')
+                  }}
                 >
                   Entrada
                 </button>
@@ -254,20 +263,32 @@ function Caixa() {
                   type="button"
                   className={tipo === 'saida' ? 'rz-btn-primary' : 'rz-btn-outline'}
                   style={{ flex: 1 }}
-                  onClick={() => { setTipo('saida'); setCategoriaId('') }}
+                  onClick={() => {
+                    setTipo('saida')
+                    setCategoriaId('')
+                  }}
                 >
                   Saída
                 </button>
               </div>
 
               <label className="rz-field-label">Valor (R$)</label>
-              <input className="rz-input" type="text" placeholder="0,00" value={valor} onChange={(e) => setValor(e.target.value)} required />
+              <input
+                className="rz-input"
+                type="text"
+                placeholder="0,00"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                required
+              />
 
               <label className="rz-field-label">Categoria</label>
               <select className="rz-input" value={categoriaId} onChange={(e) => setCategoriaId(e.target.value)}>
                 <option value="">Sem categoria</option>
                 {categoriasFiltradas.map((c) => (
-                  <option key={c.id} value={c.id}>{c.nome}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.nome}
+                  </option>
                 ))}
                 <option value="nova">+ Nova categoria...</option>
               </select>
@@ -285,13 +306,21 @@ function Caixa() {
               )}
 
               <label className="rz-field-label">Descrição</label>
-              <input className="rz-input" type="text" placeholder="Opcional" value={descricao} onChange={(e) => setDescricao(e.target.value)} />
+              <input
+                className="rz-input"
+                type="text"
+                placeholder="Opcional"
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
 
               <label className="rz-field-label">Data</label>
               <input className="rz-input" type="date" value={data} onChange={(e) => setData(e.target.value)} required />
 
               <div className="rz-modal-actions">
-                <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>Cancelar</button>
+                <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>
+                  Cancelar
+                </button>
                 <button type="submit" className="rz-btn-primary" style={{ flex: 1 }} disabled={salvando}>
                   {salvando ? 'Salvando...' : 'Salvar'}
                 </button>
@@ -304,13 +333,19 @@ function Caixa() {
       {paraExcluir && (
         <div className="rz-modal-overlay" onClick={() => setParaExcluir(null)}>
           <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-            <div className="rz-modal-title" style={{ fontSize: 18 }}>Remover esse lançamento?</div>
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>
+              Remover esse lançamento?
+            </div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>
               R$ {Number(paraExcluir.valor).toFixed(2)} — {paraExcluir.descricao || 'sem descrição'}
             </p>
             <div className="rz-modal-actions">
-              <button className="rz-btn-outline" onClick={() => setParaExcluir(null)}>Cancelar</button>
-              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>Remover</button>
+              <button className="rz-btn-outline" onClick={() => setParaExcluir(null)}>
+                Cancelar
+              </button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>
+                Remover
+              </button>
             </div>
           </div>
         </div>

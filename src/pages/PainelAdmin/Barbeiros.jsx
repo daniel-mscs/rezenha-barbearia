@@ -29,12 +29,10 @@ function Barbeiros() {
 
   useEffect(() => {
     const verificarPermissao = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      const { data } = await supabase
-        .from('barbeiros')
-        .select('is_dono')
-        .eq('auth_id', session.user.id)
-        .maybeSingle()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      const { data } = await supabase.from('barbeiros').select('is_dono').eq('auth_id', session.user.id).maybeSingle()
       if (!data?.is_dono) {
         navigate('/admin')
         return
@@ -61,7 +59,7 @@ function Barbeiros() {
     setModalAberto(true)
   }
 
-const salvar = async (e) => {
+  const salvar = async (e) => {
     e.preventDefault()
     setErroModal('')
     setSalvando(true)
@@ -87,19 +85,18 @@ const salvar = async (e) => {
     }
 
     // Barbeiro novo: chama a Edge Function, que cria o login e o cadastro de uma vez
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
-    const resposta = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/criar-funcionario`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({ nome, email, senha }),
-      }
-    )
+    const resposta = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/criar-funcionario`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ nome, email, senha }),
+    })
 
     const resultado = await resposta.json()
     setSalvando(false)
@@ -133,7 +130,9 @@ const salvar = async (e) => {
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
           <button onClick={sair} className="rz-logout">
             <i className="ti ti-logout"></i> Sair
@@ -146,8 +145,12 @@ const salvar = async (e) => {
 
         <main className="rz-main">
           <div className="rz-page-header">
-            <div className="rz-page-title">Nosso <span>time</span></div>
-            <button className="rz-btn-primary" onClick={abrirNovo}>+ Novo barbeiro</button>
+            <div className="rz-page-title">
+              Nosso <span>time</span>
+            </div>
+            <button className="rz-btn-primary" onClick={abrirNovo}>
+              + Novo barbeiro
+            </button>
           </div>
 
           <div className="rz-table-wrap">
@@ -168,13 +171,22 @@ const salvar = async (e) => {
                 <tbody>
                   {barbeiros.map((b) => (
                     <tr key={b.id}>
-                      <td><strong style={{ color: '#fff' }}>{b.nome}</strong>{b.is_dono && ' 👑'}</td>
+                      <td>
+                        <strong style={{ color: '#fff' }}>{b.nome}</strong>
+                        {b.is_dono && ' 👑'}
+                      </td>
                       <td>{b.auth_id ? 'Sim' : 'Não'}</td>
                       <td>{b.ativo ? 'Ativo' : 'Inativo'}</td>
                       <td>
-                        <button className="rz-action-btn" onClick={() => abrirEdicao(b)}>Editar</button>
-                        <button className="rz-action-btn" onClick={() => alternarAtivo(b)}>{b.ativo ? 'Desativar' : 'Ativar'}</button>
-                        <button className="rz-action-btn danger" onClick={() => setBarbeiroParaExcluir(b)}>Excluir</button>
+                        <button className="rz-action-btn" onClick={() => abrirEdicao(b)}>
+                          Editar
+                        </button>
+                        <button className="rz-action-btn" onClick={() => alternarAtivo(b)}>
+                          {b.ativo ? 'Desativar' : 'Ativar'}
+                        </button>
+                        <button className="rz-action-btn danger" onClick={() => setBarbeiroParaExcluir(b)}>
+                          Excluir
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -190,7 +202,17 @@ const salvar = async (e) => {
           <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
             <div className="rz-modal-title">{editando ? 'Editar barbeiro' : 'Novo barbeiro'}</div>
             {erroModal && (
-              <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+              <div
+                style={{
+                  background: '#2b0d0d',
+                  border: '1px solid #e53935',
+                  color: '#ff6b6b',
+                  fontSize: 12,
+                  padding: '10px 14px',
+                  borderRadius: 6,
+                  marginBottom: 16,
+                }}
+              >
                 {erroModal}
               </div>
             )}
@@ -205,11 +227,23 @@ const salvar = async (e) => {
                     type="color"
                     value={cor}
                     onChange={(e) => setCor(e.target.value)}
-                    style={{ width: '100%', height: 42, borderRadius: 8, border: '1px solid #262626', background: '#161616', marginBottom: 16, cursor: 'pointer' }}
+                    style={{
+                      width: '100%',
+                      height: 42,
+                      borderRadius: 8,
+                      border: '1px solid #262626',
+                      background: '#161616',
+                      marginBottom: 16,
+                      cursor: 'pointer',
+                    }}
                   />
                   <label className="rz-field-label">Foto</label>
                   {editando.foto_url && !fotoFile && (
-                    <img src={editando.foto_url} alt="Foto atual" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', marginBottom: 10, display: 'block' }} />
+                    <img
+                      src={editando.foto_url}
+                      alt="Foto atual"
+                      style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', marginBottom: 10, display: 'block' }}
+                    />
                   )}
                   <input className="rz-input" type="file" accept="image/*" onChange={(e) => setFotoFile(e.target.files[0])} />
                   <p style={{ fontSize: 11, color: '#666', marginTop: -10, marginBottom: 16 }}>
@@ -221,16 +255,32 @@ const salvar = async (e) => {
               {!editando && (
                 <>
                   <label className="rz-field-label">E-mail (login)</label>
-                  <input className="rz-input" type="email" placeholder="funcionario@rezenha.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <input
+                    className="rz-input"
+                    type="email"
+                    placeholder="funcionario@rezenha.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
 
                   <label className="rz-field-label">Senha</label>
-                  <input className="rz-input" type="password" placeholder="Mínimo 6 caracteres" value={senha} onChange={(e) => setSenha(e.target.value)} required minLength={6} />
+                  <input
+                    className="rz-input"
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    required
+                    minLength={6}
+                  />
                 </>
               )}
 
-
               <div className="rz-modal-actions">
-                <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>Cancelar</button>
+                <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>
+                  Cancelar
+                </button>
                 <button type="submit" className="rz-btn-primary" style={{ flex: 1 }} disabled={salvando}>
                   {salvando ? 'Salvando...' : 'Salvar'}
                 </button>
@@ -243,13 +293,19 @@ const salvar = async (e) => {
       {barbeiroParaExcluir && (
         <div className="rz-modal-overlay" onClick={() => setBarbeiroParaExcluir(null)}>
           <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-            <div className="rz-modal-title" style={{ fontSize: 18 }}>Remover {barbeiroParaExcluir.nome}?</div>
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>
+              Remover {barbeiroParaExcluir.nome}?
+            </div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>
               Isso também derruba o acesso dele ao painel, se tiver login vinculado. Essa ação não pode ser desfeita.
             </p>
             <div className="rz-modal-actions">
-              <button className="rz-btn-outline" onClick={() => setBarbeiroParaExcluir(null)}>Cancelar</button>
-              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>Remover</button>
+              <button className="rz-btn-outline" onClick={() => setBarbeiroParaExcluir(null)}>
+                Cancelar
+              </button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>
+                Remover
+              </button>
             </div>
           </div>
         </div>

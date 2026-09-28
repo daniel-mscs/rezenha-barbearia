@@ -35,11 +35,7 @@ function Login() {
     }
 
     const user = data.user
-    const { data: clienteExistente } = await supabase
-      .from('clientes')
-      .select('id')
-      .eq('auth_id', user.id)
-      .maybeSingle()
+    const { data: clienteExistente } = await supabase.from('clientes').select('id').eq('auth_id', user.id).maybeSingle()
 
     if (!clienteExistente) {
       await supabase.from('clientes').insert({
@@ -100,13 +96,31 @@ function Login() {
           <IconArrowLeft className="rz-icon-inline" /> Voltar para o início
         </Link>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
         </div>
         <div className="rz-login-sub">Acesso do cliente</div>
 
         <div className="rz-tabs">
-          <div className={`rz-tab ${aba === 'entrar' ? 'active' : ''}`} onClick={() => { setAba('entrar'); setErro('') }}>Entrar</div>
-          <div className={`rz-tab ${aba === 'criar' ? 'active' : ''}`} onClick={() => { setAba('criar'); setErro('') }}>Criar conta</div>
+          <div
+            className={`rz-tab ${aba === 'entrar' ? 'active' : ''}`}
+            onClick={() => {
+              setAba('entrar')
+              setErro('')
+            }}
+          >
+            Entrar
+          </div>
+          <div
+            className={`rz-tab ${aba === 'criar' ? 'active' : ''}`}
+            onClick={() => {
+              setAba('criar')
+              setErro('')
+            }}
+          >
+            Criar conta
+          </div>
         </div>
 
         {erro && <div className="rz-login-error">{erro}</div>}
@@ -116,20 +130,41 @@ function Login() {
             <div className="rz-input-group">
               <div className="rz-field-label">WhatsApp</div>
               <div className="rz-input-wrap">
-                <input className="rz-input rz-input-sem-icone" type="text" placeholder="(55) 99999-9999" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
+                <input
+                  className="rz-input rz-input-sem-icone"
+                  type="text"
+                  placeholder="(55) 99999-9999"
+                  value={telefone}
+                  onChange={(e) => setTelefone(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <div className="rz-input-group">
               <div className="rz-field-label">Senha</div>
               <div className="rz-input-wrap">
-                <input className="rz-input rz-input-sem-icone" type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} required style={{ paddingRight: 40 }} />
+                <input
+                  className="rz-input rz-input-sem-icone"
+                  type={mostrarSenha ? 'text' : 'password'}
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                  style={{ paddingRight: 40 }}
+                />
                 <button type="button" className="rz-input-toggle-senha" onClick={() => setMostrarSenha((v) => !v)}>
                   {mostrarSenha ? <IconEyeOff /> : <IconEye />}
                 </button>
               </div>
             </div>
-            <button className="rz-btn-primary" type="submit" disabled={carregando}>{carregando ? 'Entrando...' : 'Entrar'}</button>
-            <Link to="/esqueci-senha" style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}>Esqueceu a senha?</Link>
+            <button className="rz-btn-primary" type="submit" disabled={carregando}>
+              {carregando ? 'Entrando...' : 'Entrar'}
+            </button>
+            <Link
+              to="/esqueci-senha"
+              style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}
+            >
+              Esqueceu a senha?
+            </Link>
             <div className="rz-seguranca-nota">🔒 Seus dados estão protegidos e seguros.</div>
           </form>
         ) : (
@@ -137,25 +172,49 @@ function Login() {
             <div className="rz-input-group">
               <div className="rz-field-label">Nome</div>
               <div className="rz-input-wrap">
-                <input className="rz-input rz-input-sem-icone" type="text" placeholder="Seu nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
+                <input
+                  className="rz-input rz-input-sem-icone"
+                  type="text"
+                  placeholder="Seu nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <div className="rz-input-group">
               <div className="rz-field-label">WhatsApp</div>
               <div className="rz-input-wrap">
-                <input className="rz-input rz-input-sem-icone" type="text" placeholder="(55) 99999-9999" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
+                <input
+                  className="rz-input rz-input-sem-icone"
+                  type="text"
+                  placeholder="(55) 99999-9999"
+                  value={telefone}
+                  onChange={(e) => setTelefone(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <div className="rz-input-group">
               <div className="rz-field-label">Senha</div>
               <div className="rz-input-wrap">
-                <input className="rz-input rz-input-sem-icone" type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} required minLength={6} style={{ paddingRight: 40 }} />
+                <input
+                  className="rz-input rz-input-sem-icone"
+                  type={mostrarSenha ? 'text' : 'password'}
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                  minLength={6}
+                  style={{ paddingRight: 40 }}
+                />
                 <button type="button" className="rz-input-toggle-senha" onClick={() => setMostrarSenha((v) => !v)}>
                   {mostrarSenha ? <IconEyeOff /> : <IconEye />}
                 </button>
               </div>
             </div>
-            <button className="rz-btn-primary" type="submit" disabled={carregando}>{carregando ? 'Criando...' : 'Criar conta'}</button>
+            <button className="rz-btn-primary" type="submit" disabled={carregando}>
+              {carregando ? 'Criando...' : 'Criar conta'}
+            </button>
             <div className="rz-seguranca-nota">🔒 Seus dados estão protegidos e seguros.</div>
           </form>
         )}

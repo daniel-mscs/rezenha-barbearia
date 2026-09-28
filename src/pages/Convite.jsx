@@ -60,7 +60,11 @@ function Convite() {
   }
 
   if (carregando) {
-    return <div className="rz-login-body"><div style={{ color: '#666' }}>Carregando...</div></div>
+    return (
+      <div className="rz-login-body">
+        <div style={{ color: '#666' }}>Carregando...</div>
+      </div>
+    )
   }
 
   if (!clienteInfo) {
@@ -68,7 +72,9 @@ function Convite() {
       <div className="rz-login-body">
         <div className="rz-login-box">
           <div className="rz-login-sub">Convite inválido ou expirado.</div>
-          <Link to="/" className="rz-login-voltar" style={{ marginTop: 16 }}>‹ Voltar para o início</Link>
+          <Link to="/" className="rz-login-voltar" style={{ marginTop: 16 }}>
+            ‹ Voltar para o início
+          </Link>
         </div>
       </div>
     )
@@ -78,7 +84,9 @@ function Convite() {
     <div className="rz-login-body">
       <div className="rz-login-box">
         <div className="rz-login-logo">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
         </div>
         <div className="rz-login-sub">Bem-vindo(a), {clienteInfo.nome.split(' ')[0]}!</div>
 
@@ -96,13 +104,27 @@ function Convite() {
               <div className="rz-input-group">
                 <div className="rz-field-label">E-mail</div>
                 <div className="rz-input-wrap">
-                  <input className="rz-input rz-input-sem-icone" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <input
+                    className="rz-input rz-input-sem-icone"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
               <div className="rz-input-group">
                 <div className="rz-field-label">Senha</div>
                 <div className="rz-input-wrap">
-                  <input className="rz-input rz-input-sem-icone" type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} required minLength={6} style={{ paddingRight: 40 }} />
+                  <input
+                    className="rz-input rz-input-sem-icone"
+                    type={mostrarSenha ? 'text' : 'password'}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    required
+                    minLength={6}
+                    style={{ paddingRight: 40 }}
+                  />
                   <button type="button" className="rz-input-toggle-senha" onClick={() => setMostrarSenha((v) => !v)}>
                     {mostrarSenha ? <IconEyeOff /> : <IconEye />}
                   </button>

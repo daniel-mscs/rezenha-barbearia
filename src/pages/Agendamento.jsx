@@ -136,7 +136,9 @@ function Agendamento() {
 
   useEffect(() => {
     const verificarSessao = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
       if (session) {
         const { data: cliente } = await supabase
           .from('clientes')
@@ -154,7 +156,10 @@ function Agendamento() {
   }, [])
 
   const buscarAgendamentosDoDia = async (dataParaBuscar) => {
-    if (!dataParaBuscar) { setAgendamentosDoDia([]); return }
+    if (!dataParaBuscar) {
+      setAgendamentosDoDia([])
+      return
+    }
     const { data: existentes } = await supabase
       .from('agendamentos')
       .select('barbeiro_id, horario, servicos(duracao_min)')
@@ -203,7 +208,7 @@ function Agendamento() {
       const indisponivelAqui = !barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
       if (!indisponivelAqui) return false
       return barbeirosLista.some(
-        (b) => b.id !== barbeiro.id && barbeiroDisponivel(b.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
+        (b) => b.id !== barbeiro.id && barbeiroDisponivel(b.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin),
       )
     })
   }
@@ -225,14 +230,15 @@ function Agendamento() {
     }
 
     const alternativos = barbeirosLista.filter(
-      (b) => b.id !== barbeiro.id && barbeiroDisponivel(b.id, slot, servico.duracao_min, agendamentosDoDia, fechamentoMin)
+      (b) => b.id !== barbeiro.id && barbeiroDisponivel(b.id, slot, servico.duracao_min, agendamentosDoDia, fechamentoMin),
     )
 
     setAvisoConflito({
       horario: slot,
-      mensagem: alternativos.length > 0
-        ? `${barbeiro.nome} está indisponível às ${slot}.`
-        : `Nenhum barbeiro está disponível às ${slot} para esse serviço.`,
+      mensagem:
+        alternativos.length > 0
+          ? `${barbeiro.nome} está indisponível às ${slot}.`
+          : `Nenhum barbeiro está disponível às ${slot} para esse serviço.`,
       alternativos,
     })
   }
@@ -264,14 +270,18 @@ function Agendamento() {
       clienteId = idCliente
     }
 
-    const { data: novoAgendamento, error } = await supabase.from('agendamentos').insert({
-      cliente_id: clienteId,
-      barbeiro_id: barbeiro.id,
-      servico_id: servico.id,
-      data,
-      horario,
-      status: 'pendente',
-    }).select('id').single()
+    const { data: novoAgendamento, error } = await supabase
+      .from('agendamentos')
+      .insert({
+        cliente_id: clienteId,
+        barbeiro_id: barbeiro.id,
+        servico_id: servico.id,
+        data,
+        horario,
+        status: 'pendente',
+      })
+      .select('id')
+      .single()
 
     setEnviando(false)
 
@@ -280,11 +290,24 @@ function Agendamento() {
         await buscarAgendamentosDoDia(data)
         setHorario(null)
         setStep(3)
-        setAvisoConflito({ mensagem: 'Esse horário acabou de ser ocupado por outro cliente. Escolhe outro horário na grade abaixo.', horario: null, alternativos: [] })
+        setAvisoConflito({
+          mensagem: 'Esse horário acabou de ser ocupado por outro cliente. Escolhe outro horário na grade abaixo.',
+          horario: null,
+          alternativos: [],
+        })
       } else {
         setErroEnvio('Não foi possível confirmar o agendamento. Tenta outro horário.')
       }
       return
+    }
+
+    // Confirmação por WhatsApp (não trava o fluxo se falhar)
+    if (novoAgendamento?.id) {
+      fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/enviar-whatsapp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agendamento_id: novoAgendamento.id }),
+      }).catch(() => {})
     }
 
     setStep(6)
@@ -293,7 +316,9 @@ function Agendamento() {
   if (verificandoSessao) {
     return (
       <div className="rz-page-root">
-        <div className="rz-page" style={{ textAlign: 'center', paddingTop: 80 }}>Carregando...</div>
+        <div className="rz-page" style={{ textAlign: 'center', paddingTop: 80 }}>
+          Carregando...
+        </div>
       </div>
     )
   }
@@ -302,27 +327,41 @@ function Agendamento() {
     return (
       <div className="rz-page-root">
         <header className="rz-topbar">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
           <div className="rz-topbar-right">
             <ul className="rz-nav">
-              <li><Link to="/">Início</Link></li>
-              <li className="active"><Link to="/agendamento">Agendar</Link></li>
+              <li>
+                <Link to="/">Início</Link>
+              </li>
+              <li className="active">
+                <Link to="/agendamento">Agendar</Link>
+              </li>
             </ul>
-            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar / Login</Link>
+            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>
+              Entrar / Login
+            </Link>
           </div>
         </header>
         <div className="rz-page">
           <div className="rz-divider"></div>
-          <div className="rz-page-title">Fazer <span>agendamento</span></div>
+          <div className="rz-page-title">
+            Fazer <span>agendamento</span>
+          </div>
           <div className="rz-page-sub">Como você quer continuar?</div>
           <div className="rz-choice-grid">
             <Link to="/login" className="rz-choice-card" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="rz-choice-icon"><i className="ti ti-user-check"></i></div>
+              <div className="rz-choice-icon">
+                <i className="ti ti-user-check"></i>
+              </div>
               <div className="rz-choice-title">Já sou cliente</div>
               <div className="rz-choice-desc">Entre com seu login e seus dados já vêm preenchidos automaticamente</div>
             </Link>
             <div className="rz-choice-card" onClick={() => setStep(1)}>
-              <div className="rz-choice-icon"><i className="ti ti-user-plus"></i></div>
+              <div className="rz-choice-icon">
+                <i className="ti ti-user-plus"></i>
+              </div>
               <div className="rz-choice-title">Agendar sem cadastro</div>
               <div className="rz-choice-desc">Informe seus dados na hora, sem precisar criar conta</div>
             </div>
@@ -334,35 +373,57 @@ function Agendamento() {
     )
   }
 
-if (step === 6) {
+  if (step === 6) {
     const numeroBarbearia = '5555991975065'
-    const dataFormatada = data ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
+    const dataFormatada = data
+      ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      : ''
     const mensagemConfirmacao = encodeURIComponent(
-      `Olá! Confirmando meu agendamento na Rezenha Barbearia:\n\n💈 Barbeiro: ${barbeiro?.nome}\n✂️ Serviço: ${servico?.nome}\n📅 Data: ${dataFormatada}\n🕒 Horário: ${horario}\n👤 Nome: ${nomeFinal}`
+      `Olá! Confirmando meu agendamento na Rezenha Barbearia:\n\n💈 Barbeiro: ${barbeiro?.nome}\n✂️ Serviço: ${servico?.nome}\n📅 Data: ${dataFormatada}\n🕒 Horário: ${horario}\n👤 Nome: ${nomeFinal}`,
     )
     const linkConfirmacao = `https://wa.me/${numeroBarbearia}?text=${mensagemConfirmacao}`
 
     return (
       <div className="rz-page-root">
         <header className="rz-topbar">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
-          <ul className="rz-nav"><li><Link to="/">Início</Link></li></ul>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
+          <ul className="rz-nav">
+            <li>
+              <Link to="/">Início</Link>
+            </li>
+          </ul>
         </header>
         <div className="rz-page" style={{ textAlign: 'center', paddingTop: 60 }}>
           <i className="ti ti-circle-check" style={{ fontSize: 56, color: '#4caf50' }}></i>
-          <div className="rz-page-title" style={{ marginTop: 16 }}>Agendamento <span>confirmado!</span></div>
+          <div className="rz-page-title" style={{ marginTop: 16 }}>
+            Agendamento <span>confirmado!</span>
+          </div>
           <p style={{ color: '#888', marginTop: 8 }}>Confirma pelo WhatsApp pra garantir seu horário.</p>
           <a
             href={linkConfirmacao}
             target="_blank"
             rel="noopener noreferrer"
             className="rz-btn-primary"
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 24, width: 'auto', padding: '14px 32px', background: '#25d366', textDecoration: 'none' }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              marginTop: 24,
+              width: 'auto',
+              padding: '14px 32px',
+              background: '#25d366',
+              textDecoration: 'none',
+            }}
           >
             💬 Confirmar pelo WhatsApp
           </a>
           <br />
-          <Link to="/" style={{ display: 'inline-block', marginTop: 16, color: '#888', fontSize: 13, textDecoration: 'none' }}>Voltar ao início</Link>
+          <Link to="/" style={{ display: 'inline-block', marginTop: 16, color: '#888', fontSize: 13, textDecoration: 'none' }}>
+            Voltar ao início
+          </Link>
         </div>
         <BotaoWhatsapp />
       </div>
@@ -372,23 +433,42 @@ if (step === 6) {
   return (
     <div className="rz-page-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha</div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha
+        </div>
         <div className="rz-topbar-right">
           <ul className="rz-nav">
-            <li><Link to="/">Início</Link></li>
-            <li className="active"><Link to="/agendamento">Agendar</Link></li>
+            <li>
+              <Link to="/">Início</Link>
+            </li>
+            <li className="active">
+              <Link to="/agendamento">Agendar</Link>
+            </li>
           </ul>
           {clienteLogado ? (
-            <button onClick={async () => { await supabase.auth.signOut(); window.location.reload() }} className="rz-btn-nav" style={{ border: 'none', cursor: 'pointer' }}>Sair</button>
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut()
+                window.location.reload()
+              }}
+              className="rz-btn-nav"
+              style={{ border: 'none', cursor: 'pointer' }}
+            >
+              Sair
+            </button>
           ) : (
-            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>Entrar / Login</Link>
+            <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>
+              Entrar / Login
+            </Link>
           )}
         </div>
       </header>
 
       <div className="rz-page">
         <div className="rz-divider"></div>
-        <div className="rz-page-title">Fazer <span>agendamento</span></div>
+        <div className="rz-page-title">
+          Fazer <span>agendamento</span>
+        </div>
         <div className="rz-page-sub">
           {clienteLogado ? `Olá, ${clienteLogado.nome.split(' ')[0]}! Preencha as etapas abaixo` : 'Preencha as etapas abaixo'}
         </div>
@@ -445,13 +525,17 @@ if (step === 6) {
                 ))}
               </div>
             )}
-            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!barbeiro} onClick={irParaProximo}>Continuar</button>
+            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!barbeiro} onClick={irParaProximo}>
+              Continuar
+            </button>
           </div>
         )}
 
         {step === 2 && (
           <div className="rz-section-block">
-            <button className="rz-btn-back" onClick={voltar}>‹ Voltar</button>
+            <button className="rz-btn-back" onClick={voltar}>
+              ‹ Voltar
+            </button>
             <div className="rz-field-label">2. Escolha o serviço</div>
             {servicosLista.length === 0 ? (
               <p style={{ color: '#666', fontSize: 13 }}>Nenhum serviço disponível no momento.</p>
@@ -468,13 +552,17 @@ if (step === 6) {
                 ))}
               </div>
             )}
-            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!servico} onClick={irParaProximo}>Continuar</button>
+            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!servico} onClick={irParaProximo}>
+              Continuar
+            </button>
           </div>
         )}
 
         {step === 3 && (
           <div className="rz-section-block">
-            <button className="rz-btn-back" onClick={voltar}>‹ Voltar</button>
+            <button className="rz-btn-back" onClick={voltar}>
+              ‹ Voltar
+            </button>
             <div className="rz-field-label">3. Escolha a data e horário</div>
             <div className="rz-warning">
               <i className="ti ti-alert-circle" style={{ fontSize: 18, flexShrink: 0 }}></i>
@@ -484,7 +572,14 @@ if (step === 6) {
             <div className="rz-datetime-grid">
               <div>
                 <div className="rz-field-label">Data</div>
-                <Calendario value={data} onChange={(novaData) => { setData(novaData); setHorario(null); setAvisoConflito(null) }} />
+                <Calendario
+                  value={data}
+                  onChange={(novaData) => {
+                    setData(novaData)
+                    setHorario(null)
+                    setAvisoConflito(null)
+                  }}
+                />
               </div>
               <div>
                 <div className="rz-field-label">Horários disponíveis</div>
@@ -493,7 +588,9 @@ if (step === 6) {
                   <div className="rz-conflito-box">
                     <div className="rz-conflito-texto">
                       <span>{avisoConflito.mensagem}</span>
-                      <button className="rz-conflito-fechar" onClick={() => setAvisoConflito(null)}>✕</button>
+                      <button className="rz-conflito-fechar" onClick={() => setAvisoConflito(null)}>
+                        ✕
+                      </button>
                     </div>
                     {avisoConflito.alternativos?.length > 0 && (
                       <>
@@ -505,7 +602,9 @@ if (step === 6) {
                               ) : (
                                 <span className="rz-conflito-btn-avatar">{alt.nome.charAt(0).toUpperCase()}</span>
                               )}
-                              <span className="rz-conflito-btn-texto">Marcar com {alt.nome} às {avisoConflito.horario}?</span>
+                              <span className="rz-conflito-btn-texto">
+                                Marcar com {alt.nome} às {avisoConflito.horario}?
+                              </span>
                             </button>
                           ))}
                         </div>
@@ -516,7 +615,8 @@ if (step === 6) {
 
                 {data && !avisoConflito && existeAlternativaNoDia() && (
                   <div className="rz-dica-alternativa">
-                    💡 Alguns horários de {barbeiro.nome} estão ocupados hoje — outros barbeiros têm horários livres. Clica num horário riscado pra ver as opções.
+                    💡 Alguns horários de {barbeiro.nome} estão ocupados hoje — outros barbeiros têm horários livres. Clica num horário
+                    riscado pra ver as opções.
                   </div>
                 )}
                 {!data ? (
@@ -526,7 +626,9 @@ if (step === 6) {
                 ) : (
                   <div className="rz-slots">
                     {gerarHorarios(data, config, diasFechados).map((h) => {
-                      const disponivel = !horarioJaPassou(data, h) && barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
+                      const disponivel =
+                        !horarioJaPassou(data, h) &&
+                        barbeiroDisponivel(barbeiro.id, h, servico.duracao_min, agendamentosDoDia, fechamentoMin)
                       return (
                         <div
                           key={h}
@@ -541,54 +643,116 @@ if (step === 6) {
                 )}
               </div>
             </div>
-            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!data || !horario} onClick={irParaProximo}>Continuar</button>
+            <button className="rz-btn-primary" style={{ marginTop: 20 }} disabled={!data || !horario} onClick={irParaProximo}>
+              Continuar
+            </button>
           </div>
         )}
 
         {step === 4 && !clienteLogado && (
           <div className="rz-section-block">
-            <button className="rz-btn-back" onClick={voltar}>‹ Voltar</button>
+            <button className="rz-btn-back" onClick={voltar}>
+              ‹ Voltar
+            </button>
             <div className="rz-field-label rz-field-label-centro">4. Seus dados</div>
             <div className="rz-form-card">
               <div className="rz-form-grid">
                 <div className="rz-input-group">
                   <div className="rz-field-label">Nome</div>
-                  <input className="rz-input" type="text" placeholder="Seu nome" value={nome} onChange={(e) => setNome(apenasLetras(e.target.value))} autoFocus />
+                  <input
+                    className="rz-input"
+                    type="text"
+                    placeholder="Seu nome"
+                    value={nome}
+                    onChange={(e) => setNome(apenasLetras(e.target.value))}
+                    autoFocus
+                  />
                 </div>
                 <div className="rz-input-group">
                   <div className="rz-field-label">Celular (WhatsApp)</div>
-                  <input className="rz-input" type="text" placeholder="(55) 9 9999-9999" value={formatarTelefone(telefone)} onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))} maxLength={16} />
+                  <input
+                    className="rz-input"
+                    type="text"
+                    placeholder="(55) 9 9999-9999"
+                    value={formatarTelefone(telefone)}
+                    onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))}
+                    maxLength={16}
+                  />
                 </div>
                 <div className="rz-input-group">
-                <div className="rz-field-label">CPF</div>
-                <input className="rz-input" type="text" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(formatarCpf(e.target.value))} maxLength={14} />
-              </div>
+                  <div className="rz-field-label">CPF</div>
+                  <input
+                    className="rz-input"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={cpf}
+                    onChange={(e) => setCpf(formatarCpf(e.target.value))}
+                    maxLength={14}
+                  />
+                </div>
               </div>
               <div className="rz-seguranca-nota">
                 🔒 Seus dados estão protegidos e seguros. Usamos suas informações só pra confirmar seu agendamento.
               </div>
             </div>
-            <button className="rz-btn-primary" style={{ marginTop: 20, maxWidth: 500, margin: '20px auto 0', display: 'block' }} disabled={!nome || telefone.length < 11 || cpf.replace(/\D/g, '').length < 11} onClick={irParaProximo}>Continuar</button>
+            <button
+              className="rz-btn-primary"
+              style={{ marginTop: 20, maxWidth: 500, margin: '20px auto 0', display: 'block' }}
+              disabled={!nome || telefone.length < 11 || cpf.replace(/\D/g, '').length < 11}
+              onClick={irParaProximo}
+            >
+              Continuar
+            </button>
           </div>
         )}
 
         {step === 5 && (
           <div className="rz-section-block">
-            <button className="rz-btn-back" onClick={voltar}>‹ Voltar</button>
+            <button className="rz-btn-back" onClick={voltar}>
+              ‹ Voltar
+            </button>
             <div className="rz-field-label">5. Confirme seu agendamento</div>
             {erroEnvio && (
-              <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+              <div
+                style={{
+                  background: '#2b0d0d',
+                  border: '1px solid #e53935',
+                  color: '#ff6b6b',
+                  fontSize: 12,
+                  padding: '10px 14px',
+                  borderRadius: 6,
+                  marginBottom: 16,
+                }}
+              >
                 {erroEnvio}
               </div>
             )}
             <div className="rz-summary">
               <div className="rz-summary-title">Resumo do agendamento</div>
-              <div className="rz-summary-row"><span>Nome</span><span>{nomeFinal}</span></div>
-              <div className="rz-summary-row"><span>Barbeiro</span><span>{barbeiro?.nome}</span></div>
-              <div className="rz-summary-row"><span>Serviço</span><span>{servico?.nome}</span></div>
-              <div className="rz-summary-row"><span>Data</span><span>{data}</span></div>
-              <div className="rz-summary-row"><span>Horário</span><span>{horario}</span></div>
-              <div className="rz-summary-row total"><span>Total</span><span>R$ {Number(total).toFixed(2)}</span></div>
+              <div className="rz-summary-row">
+                <span>Nome</span>
+                <span>{nomeFinal}</span>
+              </div>
+              <div className="rz-summary-row">
+                <span>Barbeiro</span>
+                <span>{barbeiro?.nome}</span>
+              </div>
+              <div className="rz-summary-row">
+                <span>Serviço</span>
+                <span>{servico?.nome}</span>
+              </div>
+              <div className="rz-summary-row">
+                <span>Data</span>
+                <span>{data}</span>
+              </div>
+              <div className="rz-summary-row">
+                <span>Horário</span>
+                <span>{horario}</span>
+              </div>
+              <div className="rz-summary-row total">
+                <span>Total</span>
+                <span>R$ {Number(total).toFixed(2)}</span>
+              </div>
             </div>
             <button className="rz-btn-primary" disabled={enviando} onClick={confirmarAgendamento}>
               {enviando ? 'Confirmando...' : 'Confirmar agendamento'}

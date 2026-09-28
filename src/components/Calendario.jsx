@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 const DIAS_SEMANA = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
-const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 function formatarData(date) {
   const y = date.getFullYear()
@@ -33,12 +33,22 @@ function Calendario({ value, onChange }) {
   return (
     <div className="rz-calendario">
       <div className="rz-calendario-header">
-        <button type="button" className="rz-calendario-nav" onClick={() => mudarMes(-1)}>‹</button>
-        <div className="rz-calendario-mes">{MESES[mesAtual.getMonth()]} {mesAtual.getFullYear()}</div>
-        <button type="button" className="rz-calendario-nav" onClick={() => mudarMes(1)}>›</button>
+        <button type="button" className="rz-calendario-nav" onClick={() => mudarMes(-1)}>
+          ‹
+        </button>
+        <div className="rz-calendario-mes">
+          {MESES[mesAtual.getMonth()]} {mesAtual.getFullYear()}
+        </div>
+        <button type="button" className="rz-calendario-nav" onClick={() => mudarMes(1)}>
+          ›
+        </button>
       </div>
       <div className="rz-calendario-grid rz-calendario-dias-semana">
-        {DIAS_SEMANA.map((d, i) => <div key={i} className="rz-calendario-dia-semana">{d}</div>)}
+        {DIAS_SEMANA.map((d, i) => (
+          <div key={i} className="rz-calendario-dia-semana">
+            {d}
+          </div>
+        ))}
       </div>
       <div className="rz-calendario-grid">
         {celulas.map((dia, i) => {

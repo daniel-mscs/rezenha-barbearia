@@ -70,11 +70,19 @@ function Clientes() {
     e.preventDefault()
     setSalvando(true)
 
-    const dataNascimentoMontada = diaNascimento && mesNascimento && anoNascimento
-      ? `${anoNascimento}-${mesNascimento.padStart(2, '0')}-${diaNascimento.padStart(2, '0')}`
-      : null
+    const dataNascimentoMontada =
+      diaNascimento && mesNascimento && anoNascimento
+        ? `${anoNascimento}-${mesNascimento.padStart(2, '0')}-${diaNascimento.padStart(2, '0')}`
+        : null
 
-    const payload = { nome, telefone, cpf: cpf || null, obs, data_nascimento: dataNascimentoMontada, intervalo_lembrete_dias: parseInt(intervaloLembrete, 10) }
+    const payload = {
+      nome,
+      telefone,
+      cpf: cpf || null,
+      obs,
+      data_nascimento: dataNascimentoMontada,
+      intervalo_lembrete_dias: parseInt(intervaloLembrete, 10),
+    }
 
     if (editando) {
       await supabase.from('clientes').update(payload).eq('id', editando.id)
@@ -123,7 +131,9 @@ function Clientes() {
     setEnviandoConvite(true)
     setErroConvite('')
 
-    const { data: { session } } = await supabase.auth.getSession()
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
     const resposta = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/criar-login-cliente-admin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
@@ -139,7 +149,7 @@ function Clientes() {
 
     const telefoneLimpo = clienteParaConvite.telefone.replace(/\D/g, '')
     const mensagem = encodeURIComponent(
-      `Oi ${clienteParaConvite.nome.split(' ')[0]}! Sua conta na Rezenha Barbearia já está pronta.\n\nEntre em https://rezenha-barbearia.vercel.app/login com:\nWhatsApp: ${clienteParaConvite.telefone}\nSenha: ${senhaConvite}`
+      `Oi ${clienteParaConvite.nome.split(' ')[0]}! Sua conta na Rezenha Barbearia já está pronta.\n\nEntre em https://rezenha-barbearia.vercel.app/login com:\nWhatsApp: ${clienteParaConvite.telefone}\nSenha: ${senhaConvite}`,
     )
     window.open(`https://wa.me/55${telefoneLimpo}?text=${mensagem}`, '_blank')
 
@@ -147,16 +157,18 @@ function Clientes() {
     carregar()
   }
 
-  const clientesFiltrados = clientes.filter((c) =>
-    c.nome.toLowerCase().includes(busca.toLowerCase()) || c.telefone.includes(busca)
-  )
+  const clientesFiltrados = clientes.filter((c) => c.nome.toLowerCase().includes(busca.toLowerCase()) || c.telefone.includes(busca))
 
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
-          <button onClick={sair} className="rz-logout"><i className="ti ti-logout"></i> Sair</button>
+          <button onClick={sair} className="rz-logout">
+            <i className="ti ti-logout"></i> Sair
+          </button>
         </div>
       </header>
 
@@ -175,7 +187,9 @@ function Clientes() {
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
-              <button className="rz-btn-primary" onClick={abrirNovo}>+ Novo cliente</button>
+              <button className="rz-btn-primary" onClick={abrirNovo}>
+                + Novo cliente
+              </button>
             </div>
           </div>
 
@@ -200,16 +214,24 @@ function Clientes() {
                 <tbody>
                   {clientesFiltrados.map((c) => (
                     <tr key={c.id}>
-                      <td><strong style={{ color: '#fff' }}>{c.nome}</strong></td>
+                      <td>
+                        <strong style={{ color: '#fff' }}>{c.nome}</strong>
+                      </td>
                       <td>{c.telefone}</td>
                       <td>{c.obs || '—'}</td>
                       <td>{c.data_nascimento ? new Date(c.data_nascimento + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</td>
                       <td>{c.data_ultimo_corte || '—'}</td>
                       <td>{c.intervalo_lembrete_dias || 30} dias</td>
                       <td>
-                        <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>Editar</button>
-                        <button className="rz-action-btn" onClick={() => abrirConvite(c)}>Criar login</button>
-                        <button className="rz-action-btn danger" onClick={() => setClienteParaExcluir(c)}>Excluir</button>
+                        <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>
+                          Editar
+                        </button>
+                        <button className="rz-action-btn" onClick={() => abrirConvite(c)}>
+                          Criar login
+                        </button>
+                        <button className="rz-action-btn danger" onClick={() => setClienteParaExcluir(c)}>
+                          Excluir
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -232,29 +254,76 @@ function Clientes() {
               <input className="rz-input" type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
 
               <label className="rz-field-label">CPF</label>
-              <input className="rz-input" type="text" placeholder="000.000.000-00" value={cpf} onChange={(e) => setCpf(e.target.value)} maxLength={14} />
+              <input
+                className="rz-input"
+                type="text"
+                placeholder="000.000.000-00"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                maxLength={14}
+              />
 
               <label className="rz-field-label">Observação</label>
-              <input className="rz-input" type="text" placeholder='Ex: "Mora tal bairro..."' value={obs} onChange={(e) => setObs(e.target.value)} />
+              <input
+                className="rz-input"
+                type="text"
+                placeholder='Ex: "Mora tal bairro..."'
+                value={obs}
+                onChange={(e) => setObs(e.target.value)}
+              />
 
               <label className="rz-field-label">Data de nascimento</label>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr', gap: 8, marginBottom: 16 }}>
-                <select className="rz-input" style={{ marginBottom: 0 }} value={diaNascimento} onChange={(e) => setDiaNascimento(e.target.value)}>
+                <select
+                  className="rz-input"
+                  style={{ marginBottom: 0 }}
+                  value={diaNascimento}
+                  onChange={(e) => setDiaNascimento(e.target.value)}
+                >
                   <option value="">Dia</option>
                   {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
-                    <option key={d} value={d}>{d}</option>
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
                   ))}
                 </select>
-                <select className="rz-input" style={{ marginBottom: 0 }} value={mesNascimento} onChange={(e) => setMesNascimento(e.target.value)}>
+                <select
+                  className="rz-input"
+                  style={{ marginBottom: 0 }}
+                  value={mesNascimento}
+                  onChange={(e) => setMesNascimento(e.target.value)}
+                >
                   <option value="">Mês</option>
-                  {['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'].map((m, i) => (
-                    <option key={i} value={i + 1}>{m}</option>
+                  {[
+                    'Janeiro',
+                    'Fevereiro',
+                    'Março',
+                    'Abril',
+                    'Maio',
+                    'Junho',
+                    'Julho',
+                    'Agosto',
+                    'Setembro',
+                    'Outubro',
+                    'Novembro',
+                    'Dezembro',
+                  ].map((m, i) => (
+                    <option key={i} value={i + 1}>
+                      {m}
+                    </option>
                   ))}
                 </select>
-                <select className="rz-input" style={{ marginBottom: 0 }} value={anoNascimento} onChange={(e) => setAnoNascimento(e.target.value)}>
+                <select
+                  className="rz-input"
+                  style={{ marginBottom: 0 }}
+                  value={anoNascimento}
+                  onChange={(e) => setAnoNascimento(e.target.value)}
+                >
                   <option value="">Ano</option>
                   {Array.from({ length: 90 }, (_, i) => new Date().getFullYear() - i).map((a) => (
-                    <option key={a} value={a}>{a}</option>
+                    <option key={a} value={a}>
+                      {a}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -267,7 +336,9 @@ function Clientes() {
               </select>
 
               <div className="rz-modal-actions">
-                <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>Cancelar</button>
+                <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>
+                  Cancelar
+                </button>
                 <button type="submit" className="rz-btn-primary" style={{ flex: 1 }} disabled={salvando}>
                   {salvando ? 'Salvando...' : 'Salvar'}
                 </button>
@@ -282,17 +353,30 @@ function Clientes() {
           <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
             <div className="rz-modal-title">Criar login para {clienteParaConvite.nome}</div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 16 }}>
-              Define uma senha (ou usa a sugerida) — a conta já nasce pronta, e o cliente recebe telefone+senha pelo WhatsApp pra entrar direto.
+              Define uma senha (ou usa a sugerida) — a conta já nasce pronta, e o cliente recebe telefone+senha pelo WhatsApp pra entrar
+              direto.
             </p>
             {erroConvite && (
-              <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+              <div
+                style={{
+                  background: '#2b0d0d',
+                  border: '1px solid #e53935',
+                  color: '#ff6b6b',
+                  fontSize: 12,
+                  padding: '10px 14px',
+                  borderRadius: 6,
+                  marginBottom: 16,
+                }}
+              >
                 {erroConvite}
               </div>
             )}
             <label className="rz-field-label">Senha</label>
             <input className="rz-input" type="text" value={senhaConvite} onChange={(e) => setSenhaConvite(e.target.value)} />
             <div className="rz-modal-actions">
-              <button className="rz-btn-outline" onClick={() => setClienteParaConvite(null)}>Cancelar</button>
+              <button className="rz-btn-outline" onClick={() => setClienteParaConvite(null)}>
+                Cancelar
+              </button>
               <button className="rz-btn-primary" style={{ flex: 1 }} onClick={confirmarConvite} disabled={enviandoConvite}>
                 {enviandoConvite ? 'Criando...' : 'Criar e enviar pelo WhatsApp'}
               </button>
@@ -304,13 +388,19 @@ function Clientes() {
       {clienteParaExcluir && (
         <div className="rz-modal-overlay" onClick={() => setClienteParaExcluir(null)}>
           <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-            <div className="rz-modal-title" style={{ fontSize: 18 }}>Excluir {clienteParaExcluir.nome}?</div>
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>
+              Excluir {clienteParaExcluir.nome}?
+            </div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>
               Isso apaga o cadastro do cliente e todo o histórico de agendamentos vinculado a ele. Essa ação não pode ser desfeita.
             </p>
             <div className="rz-modal-actions">
-              <button className="rz-btn-outline" onClick={() => setClienteParaExcluir(null)}>Cancelar</button>
-              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>Excluir</button>
+              <button className="rz-btn-outline" onClick={() => setClienteParaExcluir(null)}>
+                Cancelar
+              </button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarExcluir}>
+                Excluir
+              </button>
             </div>
           </div>
         </div>

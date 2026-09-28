@@ -13,18 +13,16 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization")
     if (!authHeader) throw new Error("Não autenticado")
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    )
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    const supabaseClient = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_ANON_KEY") ?? "", {
+      global: { headers: { Authorization: authHeader } },
+    })
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error("Não autenticado")
 
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    )
+    const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "")
 
     const { data: chamador } = await supabaseAdmin.from("barbeiros").select("id").eq("auth_id", user.id).maybeSingle()
     if (!chamador) throw new Error("Sem permissão")
@@ -61,11 +59,13 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ sucesso: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
     })
   } catch (error) {
     return new Response(JSON.stringify({ erro: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
     })
   }
 })

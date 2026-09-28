@@ -13,11 +13,15 @@ function gerarHorariosDoDia(dataStr) {
   if (diaSemana === 0) return []
   const fechamento = diaSemana === 6 ? 18 : 19
   const slots = []
-  let h = 9, m = 0
+  let h = 9,
+    m = 0
   while (h < fechamento) {
     slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
     m += 15
-    if (m >= 60) { m -= 60; h += 1 }
+    if (m >= 60) {
+      m -= 60
+      h += 1
+    }
   }
   return slots
 }
@@ -74,21 +78,19 @@ function Agendamentos() {
   useEffect(() => {
     const carregarBloqueios = async () => {
       const hoje = new Date().toISOString().split('T')[0]
-      const { data } = await supabase
-        .from('dias_fechados')
-        .select('*')
-        .gte('data', hoje)
-        .order('data')
-        .limit(10)
+      const { data } = await supabase.from('dias_fechados').select('*').gte('data', hoje).order('data').limit(10)
       setProximosBloqueios(data || [])
     }
     carregarBloqueios()
   }, [])
 
   useEffect(() => {
-    const intervalo = setInterval(() => {
-      carregar()
-    }, 2 * 60 * 1000) // atualiza a cada 2 minutos
+    const intervalo = setInterval(
+      () => {
+        carregar()
+      },
+      2 * 60 * 1000,
+    ) // atualiza a cada 2 minutos
 
     return () => clearInterval(intervalo)
   }, [filtroData])
@@ -107,7 +109,9 @@ function Agendamentos() {
           .maybeSingle()
 
         if (completo) {
-          setNotificacao(`Novo agendamento: ${completo.clientes?.nome || 'Cliente'} com ${completo.barbeiros?.nome || '—'} às ${completo.horario?.slice(0, 5)}`)
+          setNotificacao(
+            `Novo agendamento: ${completo.clientes?.nome || 'Cliente'} com ${completo.barbeiros?.nome || '—'} às ${completo.horario?.slice(0, 5)}`,
+          )
           setTimeout(() => setNotificacao(null), 6000)
         }
 
@@ -138,7 +142,6 @@ function Agendamentos() {
     carregar()
   }
 
-
   const sair = async () => {
     await supabase.auth.signOut()
     navigate('/admin/login')
@@ -161,16 +164,12 @@ function Agendamentos() {
     return true
   })
 
-  const pendentesAtrasados = agendamentos.filter(
-    (a) => a.status === 'pendente' && horarioJaPassou(filtroData, a.horario.slice(0, 5))
-  )
+  const pendentesAtrasados = agendamentos.filter((a) => a.status === 'pendente' && horarioJaPassou(filtroData, a.horario.slice(0, 5)))
 
   const totalHoje = agendamentos.length
   const confirmados = agendamentos.filter((a) => a.status === 'confirmado').length
   const pendentes = agendamentos.filter((a) => a.status === 'pendente').length
-  const faturamento = agendamentos
-    .filter((a) => a.status !== 'cancelado')
-    .reduce((soma, a) => soma + Number(a.servicos?.preco || 0), 0)
+  const faturamento = agendamentos.filter((a) => a.status !== 'cancelado').reduce((soma, a) => soma + Number(a.servicos?.preco || 0), 0)
 
   return (
     <div className="rz-admin-root">
@@ -180,9 +179,13 @@ function Agendamentos() {
         </div>
       )}
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
-          <button onClick={sair} className="rz-logout"><i className="ti ti-logout"></i> Sair</button>
+          <button onClick={sair} className="rz-logout">
+            <i className="ti ti-logout"></i> Sair
+          </button>
         </div>
       </header>
 
@@ -191,7 +194,9 @@ function Agendamentos() {
 
         <main className="rz-main">
           <div className="rz-page-header">
-            <div className="rz-page-title">Agendamentos de <span>{filtroData === hoje() ? 'hoje' : 'outra data'}</span></div>
+            <div className="rz-page-title">
+              Agendamentos de <span>{filtroData === hoje() ? 'hoje' : 'outra data'}</span>
+            </div>
             <div className="rz-date-badge">
               <i className="ti ti-calendar" style={{ fontSize: 14 }}></i>
               <input type="date" value={filtroData} onChange={(e) => setFiltroData(e.target.value)} />
@@ -206,12 +211,16 @@ function Agendamentos() {
             </div>
             <div className="rz-stat-card">
               <div className="rz-stat-label">Confirmados</div>
-              <div className="rz-stat-num" style={{ color: '#4caf50' }}>{confirmados}</div>
+              <div className="rz-stat-num" style={{ color: '#4caf50' }}>
+                {confirmados}
+              </div>
               <div className="rz-stat-sub">prontos pra atender</div>
             </div>
             <div className="rz-stat-card">
               <div className="rz-stat-label">Pendentes</div>
-              <div className="rz-stat-num" style={{ color: '#F07B00' }}>{pendentes}</div>
+              <div className="rz-stat-num" style={{ color: '#F07B00' }}>
+                {pendentes}
+              </div>
               <div className="rz-stat-sub">aguardando</div>
             </div>
             <div className="rz-stat-card">
@@ -230,8 +239,12 @@ function Agendamentos() {
                     <span>
                       <strong>{a.horario?.slice(0, 5)}</strong> — {a.clientes?.nome || 'Cliente'} com {a.barbeiros?.nome || '—'}
                     </span>
-                    <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>Confirmar</button>
-                    <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>Cancelar</button>
+                    <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>
+                      Confirmar
+                    </button>
+                    <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>
+                      Cancelar
+                    </button>
                   </div>
                 ))}
               </div>
@@ -253,19 +266,43 @@ function Agendamentos() {
           )}
 
           <div className="rz-view-toggle">
-            <button className={visualizacao === 'tabela' ? 'active' : ''} onClick={() => setVisualizacao('tabela')}>Tabela</button>
-            <button className={visualizacao === 'agenda' ? 'active' : ''} onClick={() => setVisualizacao('agenda')}>Agenda por barbeiro</button>
+            <button className={visualizacao === 'tabela' ? 'active' : ''} onClick={() => setVisualizacao('tabela')}>
+              Tabela
+            </button>
+            <button className={visualizacao === 'agenda' ? 'active' : ''} onClick={() => setVisualizacao('agenda')}>
+              Agenda por barbeiro
+            </button>
           </div>
 
           <div className="rz-filters">
-            <button className={`rz-filter-btn ${filtroStatus === 'todos' ? 'active' : ''}`} onClick={() => setFiltroStatus('todos')}>Todos</button>
-            <button className={`rz-filter-btn ${filtroStatus === 'confirmado' ? 'active' : ''}`} onClick={() => setFiltroStatus('confirmado')}>Confirmados</button>
-            <button className={`rz-filter-btn ${filtroStatus === 'pendente' ? 'active' : ''}`} onClick={() => setFiltroStatus('pendente')}>Pendentes</button>
-            <button className={`rz-filter-btn ${filtroStatus === 'cancelado' ? 'active' : ''}`} onClick={() => setFiltroStatus('cancelado')}>Cancelados</button>
+            <button className={`rz-filter-btn ${filtroStatus === 'todos' ? 'active' : ''}`} onClick={() => setFiltroStatus('todos')}>
+              Todos
+            </button>
+            <button
+              className={`rz-filter-btn ${filtroStatus === 'confirmado' ? 'active' : ''}`}
+              onClick={() => setFiltroStatus('confirmado')}
+            >
+              Confirmados
+            </button>
+            <button className={`rz-filter-btn ${filtroStatus === 'pendente' ? 'active' : ''}`} onClick={() => setFiltroStatus('pendente')}>
+              Pendentes
+            </button>
+            <button
+              className={`rz-filter-btn ${filtroStatus === 'cancelado' ? 'active' : ''}`}
+              onClick={() => setFiltroStatus('cancelado')}
+            >
+              Cancelados
+            </button>
             <div className="rz-filters-right">
-              <button className={`rz-filter-btn ${filtroBarbeiro === null ? 'active' : ''}`} onClick={() => setFiltroBarbeiro(null)}>Todos</button>
+              <button className={`rz-filter-btn ${filtroBarbeiro === null ? 'active' : ''}`} onClick={() => setFiltroBarbeiro(null)}>
+                Todos
+              </button>
               {barbeiros.map((b) => (
-                <button key={b.id} className={`rz-filter-btn ${filtroBarbeiro === b.id ? 'active' : ''}`} onClick={() => setFiltroBarbeiro(b.id)}>
+                <button
+                  key={b.id}
+                  className={`rz-filter-btn ${filtroBarbeiro === b.id ? 'active' : ''}`}
+                  onClick={() => setFiltroBarbeiro(b.id)}
+                >
                   {b.nome.split(' ')[0]}
                 </button>
               ))}
@@ -273,56 +310,72 @@ function Agendamentos() {
           </div>
 
           {visualizacao === 'tabela' && (
-          <div className="rz-table-wrap">
-            {carregando ? (
-              <div className="rz-empty-state">Carregando...</div>
-            ) : agendamentosFiltrados.length === 0 ? (
-              <div className="rz-empty-state">Nenhum agendamento encontrado.</div>
-            ) : (
-              <table className="rz-table">
-                <thead>
-                  <tr>
-                    <th>Horário</th>
-                    <th>Cliente</th>
-                    <th>Serviço</th>
-                    <th>Barbeiro</th>
-                    <th>Valor</th>
-                    <th>Status</th>
-                    <th>Agendado em</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {agendamentosFiltrados.map((a) => (
-                    <tr key={a.id}>
-                      <td data-label="Horário"><strong style={{ color: '#fff' }}>{a.horario?.slice(0, 5)}</strong></td>
-                      <td data-label="Cliente">{a.clientes?.nome || '—'}</td>
-                      <td data-label="Serviço">{a.servicos?.nome || '—'}</td>
-                      <td data-label="Barbeiro">
-                        <span className="rz-barber-dot" style={{ background: corBarbeiro(a.barbeiros?.id) }}></span>
-                        {a.barbeiros?.nome || '—'}
-                      </td>
-                      <td data-label="Valor">R$ {Number(a.servicos?.preco || 0).toFixed(2)}</td>
-                      <td data-label="Status">
-                        <span className="rz-badge" style={badgeClasse(a.status)}>{a.status}</span>
-                      </td>
-                      <td data-label="Agendado em" style={{ fontSize: 12, color: '#888' }}>
-                        {new Date(a.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                      </td>
-                      <td data-label="Ações">
-                        {a.status !== 'confirmado' && (
-                          <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>Confirmar</button>
-                        )}
-                        {a.status !== 'cancelado' && (
-                          <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>Cancelar</button>
-                        )}
-                      </td>
+            <div className="rz-table-wrap">
+              {carregando ? (
+                <div className="rz-empty-state">Carregando...</div>
+              ) : agendamentosFiltrados.length === 0 ? (
+                <div className="rz-empty-state">Nenhum agendamento encontrado.</div>
+              ) : (
+                <table className="rz-table">
+                  <thead>
+                    <tr>
+                      <th>Horário</th>
+                      <th>Cliente</th>
+                      <th>Serviço</th>
+                      <th>Barbeiro</th>
+                      <th>Valor</th>
+                      <th>Status</th>
+                      <th>Agendado em</th>
+                      <th>Ações</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody>
+                    {agendamentosFiltrados.map((a) => (
+                      <tr key={a.id}>
+                        <td data-label="Horário">
+                          <strong style={{ color: '#fff' }}>{a.horario?.slice(0, 5)}</strong>
+                        </td>
+                        <td data-label="Cliente">{a.clientes?.nome || '—'}</td>
+                        <td data-label="Serviço">{a.servicos?.nome || '—'}</td>
+                        <td data-label="Barbeiro">
+                          <span className="rz-barber-dot" style={{ background: corBarbeiro(a.barbeiros?.id) }}></span>
+                          {a.barbeiros?.nome || '—'}
+                        </td>
+                        <td data-label="Valor">R$ {Number(a.servicos?.preco || 0).toFixed(2)}</td>
+                        <td data-label="Status">
+                          <span className="rz-badge" style={badgeClasse(a.status)}>
+                            {a.status}
+                          </span>
+                          {a.cliente_confirmou_em && (
+                            <span style={{ display: 'block', marginTop: 4, fontSize: 11, color: '#4caf50' }}>✓ cliente confirmou</span>
+                          )}
+                        </td>
+                        <td data-label="Agendado em" style={{ fontSize: 12, color: '#888' }}>
+                          {new Date(a.created_at).toLocaleString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </td>
+                        <td data-label="Ações">
+                          {a.status !== 'confirmado' && (
+                            <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>
+                              Confirmar
+                            </button>
+                          )}
+                          {a.status !== 'cancelado' && (
+                            <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>
+                              Cancelar
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           )}
 
           {visualizacao === 'agenda' && (
@@ -336,7 +389,9 @@ function Agendamentos() {
                   <div className="rz-agenda-grid" style={{ gridTemplateColumns: `70px repeat(${barbeiros.length}, 1fr)` }}>
                     <div className="rz-agenda-time-header"></div>
                     {barbeiros.map((b) => (
-                      <div key={b.id} className="rz-agenda-col-header">{b.nome}</div>
+                      <div key={b.id} className="rz-agenda-col-header">
+                        {b.nome}
+                      </div>
                     ))}
 
                     {horarios.map((h) => {

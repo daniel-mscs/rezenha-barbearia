@@ -31,16 +31,9 @@ serve(async (req) => {
     })
   }
 
-  const supabaseAdmin = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-  )
+  const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "")
 
-  const { data: agendamento, error: erroBusca } = await supabaseAdmin
-    .from("agendamentos")
-    .select("status")
-    .eq("id", id)
-    .maybeSingle()
+  const { data: agendamento, error: erroBusca } = await supabaseAdmin.from("agendamentos").select("status").eq("id", id).maybeSingle()
 
   if (erroBusca || !agendamento) {
     return new Response(paginaResposta("Agendamento não encontrado", "Esse link pode ter expirado.", "#e53935"), {
@@ -50,9 +43,12 @@ serve(async (req) => {
   }
 
   if (agendamento.status === "cancelado") {
-    return new Response(paginaResposta("Agendamento cancelado", "Esse agendamento já foi cancelado. Entre em contato com a barbearia.", "#e53935"), {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
-    })
+    return new Response(
+      paginaResposta("Agendamento cancelado", "Esse agendamento já foi cancelado. Entre em contato com a barbearia.", "#e53935"),
+      {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      },
+    )
   }
 
   await supabaseAdmin.from("agendamentos").update({ status: "confirmado" }).eq("id", id)

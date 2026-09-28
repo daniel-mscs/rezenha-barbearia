@@ -16,7 +16,9 @@ serve(async (req) => {
     if (!paraEmail) throw new Error("E-mail do destinatário é obrigatório")
 
     const dataFormatada = new Date(data + "T00:00:00").toLocaleDateString("pt-BR", {
-      weekday: "long", day: "2-digit", month: "long",
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
     })
 
     const resposta = await fetch("https://api.resend.com/emails", {
@@ -66,13 +68,17 @@ serve(async (req) => {
               </table>
             </div>
 
-            ${agendamentoId ? `
+            ${
+              agendamentoId
+                ? `
               <div style="text-align: center; margin-top: 24px;">
                 <a href="https://xpxnoerayaqioyndlprf.supabase.co/functions/v1/confirmar-presenca?id=${agendamentoId}" style="display: inline-block; background: #F07B00; color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 14px;">
                   Confirmar presença
                 </a>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <p style="color: #555; font-size: 12px; text-align: center; margin-top: 24px;">Precisa remarcar ou cancelar? Entre em contato com a barbearia.</p>
           </div>

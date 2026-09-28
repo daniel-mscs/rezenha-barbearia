@@ -8,14 +8,12 @@ function ProtectedAdminRoute({ children }) {
 
   useEffect(() => {
     const verificar = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
 
       if (session) {
-        const { data: barbeiro } = await supabase
-          .from('barbeiros')
-          .select('id')
-          .eq('auth_id', session.user.id)
-          .maybeSingle()
+        const { data: barbeiro } = await supabase.from('barbeiros').select('id').eq('auth_id', session.user.id).maybeSingle()
 
         if (barbeiro) setAutorizado(true)
       }

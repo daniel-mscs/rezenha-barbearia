@@ -27,16 +27,20 @@ function Relatorios() {
 
   useEffect(() => {
     const iniciar = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) { navigate('/admin/login'); return }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) {
+        navigate('/admin/login')
+        return
+      }
 
-      const { data: barbeiro } = await supabase
-        .from('barbeiros')
-        .select('id, is_dono')
-        .eq('auth_id', session.user.id)
-        .maybeSingle()
+      const { data: barbeiro } = await supabase.from('barbeiros').select('id, is_dono').eq('auth_id', session.user.id).maybeSingle()
 
-      if (!barbeiro) { navigate('/admin/login'); return }
+      if (!barbeiro) {
+        navigate('/admin/login')
+        return
+      }
 
       setIsDono(barbeiro.is_dono)
       setMeuBarbeiroId(barbeiro.id)
@@ -77,7 +81,7 @@ function Relatorios() {
       acc[nome].cortes += 1
       acc[nome].clientes.add(a.cliente_id)
       return acc
-    }, {})
+    }, {}),
   ).map((b) => ({ nome: b.nome, cortes: b.cortes, clientes: b.clientes.size }))
 
   const servicoMaisPedido = Object.values(
@@ -86,7 +90,7 @@ function Relatorios() {
       if (!acc[nome]) acc[nome] = { nome, total: 0 }
       acc[nome].total += 1
       return acc
-    }, {})
+    }, {}),
   ).sort((a, b) => b.total - a.total)
 
   const horariosPico = Object.values(
@@ -95,7 +99,7 @@ function Relatorios() {
       if (!acc[hora]) acc[hora] = { hora, total: 0 }
       acc[hora].total += 1
       return acc
-    }, {})
+    }, {}),
   ).sort((a, b) => a.hora.localeCompare(b.hora))
 
   const nomesBarbeiros = [...new Set(agendamentos.map((a) => a.barbeiros?.nome).filter(Boolean))]
@@ -136,9 +140,13 @@ function Relatorios() {
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
-          <button onClick={sair} className="rz-logout"><i className="ti ti-logout"></i> Sair</button>
+          <button onClick={sair} className="rz-logout">
+            <i className="ti ti-logout"></i> Sair
+          </button>
         </div>
       </header>
 
@@ -149,9 +157,21 @@ function Relatorios() {
           <div className="rz-page-header">
             <div className="rz-page-title">Relatórios</div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input className="rz-input" style={{ margin: 0, width: 'auto' }} type="date" value={dataInicio} onChange={(e) => setDataInicio(e.target.value)} />
+              <input
+                className="rz-input"
+                style={{ margin: 0, width: 'auto' }}
+                type="date"
+                value={dataInicio}
+                onChange={(e) => setDataInicio(e.target.value)}
+              />
               <span style={{ color: '#666', fontSize: 12 }}>até</span>
-              <input className="rz-input" style={{ margin: 0, width: 'auto' }} type="date" value={dataFim} onChange={(e) => setDataFim(e.target.value)} />
+              <input
+                className="rz-input"
+                style={{ margin: 0, width: 'auto' }}
+                type="date"
+                value={dataFim}
+                onChange={(e) => setDataFim(e.target.value)}
+              />
             </div>
           </div>
 
@@ -179,72 +199,82 @@ function Relatorios() {
                 </div>
                 <div className="rz-stat-card">
                   <div className="rz-stat-label">Serviço mais pedido</div>
-                  <div className="rz-stat-num" style={{ fontSize: 18 }}>{servicoMaisPedido[0]?.nome || '—'}</div>
+                  <div className="rz-stat-num" style={{ fontSize: 18 }}>
+                    {servicoMaisPedido[0]?.nome || '—'}
+                  </div>
                   <div className="rz-stat-sub">{servicoMaisPedido[0]?.total || 0} pedidos</div>
                 </div>
               </div>
 
               {isDono && (
-              <>
-              <div className="rz-section-title-mini" style={{ fontSize: 16, marginTop: 8 }}>Desempenho por barbeiro</div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, marginBottom: 28 }}>
-                {detalhesPorBarbeiro.map((b) => (
-                  <div key={b.nome} className="rz-stat-card">
-                    <div className="rz-stat-label" style={{ fontSize: 13, color: '#fff', marginBottom: 14 }}>{b.nome}</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12, color: '#999' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span>Atendimentos</span>
-                        <span style={{ color: '#fff', fontWeight: 700 }}>{b.totalAtendimentos}</span>
+                <>
+                  <div className="rz-section-title-mini" style={{ fontSize: 16, marginTop: 8 }}>
+                    Desempenho por barbeiro
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14, marginBottom: 28 }}>
+                    {detalhesPorBarbeiro.map((b) => (
+                      <div key={b.nome} className="rz-stat-card">
+                        <div className="rz-stat-label" style={{ fontSize: 13, color: '#fff', marginBottom: 14 }}>
+                          {b.nome}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12, color: '#999' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Atendimentos</span>
+                            <span style={{ color: '#fff', fontWeight: 700 }}>{b.totalAtendimentos}</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Faturamento</span>
+                            <span style={{ color: '#F07B00', fontWeight: 700 }}>R$ {b.faturamento.toFixed(0)}</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Serviço + pedido</span>
+                            <span style={{ color: '#fff', fontWeight: 700 }}>{b.servicoMaisPedido}</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Horário de pico</span>
+                            <span style={{ color: '#fff', fontWeight: 700 }}>{b.horarioPico}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span>Faturamento</span>
-                        <span style={{ color: '#F07B00', fontWeight: 700 }}>R$ {b.faturamento.toFixed(0)}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span>Serviço + pedido</span>
-                        <span style={{ color: '#fff', fontWeight: 700 }}>{b.servicoMaisPedido}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span>Horário de pico</span>
-                        <span style={{ color: '#fff', fontWeight: 700 }}>{b.horarioPico}</span>
-                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                    <div className="rz-table-wrap" style={{ padding: 20 }}>
+                      <div className="rz-section-title-mini">Cortes por barbeiro</div>
+                      <ResponsiveContainer width="100%" height={260}>
+                        <BarChart data={cortesPorBarbeiro}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#222" />
+                          <XAxis dataKey="nome" stroke="#666" fontSize={12} />
+                          <YAxis stroke="#666" fontSize={12} allowDecimals={false} />
+                          <Tooltip contentStyle={{ background: '#161616', border: '1px solid #333', borderRadius: 8 }} />
+                          <Bar dataKey="cortes" radius={[6, 6, 0, 0]}>
+                            {cortesPorBarbeiro.map((_, i) => (
+                              <Cell key={i} fill={CORES[i % CORES.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="rz-table-wrap" style={{ padding: 20 }}>
+                      <div className="rz-section-title-mini">Clientes atendidos por barbeiro</div>
+                      <ResponsiveContainer width="100%" height={260}>
+                        <BarChart data={cortesPorBarbeiro}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#222" />
+                          <XAxis dataKey="nome" stroke="#666" fontSize={12} />
+                          <YAxis stroke="#666" fontSize={12} allowDecimals={false} />
+                          <Tooltip contentStyle={{ background: '#161616', border: '1px solid #333', borderRadius: 8 }} />
+                          <Bar dataKey="clientes" radius={[6, 6, 0, 0]}>
+                            {cortesPorBarbeiro.map((_, i) => (
+                              <Cell key={i} fill={CORES[i % CORES.length]} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
-                ))}
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-                <div className="rz-table-wrap" style={{ padding: 20 }}>
-                  <div className="rz-section-title-mini">Cortes por barbeiro</div>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={cortesPorBarbeiro}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-                      <XAxis dataKey="nome" stroke="#666" fontSize={12} />
-                      <YAxis stroke="#666" fontSize={12} allowDecimals={false} />
-                      <Tooltip contentStyle={{ background: '#161616', border: '1px solid #333', borderRadius: 8 }} />
-                      <Bar dataKey="cortes" radius={[6, 6, 0, 0]}>
-                        {cortesPorBarbeiro.map((_, i) => <Cell key={i} fill={CORES[i % CORES.length]} />)}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="rz-table-wrap" style={{ padding: 20 }}>
-                  <div className="rz-section-title-mini">Clientes atendidos por barbeiro</div>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={cortesPorBarbeiro}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-                      <XAxis dataKey="nome" stroke="#666" fontSize={12} />
-                      <YAxis stroke="#666" fontSize={12} allowDecimals={false} />
-                      <Tooltip contentStyle={{ background: '#161616', border: '1px solid #333', borderRadius: 8 }} />
-                      <Bar dataKey="clientes" radius={[6, 6, 0, 0]}>
-                        {cortesPorBarbeiro.map((_, i) => <Cell key={i} fill={CORES[i % CORES.length]} />)}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              </>
+                </>
               )}
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>

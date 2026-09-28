@@ -7,11 +7,15 @@ function gerarHorariosDoDia(data) {
   if (diaSemana === 0) return []
   const fechamento = diaSemana === 6 ? 18 : 19
   const slots = []
-  let h = 9, m = 0
+  let h = 9,
+    m = 0
   while (h < fechamento) {
     slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
     m += 15
-    if (m >= 60) { m -= 60; h += 1 }
+    if (m >= 60) {
+      m -= 60
+      h += 1
+    }
   }
   return slots
 }
@@ -33,7 +37,10 @@ function ProximoHorario() {
   useEffect(() => {
     const calcular = async () => {
       const { data: barbeiros } = await supabase.from('barbeiros').select('id').eq('ativo', true)
-      if (!barbeiros || barbeiros.length === 0) { setCarregando(false); return }
+      if (!barbeiros || barbeiros.length === 0) {
+        setCarregando(false)
+        return
+      }
 
       const agora = new Date()
       const duracaoMinima = 30
@@ -72,7 +79,12 @@ function ProximoHorario() {
           })
 
           if (algumBarbeiroLivre) {
-            const label = diasAFrente === 0 ? 'hoje' : diasAFrente === 1 ? 'amanhã' : dataAlvo.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })
+            const label =
+              diasAFrente === 0
+                ? 'hoje'
+                : diasAFrente === 1
+                  ? 'amanhã'
+                  : dataAlvo.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })
             setProximo({ label, horario: h })
             setCarregando(false)
             return
@@ -92,7 +104,10 @@ function ProximoHorario() {
     <div className="rz-proximo-horario" onClick={() => navigate('/agendamento')}>
       <span className="rz-proximo-horario-pulso"></span>
       <span>
-        Próximo horário livre: <strong>{proximo.label} às {proximo.horario}</strong>
+        Próximo horário livre:{' '}
+        <strong>
+          {proximo.label} às {proximo.horario}
+        </strong>
       </span>
       <span className="rz-proximo-horario-seta">→</span>
     </div>

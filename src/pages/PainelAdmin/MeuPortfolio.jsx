@@ -26,16 +26,20 @@ function MeuPortfolio() {
 
   useEffect(() => {
     const iniciar = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) { navigate('/admin/login'); return }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) {
+        navigate('/admin/login')
+        return
+      }
 
-      const { data: barbeiro } = await supabase
-        .from('barbeiros')
-        .select('id')
-        .eq('auth_id', session.user.id)
-        .maybeSingle()
+      const { data: barbeiro } = await supabase.from('barbeiros').select('id').eq('auth_id', session.user.id).maybeSingle()
 
-      if (!barbeiro) { navigate('/admin/login'); return }
+      if (!barbeiro) {
+        navigate('/admin/login')
+        return
+      }
 
       setMeuBarbeiroId(barbeiro.id)
       carregarFotos(barbeiro.id)
@@ -92,9 +96,13 @@ function MeuPortfolio() {
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
-        <div className="rz-logo-text">Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span></div>
+        <div className="rz-logo-text">
+          Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
+        </div>
         <div className="rz-topbar-right">
-          <button onClick={sair} className="rz-logout"><i className="ti ti-logout"></i> Sair</button>
+          <button onClick={sair} className="rz-logout">
+            <i className="ti ti-logout"></i> Sair
+          </button>
         </div>
       </header>
 
@@ -103,10 +111,21 @@ function MeuPortfolio() {
 
         <main className="rz-main">
           <div className="rz-page-header">
-            <div className="rz-page-title">Meu <span>portfólio</span></div>
-            <label className="rz-btn-primary" style={{ cursor: fotos.length >= 5 ? 'not-allowed' : 'pointer', opacity: fotos.length >= 5 ? 0.5 : 1 }}>
+            <div className="rz-page-title">
+              Meu <span>portfólio</span>
+            </div>
+            <label
+              className="rz-btn-primary"
+              style={{ cursor: fotos.length >= 5 ? 'not-allowed' : 'pointer', opacity: fotos.length >= 5 ? 0.5 : 1 }}
+            >
               {enviando ? 'Enviando...' : fotos.length >= 5 ? 'Limite de 5 fotos' : '+ Nova foto'}
-              <input type="file" accept="image/*" onChange={enviarFoto} disabled={enviando || fotos.length >= 5} style={{ display: 'none' }} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={enviarFoto}
+                disabled={enviando || fotos.length >= 5}
+                style={{ display: 'none' }}
+              />
             </label>
           </div>
           <p style={{ fontSize: 11, color: '#666', marginTop: -12, marginBottom: 20 }}>
@@ -114,7 +133,17 @@ function MeuPortfolio() {
           </p>
 
           {erro && (
-            <div style={{ background: '#2b0d0d', border: '1px solid #e53935', color: '#ff6b6b', fontSize: 12, padding: '10px 14px', borderRadius: 6, marginBottom: 16 }}>
+            <div
+              style={{
+                background: '#2b0d0d',
+                border: '1px solid #e53935',
+                color: '#ff6b6b',
+                fontSize: 12,
+                padding: '10px 14px',
+                borderRadius: 6,
+                marginBottom: 16,
+              }}
+            >
               {erro}
             </div>
           )}
@@ -127,10 +156,26 @@ function MeuPortfolio() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
               {fotos.map((foto) => (
                 <div key={foto.id} style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', aspectRatio: '1 / 1' }}>
-                  <img src={foto.foto_url} alt="Trabalho do barbeiro" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                  <img
+                    src={foto.foto_url}
+                    alt="Trabalho do barbeiro"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    loading="lazy"
+                  />
                   <button
                     onClick={() => setFotoParaApagar(foto)}
-                    style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.7)', border: 'none', color: '#fff', borderRadius: 6, padding: '4px 8px', fontSize: 11, cursor: 'pointer' }}
+                    style={{
+                      position: 'absolute',
+                      top: 6,
+                      right: 6,
+                      background: 'rgba(0,0,0,0.7)',
+                      border: 'none',
+                      color: '#fff',
+                      borderRadius: 6,
+                      padding: '4px 8px',
+                      fontSize: 11,
+                      cursor: 'pointer',
+                    }}
                   >
                     Apagar
                   </button>
@@ -144,16 +189,20 @@ function MeuPortfolio() {
       {fotoParaApagar && (
         <div className="rz-modal-overlay" onClick={() => setFotoParaApagar(null)}>
           <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-            <img src={fotoParaApagar.foto_url} alt="Foto a apagar" style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 10, margin: '0 auto 16px' }} />
-            <div className="rz-modal-title" style={{ fontSize: 18 }}>Apagar essa foto?</div>
+            <img
+              src={fotoParaApagar.foto_url}
+              alt="Foto a apagar"
+              style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 10, margin: '0 auto 16px' }}
+            />
+            <div className="rz-modal-title" style={{ fontSize: 18 }}>
+              Apagar essa foto?
+            </div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 20 }}>Essa ação não pode ser desfeita.</p>
             <div className="rz-modal-actions">
-              <button className="rz-btn-outline" onClick={() => setFotoParaApagar(null)}>Cancelar</button>
-              <button
-                className="rz-btn-primary"
-                style={{ flex: 1, background: '#e53935' }}
-                onClick={confirmarApagarFoto}
-              >
+              <button className="rz-btn-outline" onClick={() => setFotoParaApagar(null)}>
+                Cancelar
+              </button>
+              <button className="rz-btn-primary" style={{ flex: 1, background: '#e53935' }} onClick={confirmarApagarFoto}>
                 Apagar
               </button>
             </div>

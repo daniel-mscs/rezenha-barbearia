@@ -38,7 +38,9 @@ function RedefinirSenha() {
     <div className="rz-login-body">
       <div className="rz-login-box">
         <div className="rz-login-logo">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
         </div>
         <div className="rz-login-sub">Criar nova senha</div>
 
@@ -51,7 +53,14 @@ function RedefinirSenha() {
               <div className="rz-input-group">
                 <div className="rz-field-label">Nova senha</div>
                 <div className="rz-input-wrap">
-                  <input className="rz-input rz-input-sem-icone" type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} required style={{ paddingRight: 40 }} />
+                  <input
+                    className="rz-input rz-input-sem-icone"
+                    type={mostrarSenha ? 'text' : 'password'}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    required
+                    style={{ paddingRight: 40 }}
+                  />
                   <button type="button" className="rz-input-toggle-senha" onClick={() => setMostrarSenha((v) => !v)}>
                     {mostrarSenha ? <IconEyeOff /> : <IconEye />}
                   </button>

@@ -16,27 +16,21 @@ serve(async (req) => {
     if (!authHeader) throw new Error("Não autenticado")
 
     // Cliente com a chave anon, só pra descobrir quem está chamando
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    )
+    const supabaseClient = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_ANON_KEY") ?? "", {
+      global: { headers: { Authorization: authHeader } },
+    })
 
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error("Não autenticado")
 
     // Cliente com a service_role — só existe aqui dentro do servidor, nunca no navegador
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    )
+    const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "")
 
     // Confirma que quem está chamando é um barbeiro/dono cadastrado
-    const { data: chamador } = await supabaseAdmin
-      .from("barbeiros")
-      .select("id")
-      .eq("auth_id", user.id)
-      .maybeSingle()
+    const { data: chamador } = await supabaseAdmin.from("barbeiros").select("id").eq("auth_id", user.id).maybeSingle()
 
     if (!chamador) throw new Error("Sem permissão pra criar funcionários")
 

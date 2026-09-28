@@ -40,7 +40,9 @@ function EsqueciSenha() {
           <IconArrowLeft className="rz-icon-inline" /> Voltar para o login
         </Link>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
         </div>
         <div className="rz-login-sub">Recuperar acesso</div>
 
@@ -58,7 +60,13 @@ function EsqueciSenha() {
               <div className="rz-input-group">
                 <div className="rz-field-label">E-mail</div>
                 <div className="rz-input-wrap">
-                  <input className="rz-input rz-input-sem-icone" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <input
+                    className="rz-input rz-input-sem-icone"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
               <button className="rz-btn-primary" type="submit" disabled={enviando}>

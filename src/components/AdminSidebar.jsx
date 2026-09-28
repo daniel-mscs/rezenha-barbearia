@@ -56,23 +56,18 @@ function AdminSidebar({ ativa }) {
 
   useEffect(() => {
     const verificar = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
       if (!session) return
-      const { data } = await supabase
-        .from('barbeiros')
-        .select('is_dono')
-        .eq('auth_id', session.user.id)
-        .maybeSingle()
+      const { data } = await supabase.from('barbeiros').select('is_dono').eq('auth_id', session.user.id).maybeSingle()
       setIsDono(data?.is_dono || false)
     }
     verificar()
   }, [])
 
   const carregarPendentes = async () => {
-    const { count } = await supabase
-      .from('agendamentos')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'pendente')
+    const { count } = await supabase.from('agendamentos').select('id', { count: 'exact', head: true }).eq('status', 'pendente')
     setPendentes(count || 0)
   }
 

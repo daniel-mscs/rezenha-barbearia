@@ -15,7 +15,7 @@ export function useScrollReveal(threshold = 0.15) {
           observador.unobserve(elemento)
         }
       },
-      { threshold }
+      { threshold },
     )
 
     observador.observe(elemento)

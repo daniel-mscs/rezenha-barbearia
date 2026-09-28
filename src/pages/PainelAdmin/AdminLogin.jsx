@@ -25,11 +25,7 @@ function AdminLogin() {
       return
     }
 
-    const { data: barbeiro } = await supabase
-      .from('barbeiros')
-      .select('id')
-      .eq('auth_id', data.user.id)
-      .maybeSingle()
+    const { data: barbeiro } = await supabase.from('barbeiros').select('id').eq('auth_id', data.user.id).maybeSingle()
 
     setCarregando(false)
 
@@ -49,7 +45,9 @@ function AdminLogin() {
           <IconArrowLeft className="rz-icon-inline" /> Voltar para o início
         </Link>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">Re<span>Z</span>enha</div>
+          <div className="rz-logo-text">
+            Re<span>Z</span>enha
+          </div>
         </div>
         <div className="rz-login-sub">Acesso restrito — painel interno</div>
 
@@ -59,13 +57,28 @@ function AdminLogin() {
           <div className="rz-input-group">
             <div className="rz-field-label">E-mail</div>
             <div className="rz-input-wrap">
-              <input className="rz-input rz-input-sem-icone" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" />
+              <input
+                className="rz-input rz-input-sem-icone"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="off"
+              />
             </div>
           </div>
           <div className="rz-input-group">
             <div className="rz-field-label">Senha</div>
             <div className="rz-input-wrap">
-              <input className="rz-input rz-input-sem-icone" type={mostrarSenha ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} required autoComplete="new-password" style={{ paddingRight: 40 }} />
+              <input
+                className="rz-input rz-input-sem-icone"
+                type={mostrarSenha ? 'text' : 'password'}
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                required
+                autoComplete="new-password"
+                style={{ paddingRight: 40 }}
+              />
               <button type="button" className="rz-input-toggle-senha" onClick={() => setMostrarSenha((v) => !v)}>
                 {mostrarSenha ? <IconEyeOff /> : <IconEye />}
               </button>
@@ -74,7 +87,12 @@ function AdminLogin() {
           <button className="rz-btn-primary" type="submit" disabled={carregando}>
             {carregando ? 'Entrando...' : 'Entrar no painel'}
           </button>
-          <Link to="/esqueci-senha?origem=admin" style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}>Esqueceu a senha?</Link>
+          <Link
+            to="/esqueci-senha?origem=admin"
+            style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}
+          >
+            Esqueceu a senha?
+          </Link>
         </form>
       </div>
     </div>

@@ -132,6 +132,9 @@ function Home() {
               <a href="#faq">FAQ</a>
             </li>
             <li>
+              <Link to="/jogo">⚽ Jogo</Link>
+            </li>
+            <li>
               <Link to="/agendamento">Agendar</Link>
             </li>
           </ul>

@@ -1,0 +1,105 @@
+.rz-jogo-area {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.rz-jogo-placar {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin: 24px 0;
+}
+
+.rz-jogo-placar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rz-jogo-placar-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  color: #F07B00;
+  line-height: 1;
+}
+
+.rz-jogo-placar-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rz-jogo-gol {
+  background: #161616;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+}
+
+.rz-jogo-zonas {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.rz-jogo-zona {
+  background: #1f1f1f;
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 40px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ccc;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.rz-jogo-zona:hover {
+  border-color: #F07B00;
+}
+
+.rz-jogo-zona:active {
+  transform: scale(0.96);
+}
+
+.rz-jogo-zona.goleiro {
+  border-color: #e53935;
+  background: #2b0d0d;
+}
+
+.rz-jogo-resultado {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  min-height: 32px;
+  margin-top: 12px;
+}
+
+.rz-jogo-resultado.gol { color: #4caf50; }
+.rz-jogo-resultado.defendeu { color: #e53935; }
+
+.rz-jogo-ranking {
+  margin-top: 32px;
+  text-align: left;
+}
+
+.rz-jogo-ranking-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.rz-jogo-ranking-pos {
+  color: #F07B00;
+  font-weight: 700;
+  margin-right: 10px;
+}

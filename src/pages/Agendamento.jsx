@@ -290,7 +290,9 @@ function Agendamento() {
     setEnviando(false)
 
     if (error) {
-      if (error.message?.includes('já tem um agendamento')) {
+      if (error.message?.includes('já tem 3 agendamentos')) {
+        setErroEnvio(error.message)
+      } else if (error.message?.includes('já tem um agendamento')) {
         await buscarAgendamentosDoDia(data)
         setHorario(null)
         setStep(3)

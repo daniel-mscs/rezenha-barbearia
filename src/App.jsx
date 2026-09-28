@@ -18,6 +18,7 @@ import Configuracoes from './pages/PainelAdmin/Configuracoes'
 import Caixa from './pages/PainelAdmin/Caixa'
 import EsqueciSenha from './pages/EsqueciSenha'
 import EsqueciSenhaCliente from './pages/EsqueciSenhaCliente'
+import Jogo from './pages/Jogo'
 import ConfirmarPresenca from './pages/ConfirmarPresenca'
 import RedefinirSenha from './pages/RedefinirSenha'
 
@@ -114,7 +115,8 @@ function App() {
           }
         />
         <Route path="/recuperar-senha" element={<EsqueciSenhaCliente />} />
-      </Routes>
+        <Route path="/jogo" element={<Jogo />} />
+</Routes>
       <CookieBanner />
     </BrowserRouter>
   )

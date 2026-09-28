@@ -98,7 +98,11 @@ function Clientes() {
 
   const confirmarExcluir = async () => {
     if (!clienteParaExcluir) return
-    await supabase.from('clientes').delete().eq('id', clienteParaExcluir.id)
+    const { error } = await supabase.from('clientes').delete().eq('id', clienteParaExcluir.id)
+    if (error) {
+      alert('Não foi possível excluir: ' + error.message)
+      return
+    }
     setClienteParaExcluir(null)
     carregar()
   }
@@ -229,7 +233,7 @@ function Clientes() {
                           Editar
                         </button>
                         <button className="rz-action-btn" onClick={() => abrirConvite(c)}>
-                          Criar login
+                          {c.auth_id ? 'Redefinir senha' : 'Criar login'}
                         </button>
                         <button className="rz-action-btn danger" onClick={() => setClienteParaExcluir(c)}>
                           Excluir
@@ -353,7 +357,9 @@ function Clientes() {
       {clienteParaConvite && (
         <div className="rz-modal-overlay" onClick={() => setClienteParaConvite(null)}>
           <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="rz-modal-title">Criar login para {clienteParaConvite.nome}</div>
+            <div className="rz-modal-title">
+              {clienteParaConvite.auth_id ? 'Redefinir senha de' : 'Criar login para'} {clienteParaConvite.nome}
+            </div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 16 }}>
               Define uma senha (ou usa a sugerida) — a conta já nasce pronta, e o cliente recebe telefone+senha pelo WhatsApp pra entrar
               direto.

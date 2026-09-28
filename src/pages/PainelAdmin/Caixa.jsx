@@ -195,15 +195,25 @@ function Caixa() {
             }}
           >
             <div className="rz-stat-card" style={{ padding: '12px 16px' }}>
-              <div className="rz-stat-label" style={{ marginBottom: 6 }}>Entradas</div>
-              <div className="rz-stat-num" style={{ fontSize: 24, color: '#4caf50' }}>R$ {totalEntradas.toFixed(2)}</div>
+              <div className="rz-stat-label" style={{ marginBottom: 6 }}>
+                Entradas
+              </div>
+              <div className="rz-stat-num" style={{ fontSize: 24, color: '#4caf50' }}>
+                R$ {totalEntradas.toFixed(2)}
+              </div>
             </div>
             <div className="rz-stat-card" style={{ padding: '12px 16px' }}>
-              <div className="rz-stat-label" style={{ marginBottom: 6 }}>Saídas</div>
-              <div className="rz-stat-num" style={{ fontSize: 24, color: '#e53935' }}>R$ {totalSaidas.toFixed(2)}</div>
+              <div className="rz-stat-label" style={{ marginBottom: 6 }}>
+                Saídas
+              </div>
+              <div className="rz-stat-num" style={{ fontSize: 24, color: '#e53935' }}>
+                R$ {totalSaidas.toFixed(2)}
+              </div>
             </div>
             <div className="rz-stat-card" style={{ padding: '12px 16px' }}>
-              <div className="rz-stat-label" style={{ marginBottom: 6 }}>Saldo do mês</div>
+              <div className="rz-stat-label" style={{ marginBottom: 6 }}>
+                Saldo do mês
+              </div>
               <div className="rz-stat-num" style={{ fontSize: 24, color: saldoMes >= 0 ? '#F07B00' : '#e53935' }}>
                 R$ {saldoMes.toFixed(2)}
               </div>
@@ -214,7 +224,9 @@ function Caixa() {
             {carregando ? (
               <div className="rz-empty-state">Carregando...</div>
             ) : lancamentosDoMes.length === 0 ? (
-              <div className="rz-empty-state" style={{ padding: 24 }}>Nenhum lançamento nesse mês.</div>
+              <div className="rz-empty-state" style={{ padding: 24 }}>
+                Nenhum lançamento nesse mês.
+              </div>
             ) : (
               <table className="rz-table">
                 <thead>

@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import Calendario from '../components/Calendario'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
-import { iconesDoServico } from '../components/Icons'
+import { iconesParaExibir } from '../components/Icons'
 import { formatarDuracao } from '../utils/formatarDuracao'
 import './Agendamento.css'
 
@@ -117,7 +117,11 @@ function Agendamento() {
   useEffect(() => {
     const carregarOpcoes = async () => {
       const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, foto_url').eq('ativo', true).order('nome')
-      const { data: servicosData } = await supabase.from('servicos').select('id, nome, duracao_min, preco').eq('ativo', true).order('nome')
+      const { data: servicosData } = await supabase
+        .from('servicos')
+        .select('id, nome, duracao_min, preco, icones')
+        .eq('ativo', true)
+        .order('nome')
       const { data: configData } = await supabase.from('configuracoes').select('*').eq('id', 1).maybeSingle()
       const { data: fechadosData } = await supabase.from('dias_fechados').select('data')
       setBarbeirosLista(barbeirosData || [])
@@ -543,6 +547,11 @@ function Agendamento() {
               <div className="rz-services-list">
                 {servicosLista.map((s) => (
                   <div key={s.id} className={`rz-service-row ${servico?.id === s.id ? 'selected' : ''}`} onClick={() => setServico(s)}>
+                    <div className="rz-service-row-icone">
+                      {iconesParaExibir(s).map((Icone, i) => (
+                        <Icone key={i} width={40} height={40} />
+                      ))}
+                    </div>
                     <div className="rz-service-info">
                       <div className="rz-service-name">{s.nome}</div>
                       <div className="rz-service-duration">~{formatarDuracao(s.duracao_min)}</div>

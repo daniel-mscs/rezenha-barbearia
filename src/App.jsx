@@ -11,6 +11,7 @@ import Servicos from './pages/PainelAdmin/Servicos'
 import Barbeiros from './pages/PainelAdmin/Barbeiros'
 import Clientes from './pages/PainelAdmin/Clientes'
 import MeuPortfolio from './pages/PainelAdmin/MeuPortfolio'
+import Estoque from './pages/PainelAdmin/Estoque'
 import Relatorios from './pages/PainelAdmin/Relatorios'
 import Configuracoes from './pages/PainelAdmin/Configuracoes'
 import Caixa from './pages/PainelAdmin/Caixa'
@@ -94,6 +95,14 @@ function App() {
         <Route path="/esqueci-senha" element={<EsqueciSenha />} />
         <Route path="/confirmar/:id" element={<ConfirmarPresenca />} />
         <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+        <Route
+          path="/admin/estoque"
+          element={
+            <ProtectedAdminRoute>
+              <Estoque />
+            </ProtectedAdminRoute>
+          }
+        />
       </Routes>
       <CookieBanner />
     </BrowserRouter>

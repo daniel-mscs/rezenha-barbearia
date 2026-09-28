@@ -38,7 +38,9 @@
   font-size: 13px;
   font-weight: 600;
   box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .rz-wpp-flutuante:hover {
@@ -47,6 +49,11 @@
 }
 
 @media (max-width: 768px) {
-  .rz-wpp-flutuante span { display: none; }
-  .rz-wpp-flutuante { padding: 14px; border-radius: 50%; }
+  .rz-wpp-flutuante span {
+    display: none;
+  }
+  .rz-wpp-flutuante {
+    padding: 14px;
+    border-radius: 50%;
+  }
 }

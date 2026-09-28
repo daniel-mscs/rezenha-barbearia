@@ -1,5 +1,5 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 function paginaResposta(titulo: string, mensagem: string, cor: string) {
   return `<!DOCTYPE html>
@@ -22,38 +22,38 @@ function paginaResposta(titulo: string, mensagem: string, cor: string) {
 
 serve(async (req) => {
   const url = new URL(req.url)
-  const id = url.searchParams.get("id")
+  const id = url.searchParams.get('id')
 
   if (!id) {
-    return new Response(paginaResposta("Link inválido", "Não encontramos esse agendamento.", "#e53935"), {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+    return new Response(paginaResposta('Link inválido', 'Não encontramos esse agendamento.', '#e53935'), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
       status: 400,
     })
   }
 
-  const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "")
+  const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
 
-  const { data: agendamento, error: erroBusca } = await supabaseAdmin.from("agendamentos").select("status").eq("id", id).maybeSingle()
+  const { data: agendamento, error: erroBusca } = await supabaseAdmin.from('agendamentos').select('status').eq('id', id).maybeSingle()
 
   if (erroBusca || !agendamento) {
-    return new Response(paginaResposta("Agendamento não encontrado", "Esse link pode ter expirado.", "#e53935"), {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+    return new Response(paginaResposta('Agendamento não encontrado', 'Esse link pode ter expirado.', '#e53935'), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
       status: 404,
     })
   }
 
-  if (agendamento.status === "cancelado") {
+  if (agendamento.status === 'cancelado') {
     return new Response(
-      paginaResposta("Agendamento cancelado", "Esse agendamento já foi cancelado. Entre em contato com a barbearia.", "#e53935"),
+      paginaResposta('Agendamento cancelado', 'Esse agendamento já foi cancelado. Entre em contato com a barbearia.', '#e53935'),
       {
-        headers: { "Content-Type": "text/html; charset=utf-8" },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       },
     )
   }
 
-  await supabaseAdmin.from("agendamentos").update({ status: "confirmado" }).eq("id", id)
+  await supabaseAdmin.from('agendamentos').update({ status: 'confirmado' }).eq('id', id)
 
-  return new Response(paginaResposta("Presença confirmada! ✅", "Te esperamos no horário combinado. Até lá!", "#4caf50"), {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
+  return new Response(paginaResposta('Presença confirmada! ✅', 'Te esperamos no horário combinado. Até lá!', '#4caf50'), {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
   })
 })

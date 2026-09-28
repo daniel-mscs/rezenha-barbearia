@@ -1,4 +1,6 @@
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 .rz-login-body {
   background: #0d0d0d;
@@ -19,44 +21,209 @@
   max-width: 400px;
 }
 
-.rz-login-logo { text-align: center; margin-bottom: 8px; }
-.rz-logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; color: #fff; text-shadow: 0 0 20px rgba(240, 123, 0, 0.15); }
-.rz-logo-text span { color: #F07B00; }
-
-.rz-login-sub { text-align: center; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
-
-.rz-tabs { display: flex; background: #161616; border-radius: 8px; padding: 4px; margin-bottom: 28px; }
-.rz-tab { flex: 1; text-align: center; padding: 9px 0; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #666; border-radius: 6px; cursor: pointer; }
-.rz-tab.active { background: #F07B00; color: #fff; }
-
-.rz-input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.rz-field-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-.rz-input-wrap { position: relative; display: flex; align-items: center; }
-.rz-input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #444; pointer-events: none; }
-.rz-input-toggle-senha { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #555; cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; }
-.rz-input-toggle-senha svg { width: 20px; height: 20px; }
-.rz-input-toggle-senha:hover { color: #F07B00; }
-.rz-input { width: 100%; background: #161616; border: 1px solid #2a2a2a; border-radius: 10px; padding: 14px 16px 14px 42px; color: #fff; font-family: 'Barlow', sans-serif; font-size: 14px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
-.rz-input::placeholder { color: #444; }
-.rz-input:focus { outline: none; border-color: #F07B00; box-shadow: 0 0 0 3px rgba(240, 123, 0, 0.12); }
-
-.rz-btn-primary { background: #F07B00; color: #fff; border: none; padding: 14px; font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 8px; }
-.rz-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.rz-login-error { background: #2b0d0d; border: 1px solid #e53935; color: #ff6b6b; font-size: 12px; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; text-align: center; }
-.rz-login-success { background: #0d2b0d; border: 1px solid #4caf50; color: #7ee787; font-size: 12px; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; text-align: center; }
-
-.rz-login-footer { text-align: center; font-size: 12px; color: #444; margin-top: 24px; }
-.rz-login-voltar { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: #888; text-decoration: none; margin: 0 auto 24px; padding: 7px 14px; border: 1px solid #262626; border-radius: 20px; width: fit-content; transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease; }
-.rz-login-voltar:hover { color: #F07B00; border-color: #F07B00; background: rgba(240, 123, 0, 0.06); }
-
-@media (max-width: 768px) {
-  .rz-login-box { padding: 32px 20px; }
+.rz-login-logo {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.rz-logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(240, 123, 0, 0.15);
+}
+.rz-logo-text span {
+  color: #f07b00;
 }
 
-.rz-icon-inline { vertical-align: -2px; margin-right: 4px; }
+.rz-login-sub {
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
 
-.rz-input-sem-icone { padding-left: 16px; }
+.rz-tabs {
+  display: flex;
+  background: #161616;
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+.rz-tab {
+  flex: 1;
+  text-align: center;
+  padding: 9px 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #666;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.rz-tab.active {
+  background: #f07b00;
+  color: #fff;
+}
+
+.rz-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.rz-field-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.rz-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.rz-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #444;
+  pointer-events: none;
+}
+.rz-input-toggle-senha {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.rz-input-toggle-senha svg {
+  width: 20px;
+  height: 20px;
+}
+.rz-input-toggle-senha:hover {
+  color: #f07b00;
+}
+.rz-input {
+  width: 100%;
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 14px 16px 14px 42px;
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.rz-input::placeholder {
+  color: #444;
+}
+.rz-input:focus {
+  outline: none;
+  border-color: #f07b00;
+  box-shadow: 0 0 0 3px rgba(240, 123, 0, 0.12);
+}
+
+.rz-btn-primary {
+  background: #f07b00;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+}
+.rz-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rz-login-error {
+  background: #2b0d0d;
+  border: 1px solid #e53935;
+  color: #ff6b6b;
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.rz-login-success {
+  background: #0d2b0d;
+  border: 1px solid #4caf50;
+  color: #7ee787;
+  font-size: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.rz-login-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #444;
+  margin-top: 24px;
+}
+.rz-login-voltar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+  text-decoration: none;
+  margin: 0 auto 24px;
+  padding: 7px 14px;
+  border: 1px solid #262626;
+  border-radius: 20px;
+  width: fit-content;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+}
+.rz-login-voltar:hover {
+  color: #f07b00;
+  border-color: #f07b00;
+  background: rgba(240, 123, 0, 0.06);
+}
+
+@media (max-width: 768px) {
+  .rz-login-box {
+    padding: 32px 20px;
+  }
+}
+
+.rz-icon-inline {
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+.rz-input-sem-icone {
+  padding-left: 16px;
+}
 
 .rz-seguranca-nota {
   text-align: center;

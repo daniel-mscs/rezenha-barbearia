@@ -118,6 +118,9 @@ function AdminSidebar({ ativa }) {
       <Link to="/admin/clientes" className={`rz-sidebar-item ${ativa === 'clientes' ? 'active' : ''}`}>
         <i className="ti ti-address-book"></i> <span>Clientes</span>
       </Link>
+      <Link to="/admin/estoque" className={`rz-sidebar-item ${ativa === 'estoque' ? 'active' : ''}`}>
+        <i className="ti ti-package"></i> <span>Estoque</span>
+      </Link>
       <Link to="/admin/portfolio" className={`rz-sidebar-item ${ativa === 'portfolio' ? 'active' : ''}`}>
         <i className="ti ti-photo"></i> <span>Meu Portfólio</span>
       </Link>

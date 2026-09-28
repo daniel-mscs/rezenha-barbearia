@@ -5,7 +5,7 @@
   right: 0;
   z-index: 998;
   background: #111;
-  border-top: 1px solid #F07B00;
+  border-top: 1px solid #f07b00;
   padding: 16px 24px;
   display: flex;
   align-items: center;
@@ -25,7 +25,7 @@
 }
 
 .rz-cookie-btn {
-  background: #F07B00;
+  background: #f07b00;
   color: #fff;
   border: none;
   padding: 10px 24px;
@@ -50,5 +50,7 @@
     text-align: center;
     padding: 16px;
   }
-  .rz-cookie-btn { width: 100%; }
+  .rz-cookie-btn {
+    width: 100%;
+  }
 }

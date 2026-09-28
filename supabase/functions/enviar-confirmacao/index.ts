@@ -1,36 +1,36 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders })
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
     const { paraEmail, nomeCliente, barbeiro, servico, data, horario, preco, agendamentoId } = await req.json()
 
-    if (!paraEmail) throw new Error("E-mail do destinatário é obrigatório")
+    if (!paraEmail) throw new Error('E-mail do destinatário é obrigatório')
 
-    const dataFormatada = new Date(data + "T00:00:00").toLocaleDateString("pt-BR", {
-      weekday: "long",
-      day: "2-digit",
-      month: "long",
+    const dataFormatada = new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
     })
 
-    const resposta = await fetch("https://api.resend.com/emails", {
-      method: "POST",
+    const resposta = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${Deno.env.get('RESEND_API_KEY')}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: "Rezenha Barbearia <onboarding@resend.dev>",
+        from: 'Rezenha Barbearia <onboarding@resend.dev>',
         to: [paraEmail],
-        subject: "Agendamento confirmado — Rezenha Barbearia",
+        subject: 'Agendamento confirmado — Rezenha Barbearia',
         html: `
           <div style="font-family: Arial, sans-serif; background: #0d0d0d; padding: 32px; max-width: 480px; margin: 0 auto;">
             <div style="text-align: center; margin-bottom: 24px;">
@@ -77,7 +77,7 @@ serve(async (req) => {
                 </a>
               </div>
             `
-                : ""
+                : ''
             }
 
             <p style="color: #555; font-size: 12px; text-align: center; margin-top: 24px;">Precisa remarcar ou cancelar? Entre em contato com a barbearia.</p>
@@ -92,12 +92,12 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ sucesso: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error) {
     return new Response(JSON.stringify({ erro: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     })
   }

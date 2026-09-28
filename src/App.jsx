@@ -12,6 +12,7 @@ import Barbeiros from './pages/PainelAdmin/Barbeiros'
 import Clientes from './pages/PainelAdmin/Clientes'
 import MeuPortfolio from './pages/PainelAdmin/MeuPortfolio'
 import Estoque from './pages/PainelAdmin/Estoque'
+import MeuPerfil from './pages/PainelAdmin/MeuPerfil'
 import Relatorios from './pages/PainelAdmin/Relatorios'
 import Configuracoes from './pages/PainelAdmin/Configuracoes'
 import Caixa from './pages/PainelAdmin/Caixa'
@@ -103,7 +104,8 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-      </Routes>
+        <Route path="/admin/meu-perfil" element={<ProtectedAdminRoute><MeuPerfil /></ProtectedAdminRoute>} />
+</Routes>
       <CookieBanner />
     </BrowserRouter>
   )

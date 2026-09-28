@@ -249,7 +249,7 @@ function Caixa() {
                       <td style={{ color: l.tipo === 'entrada' ? '#4caf50' : '#e53935' }}>{l.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
                       <td>{l.caixa_categorias?.nome || '—'}</td>
                       <td>{l.descricao || '—'}</td>
-                      <td>{l.origem === 'agendamento' ? 'Agendamento' : 'Manual'}</td>
+                      <td>{l.origem === 'agendamento' ? 'Agendamento' : l.origem === 'estoque' ? 'Estoque' : 'Manual'}</td>
                       <td style={{ color: l.tipo === 'entrada' ? '#4caf50' : '#e53935', fontWeight: 700 }}>
                         R$ {Number(l.valor).toFixed(2)}
                       </td>

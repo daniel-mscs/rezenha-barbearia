@@ -6,6 +6,7 @@ import { iconesParaExibir } from '../components/Icons'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
 import ProximoHorario from '../components/ProximoHorario'
+import SaudacaoCliente from '../components/SaudacaoCliente'
 import { formatarDuracao } from '../utils/formatarDuracao'
 import './Home.css'
 
@@ -116,6 +117,7 @@ function Home() {
           Re<span>Z</span>enha
         </div>
         <div className="rz-topbar-right">
+          <SaudacaoCliente />
           <ul className="rz-nav">
             <li className="active">
               <a href="index.html">Início</a>

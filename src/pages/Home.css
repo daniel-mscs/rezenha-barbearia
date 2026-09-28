@@ -1104,3 +1104,19 @@
   font-size: 13px;
   font-weight: 600;
 }
+
+.rz-saudacao-cliente {
+  font-size: 13px;
+  color: #999;
+  margin-right: 12px;
+}
+
+.rz-saudacao-cliente strong {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .rz-saudacao-cliente {
+    display: none;
+  }
+}

@@ -378,14 +378,12 @@ function Agendamento() {
   }
 
   if (step === 6) {
-    const numeroBarbearia = '5555991975065'
     const dataFormatada = data
       ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
       : ''
-    const mensagemConfirmacao = encodeURIComponent(
-      `Olá! Confirmando meu agendamento na Rezenha Barbearia:\n\n💈 Barbeiro: ${barbeiro?.nome}\n✂️ Serviço: ${servico?.nome}\n📅 Data: ${dataFormatada}\n🕒 Horário: ${horario}\n👤 Nome: ${nomeFinal}`,
-    )
-    const linkConfirmacao = `https://wa.me/${numeroBarbearia}?text=${mensagemConfirmacao}`
+    const linkAjuda = `https://wa.me/5555991975065?text=${encodeURIComponent(
+      'Olá! Fiz um agendamento pelo site e não recebi a mensagem de confirmação no WhatsApp.',
+    )}`
 
     return (
       <div className="rz-page-root">
@@ -400,34 +398,43 @@ function Agendamento() {
           </ul>
         </header>
         <div className="rz-page" style={{ textAlign: 'center', paddingTop: 60 }}>
-          <i className="ti ti-circle-check" style={{ fontSize: 56, color: '#4caf50' }}></i>
+          <i className="ti ti-brand-whatsapp" style={{ fontSize: 56, color: '#25d366' }}></i>
           <div className="rz-page-title" style={{ marginTop: 16 }}>
-            Agendamento <span>confirmado!</span>
+            Confirme seu <span>agendamento</span>
           </div>
-          <p style={{ color: '#888', marginTop: 8 }}>Confirma pelo WhatsApp pra garantir seu horário.</p>
-          <a
-            href={linkConfirmacao}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rz-btn-primary"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              marginTop: 24,
-              width: 'auto',
-              padding: '14px 32px',
-              background: '#25d366',
-              textDecoration: 'none',
-            }}
-          >
-            💬 Confirmar pelo WhatsApp
-          </a>
-          <br />
-          <Link to="/" style={{ display: 'inline-block', marginTop: 16, color: '#888', fontSize: 13, textDecoration: 'none' }}>
+          <p style={{ color: '#ccc', marginTop: 8, fontSize: 15 }}>
+            Verifique seu WhatsApp! Enviamos uma mensagem para <strong style={{ color: '#fff' }}>{telefoneFinal}</strong>.
+          </p>
+          <p style={{ color: '#888', marginTop: 4, fontSize: 14 }}>Toque em "Confirmar presença" na mensagem pra garantir seu horário.</p>
+
+          <div className="rz-summary" style={{ maxWidth: 380, margin: '24px auto 0', textAlign: 'left' }}>
+            <div className="rz-summary-row">
+              <span>Barbeiro</span>
+              <span>{barbeiro?.nome}</span>
+            </div>
+            <div className="rz-summary-row">
+              <span>Serviço</span>
+              <span>{servico?.nome}</span>
+            </div>
+            <div className="rz-summary-row">
+              <span>Data</span>
+              <span>{dataFormatada}</span>
+            </div>
+            <div className="rz-summary-row">
+              <span>Horário</span>
+              <span>{horario}</span>
+            </div>
+          </div>
+
+          <Link to="/" className="rz-btn-primary" style={{ display: 'inline-block', marginTop: 24, width: 'auto', padding: '14px 32px' }}>
             Voltar ao início
           </Link>
+
+          <div style={{ marginTop: 16 }}>
+            <a href={linkAjuda} target="_blank" rel="noopener noreferrer" style={{ color: '#666', fontSize: 12, textDecoration: 'none' }}>
+              Não recebeu a mensagem? Fale com a barbearia
+            </a>
+          </div>
         </div>
         <BotaoWhatsapp />
       </div>
@@ -450,16 +457,21 @@ function Agendamento() {
             </li>
           </ul>
           {clienteLogado ? (
-            <button
-              onClick={async () => {
-                await supabase.auth.signOut()
-                window.location.reload()
-              }}
-              className="rz-btn-nav"
-              style={{ border: 'none', cursor: 'pointer' }}
-            >
-              Sair
-            </button>
+            <>
+              <span className="rz-saudacao-cliente">
+                Olá, <strong>{clienteLogado.nome.split(' ')[0]}</strong>
+              </span>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut()
+                  window.location.reload()
+                }}
+                className="rz-btn-nav"
+                style={{ border: 'none', cursor: 'pointer' }}
+              >
+                Sair
+              </button>
+            </>
           ) : (
             <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>
               Entrar / Login

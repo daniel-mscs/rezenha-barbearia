@@ -27,6 +27,16 @@ function Jogo() {
 
   useEffect(() => {
     carregarRanking()
+
+    const carregarClienteLogado = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) return
+      const { data: cliente } = await supabase.from('clientes').select('nome').eq('auth_id', session.user.id).maybeSingle()
+      if (cliente?.nome) setNome(cliente.nome)
+    }
+    carregarClienteLogado()
   }, [])
 
   useEffect(() => {

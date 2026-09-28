@@ -393,3 +393,35 @@
   margin-top: 14px;
   line-height: 1.5;
 }
+
+.rz-services-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.rz-service-row {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  aspect-ratio: 1 / 1;
+  padding: 16px;
+}
+
+.rz-service-info {
+  align-items: center;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .rz-services-list {
+    grid-template-columns: 1fr;
+  }
+
+  .rz-service-row {
+    aspect-ratio: auto;
+    padding: 18px 16px;
+  }
+}

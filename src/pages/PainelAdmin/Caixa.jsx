@@ -9,6 +9,8 @@ function mesAtual() {
   return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`
 }
 
+const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+
 function Caixa() {
   const navigate = useNavigate()
   const [lancamentos, setLancamentos] = useState([])
@@ -127,6 +129,12 @@ function Caixa() {
 
   const categoriasFiltradas = categorias.filter((c) => c.tipo === tipo)
 
+  const [anoFiltro, mesNumFiltro] = mesFiltro.split('-')
+  const anoAtual = new Date().getFullYear()
+  const anosDisponiveis = Array.from({ length: 6 }, (_, i) => anoAtual - i)
+  const trocarMes = (mes) => setMesFiltro(`${anoFiltro}-${mes}`)
+  const trocarAno = (ano) => setMesFiltro(`${ano}-${mesNumFiltro}`)
+
   return (
     <div className="rz-admin-root">
       <header className="rz-topbar">
@@ -146,36 +154,57 @@ function Caixa() {
         <main className="rz-main">
           <div className="rz-page-header">
             <div className="rz-page-title">Caixa</div>
-            <button className="rz-btn-primary" onClick={abrirNovo}>
-              + Novo lançamento
-            </button>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <select
+                className="rz-input"
+                style={{ width: 'auto', marginBottom: 0 }}
+                value={mesNumFiltro}
+                onChange={(e) => trocarMes(e.target.value)}
+              >
+                {MESES.map((nome, i) => (
+                  <option key={nome} value={String(i + 1).padStart(2, '0')}>
+                    {nome}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="rz-input"
+                style={{ width: 'auto', marginBottom: 0 }}
+                value={anoFiltro}
+                onChange={(e) => trocarAno(e.target.value)}
+              >
+                {anosDisponiveis.map((ano) => (
+                  <option key={ano} value={ano}>
+                    {ano}
+                  </option>
+                ))}
+              </select>
+              <button className="rz-btn-primary" style={{ width: 'auto' }} onClick={abrirNovo}>
+                + Novo lançamento
+              </button>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20 }}>
-            <label className="rz-field-label" style={{ margin: 0 }}>
-              Mês
-            </label>
-            <input
-              className="rz-input"
-              type="month"
-              value={mesFiltro}
-              onChange={(e) => setMesFiltro(e.target.value)}
-              style={{ width: 'auto' }}
-            />
-          </div>
-
-          <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap' }}>
-            <div className="rz-summary" style={{ flex: 1, minWidth: 180 }}>
-              <div className="rz-summary-title">Entradas</div>
-              <div style={{ color: '#4caf50', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>R$ {totalEntradas.toFixed(2)}</div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gap: 10,
+              marginBottom: 20,
+              maxWidth: 720,
+            }}
+          >
+            <div className="rz-stat-card" style={{ padding: '12px 16px' }}>
+              <div className="rz-stat-label" style={{ marginBottom: 6 }}>Entradas</div>
+              <div className="rz-stat-num" style={{ fontSize: 24, color: '#4caf50' }}>R$ {totalEntradas.toFixed(2)}</div>
             </div>
-            <div className="rz-summary" style={{ flex: 1, minWidth: 180 }}>
-              <div className="rz-summary-title">Saídas</div>
-              <div style={{ color: '#e53935', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>R$ {totalSaidas.toFixed(2)}</div>
+            <div className="rz-stat-card" style={{ padding: '12px 16px' }}>
+              <div className="rz-stat-label" style={{ marginBottom: 6 }}>Saídas</div>
+              <div className="rz-stat-num" style={{ fontSize: 24, color: '#e53935' }}>R$ {totalSaidas.toFixed(2)}</div>
             </div>
-            <div className="rz-summary" style={{ flex: 1, minWidth: 180 }}>
-              <div className="rz-summary-title">Saldo do mês</div>
-              <div style={{ color: saldoMes >= 0 ? '#F07B00' : '#e53935', fontFamily: "'Bebas Neue', sans-serif", fontSize: 28 }}>
+            <div className="rz-stat-card" style={{ padding: '12px 16px' }}>
+              <div className="rz-stat-label" style={{ marginBottom: 6 }}>Saldo do mês</div>
+              <div className="rz-stat-num" style={{ fontSize: 24, color: saldoMes >= 0 ? '#F07B00' : '#e53935' }}>
                 R$ {saldoMes.toFixed(2)}
               </div>
             </div>
@@ -185,7 +214,7 @@ function Caixa() {
             {carregando ? (
               <div className="rz-empty-state">Carregando...</div>
             ) : lancamentosDoMes.length === 0 ? (
-              <div className="rz-empty-state">Nenhum lançamento nesse mês.</div>
+              <div className="rz-empty-state" style={{ padding: 24 }}>Nenhum lançamento nesse mês.</div>
             ) : (
               <table className="rz-table">
                 <thead>

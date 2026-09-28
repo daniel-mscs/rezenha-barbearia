@@ -10,12 +10,15 @@ function Jogo() {
   const [fase, setFase] = useState('inicio')
   const [pontos, setPontos] = useState(0)
   const [tempoRestante, setTempoRestante] = useState(60)
+  const [zonaBola, setZonaBola] = useState(null)
+  const [chutando, setChutando] = useState(false)
   const [goleiroLado, setGoleiroLado] = useState(null)
   const [resultado, setResultado] = useState(null)
   const [nome, setNome] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [ranking, setRanking] = useState([])
   const timerRef = useRef(null)
+  const arrasteRef = useRef(null)
 
   const carregarRanking = async () => {
     const { data } = await supabase.from('jogo_penaltis').select('nome, pontuacao').order('pontuacao', { ascending: false }).limit(10)
@@ -48,19 +51,50 @@ function Jogo() {
     setTempoRestante(60)
     setResultado(null)
     setGoleiroLado(null)
+    setZonaBola(null)
+    setChutando(false)
     setFase('jogando')
   }
 
-  const chutar = (lado) => {
-    const ladoGoleiro = LADOS[Math.floor(Math.random() * 3)]
-    setGoleiroLado(ladoGoleiro)
+  const chutar = (zona) => {
+    setChutando(true)
+    setZonaBola(zona)
 
-    if (lado === ladoGoleiro) {
-      setResultado('defendeu')
-    } else {
-      setResultado('gol')
-      setPontos((p) => p + 1)
-    }
+    setTimeout(() => {
+      const ladoGoleiro = LADOS[Math.floor(Math.random() * 3)]
+      setGoleiroLado(ladoGoleiro)
+
+      if (zona === ladoGoleiro) {
+        setResultado('defendeu')
+      } else {
+        setResultado('gol')
+        setPontos((p) => p + 1)
+      }
+
+      setTimeout(() => {
+        setZonaBola(null)
+        setChutando(false)
+        setGoleiroLado(null)
+        setResultado(null)
+      }, 700)
+    }, 350)
+  }
+
+  const iniciarArraste = (e) => {
+    if (fase !== 'jogando' || chutando) return
+    arrasteRef.current = { x: e.clientX, y: e.clientY }
+  }
+
+  const finalizarArraste = (e) => {
+    if (!arrasteRef.current || fase !== 'jogando' || chutando) return
+    const deltaX = e.clientX - arrasteRef.current.x
+    const deltaY = arrasteRef.current.y - e.clientY
+    arrasteRef.current = null
+
+    if (deltaY < 40) return
+
+    const zona = deltaX < -30 ? 'esquerda' : deltaX > 30 ? 'direita' : 'centro'
+    chutar(zona)
   }
 
   const enviarPontuacao = async (e) => {
@@ -98,7 +132,7 @@ function Jogo() {
           {fase === 'inicio' && (
             <>
               <p style={{ color: '#999', fontSize: 14, marginTop: 20 }}>
-                Você tem 60 segundos pra fazer o máximo de gols possível. Escolhe um canto — se o goleiro pular pro outro lado, é gol!
+                Você tem 60 segundos. Arrasta a bola pra cima, na direção que quiser chutar — se o goleiro pular pro outro lado, é gol!
               </p>
               <button className="rz-btn-primary" style={{ marginTop: 20 }} onClick={comecar}>
                 Começar
@@ -106,7 +140,7 @@ function Jogo() {
             </>
           )}
 
-          {fase === 'jogando' && (
+          {(fase === 'jogando' || (fase === 'fim' && false)) && fase === 'jogando' && (
             <>
               <div className="rz-jogo-placar">
                 <div className="rz-jogo-placar-item">
@@ -119,22 +153,22 @@ function Jogo() {
                 </div>
               </div>
 
-              <div className="rz-jogo-gol">
-                <div className="rz-jogo-zonas">
-                  {LADOS.map((lado) => (
-                    <div
-                      key={lado}
-                      className={`rz-jogo-zona ${goleiroLado === lado ? 'goleiro' : ''}`}
-                      onClick={() => chutar(lado)}
-                    >
-                      {lado}
-                    </div>
-                  ))}
-                </div>
-                {resultado && (
-                  <div className={`rz-jogo-resultado ${resultado}`}>{resultado === 'gol' ? '⚽ GOL!' : '🧤 Defendeu!'}</div>
-                )}
+              <div
+                className="rz-jogo-campo"
+                onPointerDown={iniciarArraste}
+                onPointerUp={finalizarArraste}
+              >
+                <div className="rz-jogo-trave"></div>
+                <div className={`rz-jogo-goleiro-indicador esquerda ${goleiroLado === 'esquerda' ? 'visivel' : ''}`}></div>
+                <div className={`rz-jogo-goleiro-indicador centro ${goleiroLado === 'centro' ? 'visivel' : ''}`}></div>
+                <div className={`rz-jogo-goleiro-indicador direita ${goleiroLado === 'direita' ? 'visivel' : ''}`}></div>
+                <div className={`rz-jogo-bola ${zonaBola || ''}`}></div>
               </div>
+
+              <div className="rz-jogo-resultado-wrap">
+                {resultado && <div className={`rz-jogo-resultado ${resultado}`}>{resultado === 'gol' ? '⚽ GOL!' : '🧤 Defendeu!'}</div>}
+              </div>
+              <p className="rz-jogo-instrucao">Clica ou toca na bola e arrasta pra cima</p>
             </>
           )}
 
@@ -162,11 +196,7 @@ function Jogo() {
                   {enviando ? 'Salvando...' : 'Salvar'}
                 </button>
               </form>
-              <button
-                className="rz-btn-outline"
-                style={{ marginTop: 16, width: 'auto' }}
-                onClick={() => setFase('inicio')}
-              >
+              <button className="rz-btn-outline" style={{ marginTop: 16, width: 'auto' }} onClick={() => setFase('inicio')}>
                 Jogar de novo
               </button>
             </>

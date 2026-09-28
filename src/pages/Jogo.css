@@ -31,56 +31,79 @@
   letter-spacing: 1px;
 }
 
-.rz-jogo-gol {
-  background: #161616;
-  border: 2px solid #333;
+.rz-jogo-campo {
+  position: relative;
+  height: 260px;
+  background: linear-gradient(180deg, #163a1a 0%, #0d2410 100%);
+  border: 2px solid #2a5c3a;
   border-radius: 12px;
-  padding: 20px;
-  margin: 24px 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
 }
 
-.rz-jogo-zonas {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+.rz-jogo-trave {
+  position: absolute;
+  top: 20px;
+  left: 10%;
+  right: 10%;
+  height: 70px;
+  border: 4px solid #fff;
+  border-bottom: none;
+  opacity: 0.85;
 }
 
-.rz-jogo-zona {
-  background: #1f1f1f;
-  border: 2px solid #333;
-  border-radius: 10px;
-  padding: 40px 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #ccc;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: border-color 0.15s ease, transform 0.1s ease;
+.rz-jogo-goleiro-indicador {
+  position: absolute;
+  top: 20px;
+  width: 33%;
+  height: 70px;
+  background: rgba(229, 57, 53, 0.35);
+  transition: opacity 0.2s ease;
+  opacity: 0;
 }
 
-.rz-jogo-zona:hover {
-  border-color: #F07B00;
+.rz-jogo-goleiro-indicador.visivel { opacity: 1; }
+.rz-jogo-goleiro-indicador.esquerda { left: 10%; }
+.rz-jogo-goleiro-indicador.centro { left: calc(10% + 33%); }
+.rz-jogo-goleiro-indicador.direita { right: 10%; }
+
+.rz-jogo-bola {
+  position: absolute;
+  bottom: 20px;
+  left: calc(50% - 18px);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, #ccc 60%, #999);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.35s ease;
 }
 
-.rz-jogo-zona:active {
-  transform: scale(0.96);
-}
+.rz-jogo-bola.esquerda { transform: translate(-90px, -190px); }
+.rz-jogo-bola.centro { transform: translate(0, -190px); }
+.rz-jogo-bola.direita { transform: translate(90px, -190px); }
 
-.rz-jogo-zona.goleiro {
-  border-color: #e53935;
-  background: #2b0d0d;
+.rz-jogo-resultado-wrap {
+  min-height: 32px;
+  margin-top: 12px;
 }
 
 .rz-jogo-resultado {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 24px;
   letter-spacing: 1px;
-  min-height: 32px;
-  margin-top: 12px;
 }
 
 .rz-jogo-resultado.gol { color: #4caf50; }
 .rz-jogo-resultado.defendeu { color: #e53935; }
+
+.rz-jogo-instrucao {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+}
 
 .rz-jogo-ranking {
   margin-top: 32px;

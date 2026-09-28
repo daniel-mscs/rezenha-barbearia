@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/AdminSidebar'
+import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
 
 function mesAtual() {
@@ -141,6 +142,7 @@ function Caixa() {
         <div className="rz-logo-text">
           Re<span>Z</span>enha <span className="rz-logo-sep">/ Painel</span>
         </div>
+        <SaudacaoUsuario />
         <div className="rz-topbar-right">
           <button onClick={sair} className="rz-logout">
             <i className="ti ti-logout"></i> Sair

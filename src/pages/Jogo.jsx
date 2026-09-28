@@ -179,7 +179,7 @@ function Jogo() {
 
                 {chutando && <div className={`rz-jogo-chuteira ${zonaBola || 'centro'}`}>👟</div>}
 
-                <div className={`rz-jogo-bola ${zonaBola || ''} ${chutando ? 'chutando' : ''}`}></div>
+                <div className={`rz-jogo-bola ${zonaBola || ''} ${chutando ? 'chutando' : ''}`}>⚽</div>
               </div>
 
               <div className="rz-jogo-resultado-wrap">

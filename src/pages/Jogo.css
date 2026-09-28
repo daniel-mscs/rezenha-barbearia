@@ -125,9 +125,10 @@
   left: calc(50% - 18px);
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff, #ccc 60%, #999);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  font-size: 34px;
+  line-height: 1;
+  text-align: center;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
   transition: transform 0.35s ease;
 }
 

@@ -249,8 +249,13 @@ function Clientes() {
       </div>
 
       {modalAberto && (
-        <div className="rz-modal-overlay" onClick={() => setModalAberto(false)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setModalAberto(false)
+          }}
+        >
+          <div className="rz-modal">
             <div className="rz-modal-title">{editando ? 'Editar cliente' : 'Novo cliente'}</div>
             <form onSubmit={salvar}>
               <label className="rz-field-label">Nome</label>
@@ -355,8 +360,13 @@ function Clientes() {
       )}
 
       {clienteParaConvite && (
-        <div className="rz-modal-overlay" onClick={() => setClienteParaConvite(null)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setClienteParaConvite(null)
+          }}
+        >
+          <div className="rz-modal">
             <div className="rz-modal-title">
               {clienteParaConvite.auth_id ? 'Redefinir senha de' : 'Criar login para'} {clienteParaConvite.nome}
             </div>
@@ -394,8 +404,13 @@ function Clientes() {
       )}
 
       {clienteParaExcluir && (
-        <div className="rz-modal-overlay" onClick={() => setClienteParaExcluir(null)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setClienteParaExcluir(null)
+          }}
+        >
+          <div className="rz-modal" style={{ textAlign: 'center' }}>
             <div className="rz-modal-title" style={{ fontSize: 18 }}>
               Excluir {clienteParaExcluir.nome}?
             </div>

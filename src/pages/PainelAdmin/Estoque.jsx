@@ -250,7 +250,11 @@ function Estoque() {
                         <td>
                           <span
                             className="rz-badge"
-                            style={baixo ? { background: '#2b0d0d', color: '#e53935' } : { background: '#0d2b0d', color: '#4caf50' }}
+                            style={
+                              baixo
+                                ? { background: '#2b0d0d', color: '#e53935', fontSize: 15, padding: '4px 12px' }
+                                : { background: '#0d2b0d', color: '#4caf50', fontSize: 15, padding: '4px 12px' }
+                            }
                           >
                             {p.quantidade_atual}
                           </span>
@@ -328,8 +332,13 @@ function Estoque() {
       </div>
 
       {modalProduto && (
-        <div className="rz-modal-overlay" onClick={() => setModalProduto(false)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setModalProduto(false)
+          }}
+        >
+          <div className="rz-modal">
             <div className="rz-modal-title">{editando ? 'Editar produto' : 'Novo produto'}</div>
             {erroProduto && (
               <div
@@ -403,8 +412,13 @@ function Estoque() {
       )}
 
       {produtoMov && (
-        <div className="rz-modal-overlay" onClick={() => setProdutoMov(null)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setProdutoMov(null)
+          }}
+        >
+          <div className="rz-modal">
             <div className="rz-modal-title">Movimentar: {produtoMov.nome}</div>
             <p style={{ color: '#888', fontSize: 13, marginBottom: 16 }}>Saldo atual: {produtoMov.quantidade_atual}</p>
             {erroMov && (
@@ -463,8 +477,13 @@ function Estoque() {
       )}
 
       {produtoParaExcluir && (
-        <div className="rz-modal-overlay" onClick={() => setProdutoParaExcluir(null)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setProdutoParaExcluir(null)
+          }}
+        >
+          <div className="rz-modal" style={{ textAlign: 'center' }}>
             <div className="rz-modal-title" style={{ fontSize: 18 }}>
               Excluir "{produtoParaExcluir.nome}"?
             </div>

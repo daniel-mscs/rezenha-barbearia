@@ -105,9 +105,16 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-        <Route path="/admin/meu-perfil" element={<ProtectedAdminRoute><MeuPerfil /></ProtectedAdminRoute>} />
-  <Route path="/recuperar-senha" element={<EsqueciSenhaCliente />} />
-</Routes>
+        <Route
+          path="/admin/meu-perfil"
+          element={
+            <ProtectedAdminRoute>
+              <MeuPerfil />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route path="/recuperar-senha" element={<EsqueciSenhaCliente />} />
+      </Routes>
       <CookieBanner />
     </BrowserRouter>
   )

@@ -21,15 +21,6 @@ function formatarTelefone(valor) {
   return numeros.replace(/(\d{2})(\d{1})(\d{4})(\d{0,4})/, '($1) $2 $3-$4')
 }
 
-            
-              href={linkEsqueciSenha}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'block', textAlign: 'center', marginTop: 14, fontSize: 12, color: '#888', textDecoration: 'none' }}
-            >
-              Esqueceu a senha? Fale com a gente pelo WhatsApp
-            </a>
-
 function Login() {
   const navigate = useNavigate()
   const [aba, setAba] = useState('entrar')

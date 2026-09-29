@@ -117,6 +117,9 @@ function Home() {
           Re<span>Z</span>enha
         </div>
         <div className="rz-topbar-right">
+          <Link to="/jogo" className="rz-jogo-icone" title="Jogo do pênalti">
+            ⚽
+          </Link>
           <SaudacaoCliente />
           <ul className="rz-nav">
             <li className="active">
@@ -130,9 +133,6 @@ function Home() {
             </li>
             <li>
               <a href="#faq">FAQ</a>
-            </li>
-            <li>
-              <Link to="/jogo">⚽ Jogo</Link>
             </li>
             <li>
               <Link to="/agendamento">Agendar</Link>
@@ -538,9 +538,6 @@ function Home() {
         </a>
       </footer>
 
-      <Link to="/jogo" className="rz-jogo-flutuante" title="Jogo do pênalti">
-        ⚽
-      </Link>
       <BotaoWhatsapp />
       <BotaoInstalarApp />
     </div>

@@ -16,6 +16,7 @@ function BotaoInstalarApp() {
     const aoTerPrompt = (e) => {
       e.preventDefault()
       setPromptEvento(e)
+      e.prompt()
     }
     window.addEventListener('beforeinstallprompt', aoTerPrompt)
 

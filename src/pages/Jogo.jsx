@@ -13,8 +13,10 @@ function Goleiro() {
       <line x1="28" y1="20" x2="38" y2="8" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
       <circle cx="2" cy="8" r="4" fill="#F07B00" />
       <circle cx="38" cy="8" r="4" fill="#F07B00" />
-      <line x1="16" y1="36" x2="12" y2="48" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
-      <line x1="24" y1="36" x2="28" y2="48" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
+      <line x1="16" y1="36" x2="10" y2="50" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
+      <line x1="24" y1="36" x2="30" y2="50" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
+      <ellipse cx="10" cy="50" rx="5" ry="2" fill="#1a1a1a" />
+      <ellipse cx="30" cy="50" rx="5" ry="2" fill="#1a1a1a" />
       <rect x="12" y="16" width="16" height="20" rx="4" fill="#1a1a1a" stroke="#F07B00" strokeWidth="1.5" />
       <circle cx="20" cy="8" r="7" fill="#1a1a1a" stroke="#F07B00" strokeWidth="1.5" />
     </svg>

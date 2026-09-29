@@ -32,6 +32,8 @@ function Jogo() {
   const [nome, setNome] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [ranking, setRanking] = useState([])
+  const [logado, setLogado] = useState(false)
+  const [pontuacaoSalva, setPontuacaoSalva] = useState(false)
   const timerRef = useRef(null)
   const arrasteRef = useRef(null)
 
@@ -49,7 +51,10 @@ function Jogo() {
       } = await supabase.auth.getSession()
       if (!session) return
       const { data: cliente } = await supabase.from('clientes').select('nome').eq('auth_id', session.user.id).maybeSingle()
-      if (cliente?.nome) setNome(cliente.nome)
+      if (cliente?.nome) {
+        setNome(cliente.nome)
+        setLogado(true)
+      }
     }
     carregarClienteLogado()
   }, [])
@@ -71,6 +76,17 @@ function Jogo() {
     return () => clearInterval(timerRef.current)
   }, [fase])
 
+  useEffect(() => {
+    if (fase !== 'fim' || !logado) return
+
+    const salvarAutomatico = async () => {
+      await supabase.from('jogo_penaltis').insert({ nome: nome.trim().slice(0, 30), pontuacao: pontos })
+      setPontuacaoSalva(true)
+      carregarRanking()
+    }
+    salvarAutomatico()
+  }, [fase])
+
   const comecar = () => {
     setPontos(0)
     setTempoRestante(60)
@@ -78,6 +94,7 @@ function Jogo() {
     setGoleiroLado(null)
     setZonaBola(null)
     setChutando(false)
+    setPontuacaoSalva(false)
     setFase('jogando')
   }
 
@@ -214,22 +231,30 @@ function Jogo() {
                   <div className="rz-jogo-placar-label">Gols no total</div>
                 </div>
               </div>
-              <p style={{ color: '#999', fontSize: 14 }}>Fim de jogo! Coloca seu nome pra entrar no ranking:</p>
-              <form onSubmit={enviarPontuacao} style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'center' }}>
-                <input
-                  className="rz-input"
-                  style={{ marginBottom: 0, maxWidth: 220 }}
-                  type="text"
-                  placeholder="Seu nome"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  maxLength={30}
-                  required
-                />
-                <button className="rz-btn-primary" style={{ width: 'auto' }} type="submit" disabled={enviando}>
-                  {enviando ? 'Salvando...' : 'Salvar'}
-                </button>
-              </form>
+              {logado ? (
+                <p style={{ color: pontuacaoSalva ? '#4caf50' : '#999', fontSize: 14 }}>
+                  {pontuacaoSalva ? '✅ Pontuação salva no ranking!' : 'Salvando pontuação...'}
+                </p>
+              ) : (
+                <>
+                  <p style={{ color: '#999', fontSize: 14 }}>Fim de jogo! Coloca seu nome pra entrar no ranking:</p>
+                  <form onSubmit={enviarPontuacao} style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'center' }}>
+                    <input
+                      className="rz-input"
+                      style={{ marginBottom: 0, maxWidth: 220 }}
+                      type="text"
+                      placeholder="Seu nome"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      maxLength={30}
+                      required
+                    />
+                    <button className="rz-btn-primary" style={{ width: 'auto' }} type="submit" disabled={enviando}>
+                      {enviando ? 'Salvando...' : 'Salvar'}
+                    </button>
+                  </form>
+                </>
+              )}
               <button className="rz-btn-outline" style={{ marginTop: 16, width: 'auto' }} onClick={() => setFase('inicio')}>
                 Jogar de novo
               </button>

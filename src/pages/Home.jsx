@@ -118,7 +118,7 @@ function Home() {
         </div>
         <div className="rz-topbar-right">
           <Link to="/jogo" className="rz-jogo-icone" title="Jogo do pênalti">
-            ⚽
+            ⚽<span>Jogo</span>
           </Link>
           <SaudacaoCliente />
           <ul className="rz-nav">
@@ -145,10 +145,10 @@ function Home() {
           ) : (
             <>
               <Link to="/login" className="rz-btn-outline" style={{ padding: '8px 16px', fontSize: '13px' }}>
-                Entrar / Login
+                Login
               </Link>
               <Link to="/agendamento" className="rz-btn-nav">
-                Agendar agora
+                Agendar<span className="rz-esconder-mobile"> agora</span>
               </Link>
             </>
           )}

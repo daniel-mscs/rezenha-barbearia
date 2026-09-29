@@ -538,6 +538,9 @@ function Home() {
         </a>
       </footer>
 
+      <Link to="/jogo" className="rz-jogo-flutuante" title="Jogo do pênalti">
+        ⚽
+      </Link>
       <BotaoWhatsapp />
       <BotaoInstalarApp />
     </div>

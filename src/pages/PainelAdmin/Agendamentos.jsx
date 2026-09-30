@@ -53,6 +53,7 @@ function Agendamentos() {
   const [filtroBarbeiro, setFiltroBarbeiro] = useState(null)
   const [proximosBloqueios, setProximosBloqueios] = useState([])
   const [aniversariantes, setAniversariantes] = useState([])
+  const [mostrarAniversariantes, setMostrarAniversariantes] = useState(false)
   const [visualizacao, setVisualizacao] = useState('tabela') // 'tabela' | 'agenda'
 
   const carregar = async () => {
@@ -262,14 +263,23 @@ function Agendamentos() {
 
           {aniversariantes.length > 0 && (
             <div className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00', background: '#1a1206' }}>
-              <div className="rz-bloqueios-futuros-titulo">🎂 Aniversariantes da semana</div>
-              <div className="rz-bloqueios-futuros-lista">
-                {aniversariantes.map((c) => (
-                  <div key={c.id} className="rz-bloqueio-chip">
-                    <strong>{c.nome}</strong> — {c.dias_ate_aniversario === 0 ? 'hoje!' : `em ${c.dias_ate_aniversario}d`}
-                  </div>
-                ))}
+              <div
+                className="rz-bloqueios-futuros-titulo"
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                onClick={() => setMostrarAniversariantes((v) => !v)}
+              >
+                <span>🎂 Ver aniversariantes da semana ({aniversariantes.length})</span>
+                <span>{mostrarAniversariantes ? '▲' : '▼'}</span>
               </div>
+              {mostrarAniversariantes && (
+                <div className="rz-bloqueios-futuros-lista" style={{ marginTop: 10 }}>
+                  {aniversariantes.map((c) => (
+                    <div key={c.id} className="rz-bloqueio-chip">
+                      <strong>{c.nome}</strong> — {c.dias_ate_aniversario === 0 ? 'hoje!' : `em ${c.dias_ate_aniversario}d`}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

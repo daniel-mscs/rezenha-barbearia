@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+
+const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
+
+function formatarDataCurta(dataStr) {
+  const [, mes, dia] = dataStr.split('-')
+  return `${dia} ${MESES_CURTOS[parseInt(mes, 10) - 1]}`
+}
 import AdminSidebar from '../../components/AdminSidebar'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
@@ -275,7 +282,8 @@ function Agendamentos() {
                 <div className="rz-bloqueios-futuros-lista" style={{ marginTop: 10 }}>
                   {aniversariantes.map((c) => (
                     <div key={c.id} className="rz-bloqueio-chip">
-                      <strong>{c.nome}</strong> — {c.dias_ate_aniversario === 0 ? 'hoje!' : `em ${c.dias_ate_aniversario}d`}
+                      <strong>{c.nome}</strong> — {formatarDataCurta(c.data_nascimento)}{' '}
+                      {c.dias_ate_aniversario === 0 ? '(hoje!)' : `(${c.dias_ate_aniversario}d)`}
                     </div>
                   ))}
                 </div>

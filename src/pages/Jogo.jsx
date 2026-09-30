@@ -8,7 +8,7 @@ const LADOS = ['esquerda', 'centro', 'direita']
 
 function Goleiro() {
   return (
-    <svg viewBox="0 0 40 50" width="44" height="55">
+    <svg viewBox="0 0 40 50" width="56" height="70">
       <line x1="12" y1="20" x2="2" y2="8" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
       <line x1="28" y1="20" x2="38" y2="8" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
       <circle cx="2" cy="8" r="4" fill="#F07B00" />

@@ -90,14 +90,14 @@
 
 .rz-jogo-goleiro {
   position: absolute;
-  top: 8%;
-  left: calc(50% - 22px);
+  bottom: 60%;
+  left: calc(50% - 28px);
   z-index: 1;
   transition: transform 0.3s ease;
 }
 
-.rz-jogo-goleiro.pulando.esquerda { transform: translateX(-70px) rotate(-20deg); }
-.rz-jogo-goleiro.pulando.direita { transform: translateX(70px) rotate(20deg); }
+.rz-jogo-goleiro.pulando.esquerda { transform: translateX(-78px) rotate(-20deg); }
+.rz-jogo-goleiro.pulando.direita { transform: translateX(78px) rotate(20deg); }
 .rz-jogo-goleiro.pulando.centro { transform: translateY(-6px); }
 
 .rz-jogo-chuteira {

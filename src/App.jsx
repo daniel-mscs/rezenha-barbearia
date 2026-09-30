@@ -12,6 +12,7 @@ import Barbeiros from './pages/PainelAdmin/Barbeiros'
 import Clientes from './pages/PainelAdmin/Clientes'
 import MeuPortfolio from './pages/PainelAdmin/MeuPortfolio'
 import Estoque from './pages/PainelAdmin/Estoque'
+import Aniversarios from './pages/PainelAdmin/Aniversarios'
 import MeuPerfil from './pages/PainelAdmin/MeuPerfil'
 import Relatorios from './pages/PainelAdmin/Relatorios'
 import Configuracoes from './pages/PainelAdmin/Configuracoes'
@@ -116,6 +117,7 @@ function App() {
         />
         <Route path="/recuperar-senha" element={<EsqueciSenhaCliente />} />
         <Route path="/jogo" element={<Jogo />} />
+  <Route path="/admin/aniversarios" element={<ProtectedAdminRoute><Aniversarios /></ProtectedAdminRoute>} />
 </Routes>
       <CookieBanner />
     </BrowserRouter>

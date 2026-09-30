@@ -52,6 +52,7 @@ function Agendamentos() {
   const [filtroStatus, setFiltroStatus] = useState('todos')
   const [filtroBarbeiro, setFiltroBarbeiro] = useState(null)
   const [proximosBloqueios, setProximosBloqueios] = useState([])
+  const [aniversariantes, setAniversariantes] = useState([])
   const [visualizacao, setVisualizacao] = useState('tabela') // 'tabela' | 'agenda'
 
   const carregar = async () => {
@@ -77,6 +78,12 @@ function Agendamentos() {
   }, [filtroData])
 
   useEffect(() => {
+    const carregarAniversariantes = async () => {
+      const { data } = await supabase.rpc('proximos_aniversarios', { p_dias: 7 })
+      setAniversariantes((data || []).filter((c) => c.dias_ate_aniversario <= 7))
+    }
+    carregarAniversariantes()
+
     const carregarBloqueios = async () => {
       const hoje = new Date().toISOString().split('T')[0]
       const { data } = await supabase.from('dias_fechados').select('*').gte('data', hoje).order('data').limit(10)
@@ -247,6 +254,19 @@ function Agendamentos() {
                     <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>
                       Cancelar
                     </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {aniversariantes.length > 0 && (
+            <div className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00', background: '#1a1206' }}>
+              <div className="rz-bloqueios-futuros-titulo">🎂 Aniversariantes da semana</div>
+              <div className="rz-bloqueios-futuros-lista">
+                {aniversariantes.map((c) => (
+                  <div key={c.id} className="rz-bloqueio-chip">
+                    <strong>{c.nome}</strong> — {c.dias_ate_aniversario === 0 ? 'hoje!' : `em ${c.dias_ate_aniversario}d`}
                   </div>
                 ))}
               </div>

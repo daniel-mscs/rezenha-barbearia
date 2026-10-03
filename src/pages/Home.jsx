@@ -114,9 +114,7 @@ function Home() {
       {/* TOPBAR */}
       <header className="rz-topbar">
         <div className="rz-logo-text" onClick={handleLogoClick} style={{ cursor: 'default' }}>
-          <span className="rz-logo-style">
-  Re<span>Z</span>enha
-</span>
+          Re<span>Z</span>enha
         </div>
         <div className="rz-topbar-right">
           <Link to="/jogo" className="rz-jogo-icone" title="Jogo do pênalti">
@@ -171,7 +169,10 @@ function Home() {
           <h1>
             Tem corte, tem
             <br />
-            futebol, tem Re<span>Z</span>enha
+            futebol, tem{' '}
+            <span className="rz-logo-style">
+              Re<span>Z</span>enha
+            </span>
           </h1>
           <p>Na Rezenha o corte é só desculpa pro papo render. Estilo de verdade, com futebol na tela e cerveja gelada.</p>
           <div className="rz-hero-actions">

@@ -23,9 +23,10 @@
 }
 
 .rz-logo-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 2px;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 0;
   color: #fff;
   text-transform: none;
 }
@@ -473,7 +474,7 @@
   }
   .rz-logo-text {
     flex-shrink: 0;
-    font-size: 15px;
+    font-size: 22px;
   }
 
   .rz-hero {
@@ -1183,5 +1184,9 @@
 }
 
 .rz-logo-style {
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
   text-transform: none;
+  font-size: 1.3em;
+  display: inline-block;
 }

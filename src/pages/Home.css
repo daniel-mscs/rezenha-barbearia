@@ -1123,7 +1123,6 @@
   }
 }
 
-
 .rz-jogo-icone {
   display: inline-flex;
   align-items: center;
@@ -1134,7 +1133,7 @@
   border: 1px solid rgba(240, 123, 0, 0.4);
   border-radius: 20px;
   padding: 4px 10px;
-  color: #F07B00;
+  color: #f07b00;
   flex-shrink: 0;
 }
 
@@ -1175,7 +1174,7 @@
 }
 
 .rz-assinatura-dev a {
-  color: #F07B00;
+  color: #f07b00;
   text-decoration: none;
 }
 

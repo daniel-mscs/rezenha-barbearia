@@ -45,7 +45,7 @@ function AdminLogin() {
           <IconArrowLeft className="rz-icon-inline" /> Voltar para o início
         </Link>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">
+          <div className="rz-login-logo-text">
             Re<span>Z</span>enha
           </div>
         </div>

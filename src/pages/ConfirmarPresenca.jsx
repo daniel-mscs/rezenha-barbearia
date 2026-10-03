@@ -21,7 +21,7 @@ function ConfirmarPresenca() {
     <div className="rz-login-body">
       <div className="rz-login-box" style={{ textAlign: 'center' }}>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">
+          <div className="rz-login-logo-text">
             Re<span>Z</span>enha
           </div>
         </div>

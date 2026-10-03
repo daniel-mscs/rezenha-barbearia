@@ -50,7 +50,7 @@ function EsqueciSenhaCliente() {
           <IconArrowLeft className="rz-icon-inline" /> Voltar para o login
         </Link>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">
+          <div className="rz-login-logo-text">
             Re<span>Z</span>enha
           </div>
         </div>

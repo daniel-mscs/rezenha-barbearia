@@ -197,11 +197,7 @@ function Jogo() {
                 </div>
               </div>
 
-              <div
-                className="rz-jogo-campo"
-                onPointerDown={iniciarArraste}
-                onPointerUp={finalizarArraste}
-              >
+              <div className="rz-jogo-campo" onPointerDown={iniciarArraste} onPointerUp={finalizarArraste}>
                 <div className="rz-jogo-gol-estrutura">
                   <div className="rz-jogo-gol-trave-topo"></div>
                   <div className="rz-jogo-gol-trave-esquerda"></div>

@@ -29,7 +29,7 @@
 }
 
 .rz-hl-logo span {
-  color: #F07B00;
+  color: #f07b00;
 }
 
 .rz-hl-data {
@@ -49,14 +49,14 @@
 }
 
 .rz-hl-titulo span {
-  color: #F07B00;
+  color: #f07b00;
 }
 
 .rz-hl-sem-vagas {
   margin-top: 40px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 24px;
-  color: #F07B00;
+  color: #f07b00;
   text-align: center;
 }
 
@@ -94,7 +94,7 @@
 .rz-hl-chip {
   background: rgba(240, 123, 0, 0.12);
   border: 1px solid rgba(240, 123, 0, 0.4);
-  color: #F07B00;
+  color: #f07b00;
   font-size: 11px;
   font-weight: 700;
   padding: 3px 8px;
@@ -107,7 +107,7 @@
 }
 
 .rz-hl-cta {
-  background: #F07B00;
+  background: #f07b00;
   color: #fff;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 18px;

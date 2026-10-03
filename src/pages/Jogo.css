@@ -20,7 +20,7 @@
 .rz-jogo-placar-num {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 40px;
-  color: #F07B00;
+  color: #f07b00;
   line-height: 1;
 }
 
@@ -73,8 +73,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.rz-jogo-gol-trave-esquerda { left: 0; }
-.rz-jogo-gol-trave-direita { right: 0; }
+.rz-jogo-gol-trave-esquerda {
+  left: 0;
+}
+.rz-jogo-gol-trave-direita {
+  right: 0;
+}
 
 .rz-jogo-gol-rede {
   position: absolute;
@@ -96,9 +100,15 @@
   transition: transform 0.3s ease;
 }
 
-.rz-jogo-goleiro.pulando.esquerda { transform: translateX(-78px) rotate(-20deg); }
-.rz-jogo-goleiro.pulando.direita { transform: translateX(78px) rotate(20deg); }
-.rz-jogo-goleiro.pulando.centro { transform: translateY(-6px); }
+.rz-jogo-goleiro.pulando.esquerda {
+  transform: translateX(-78px) rotate(-20deg);
+}
+.rz-jogo-goleiro.pulando.direita {
+  transform: translateX(78px) rotate(20deg);
+}
+.rz-jogo-goleiro.pulando.centro {
+  transform: translateY(-6px);
+}
 
 .rz-jogo-chuteira {
   position: absolute;
@@ -110,8 +120,14 @@
 }
 
 @keyframes rz-jogo-chute {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(-30px) rotate(-25deg); opacity: 0; }
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-30px) rotate(-25deg);
+    opacity: 0;
+  }
 }
 
 .rz-jogo-bola {
@@ -127,9 +143,15 @@
   transition: transform 0.35s ease;
 }
 
-.rz-jogo-bola.esquerda { transform: translate(-100px, -170px); }
-.rz-jogo-bola.centro { transform: translate(0, -170px); }
-.rz-jogo-bola.direita { transform: translate(100px, -170px); }
+.rz-jogo-bola.esquerda {
+  transform: translate(-100px, -170px);
+}
+.rz-jogo-bola.centro {
+  transform: translate(0, -170px);
+}
+.rz-jogo-bola.direita {
+  transform: translate(100px, -170px);
+}
 
 .rz-jogo-resultado-wrap {
   min-height: 32px;
@@ -142,8 +164,12 @@
   letter-spacing: 1px;
 }
 
-.rz-jogo-resultado.gol { color: #4caf50; }
-.rz-jogo-resultado.defendeu { color: #e53935; }
+.rz-jogo-resultado.gol {
+  color: #4caf50;
+}
+.rz-jogo-resultado.defendeu {
+  color: #e53935;
+}
 
 .rz-jogo-instrucao {
   font-size: 11px;
@@ -168,7 +194,7 @@
 }
 
 .rz-jogo-ranking-pos {
-  color: #F07B00;
+  color: #f07b00;
   font-weight: 700;
   margin-right: 10px;
 }

@@ -331,7 +331,11 @@ function Agendamentos() {
           )}
 
           {totalVagasHoje !== null && totalVagasHoje > 0 && totalVagasHoje <= 5 && (
-            <Link to="/admin/horarios-livres" className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00', background: '#1a1206', display: 'block', textDecoration: 'none', marginBottom: 12 }}>
+            <Link
+              to="/admin/horarios-livres"
+              className="rz-bloqueios-futuros"
+              style={{ borderColor: '#F07B00', background: '#1a1206', display: 'block', textDecoration: 'none', marginBottom: 12 }}
+            >
               <div className="rz-bloqueios-futuros-titulo" style={{ color: '#F07B00' }}>
                 🔥 Só {totalVagasHoje} {totalVagasHoje === 1 ? 'vaga livre' : 'vagas livres'} hoje — criar Story pra divulgar?
               </div>

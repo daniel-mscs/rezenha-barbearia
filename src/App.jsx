@@ -118,9 +118,23 @@ function App() {
         />
         <Route path="/recuperar-senha" element={<EsqueciSenhaCliente />} />
         <Route path="/jogo" element={<Jogo />} />
-  <Route path="/admin/aniversarios" element={<ProtectedAdminRoute><Aniversarios /></ProtectedAdminRoute>} />
-  <Route path="/admin/horarios-livres" element={<ProtectedAdminRoute><HorariosLivres /></ProtectedAdminRoute>} />
-</Routes>
+        <Route
+          path="/admin/aniversarios"
+          element={
+            <ProtectedAdminRoute>
+              <Aniversarios />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/horarios-livres"
+          element={
+            <ProtectedAdminRoute>
+              <HorariosLivres />
+            </ProtectedAdminRoute>
+          }
+        />
+      </Routes>
       <CookieBanner />
     </BrowserRouter>
   )

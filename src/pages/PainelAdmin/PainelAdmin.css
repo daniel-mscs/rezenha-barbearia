@@ -11,7 +11,7 @@
   flex-direction: column;
   overscroll-behavior-x: none;
   touch-action: pan-y;
-} 
+}
 
 /* ── TOPBAR ── */
 .rz-topbar {

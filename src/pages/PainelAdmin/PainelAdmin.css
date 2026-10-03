@@ -27,9 +27,10 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 .rz-logo-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 2px;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 0;
   color: #fff;
 }
 .rz-logo-text span {
@@ -602,12 +603,15 @@
 
   .rz-main {
     padding: 14px;
+    min-width: 0;
   }
   .rz-page-title {
     font-size: 20px;
   }
   .rz-page-header {
     margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .rz-stats-cards {

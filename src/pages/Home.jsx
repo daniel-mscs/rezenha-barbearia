@@ -174,7 +174,13 @@ function Home() {
               Re<span>Z</span>enha
             </span>
           </h1>
-          <p>Na Rezenha o corte é só desculpa pro papo render. Estilo de verdade, com futebol na tela e cerveja gelada.</p>
+          <p>
+            Na{' '}
+            <span className="rz-logo-style" style={{ fontSize: '1.15em', color: '#fff' }}>
+              Re<span style={{ color: '#f07b00' }}>Z</span>enha
+            </span>{' '}
+            o corte é só desculpa pro papo render. Estilo de verdade, com futebol na tela e cerveja gelada.
+          </p>
           <div className="rz-hero-actions">
             <Link to="/agendamento" className="rz-btn-primary">
               Agendar horário

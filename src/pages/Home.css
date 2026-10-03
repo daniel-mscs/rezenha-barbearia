@@ -27,6 +27,7 @@
   font-size: 22px;
   letter-spacing: 2px;
   color: #fff;
+  text-transform: none;
 }
 .rz-logo-text span {
   color: #f07b00;
@@ -900,8 +901,8 @@
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  font-size: 12px;
-  color: #888;
+  font-size: 14px;
+  color: #999;
 }
 
 .rz-info-bar-horarios strong {
@@ -1157,4 +1158,30 @@
   .rz-esconder-mobile {
     display: none;
   }
+}
+
+.rz-assinatura-dev {
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 11px;
+  color: #555;
+  background: #080808;
+  border-top: 1px solid #1a1a1a;
+}
+
+.rz-assinatura-dev strong {
+  color: #888;
+}
+
+.rz-assinatura-dev a {
+  color: #F07B00;
+  text-decoration: none;
+}
+
+.rz-assinatura-dev a:hover {
+  text-decoration: underline;
+}
+
+.rz-logo-style {
+  text-transform: none;
 }

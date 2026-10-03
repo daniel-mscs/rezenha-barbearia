@@ -1,0 +1,123 @@
+.rz-hl-preview-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.rz-hl-cartao {
+  width: 360px;
+  aspect-ratio: 9 / 16;
+  background: linear-gradient(165deg, #161616 0%, #0d0d0d 60%, #1a1000 100%);
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rz-hl-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rz-hl-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.rz-hl-logo span {
+  color: #F07B00;
+}
+
+.rz-hl-data {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rz-hl-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-top: 24px;
+}
+
+.rz-hl-titulo span {
+  color: #F07B00;
+}
+
+.rz-hl-sem-vagas {
+  margin-top: 40px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: #F07B00;
+  text-align: center;
+}
+
+.rz-hl-lista {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.rz-hl-barbeiro-bloco {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #262626;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.rz-hl-barbeiro-nome {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.rz-hl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rz-hl-chip {
+  background: rgba(240, 123, 0, 0.12);
+  border: 1px solid rgba(240, 123, 0, 0.4);
+  color: #F07B00;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.rz-hl-rodape {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.rz-hl-cta {
+  background: #F07B00;
+  color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.rz-hl-link {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #888;
+}

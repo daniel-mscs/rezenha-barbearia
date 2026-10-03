@@ -114,7 +114,9 @@ function Home() {
       {/* TOPBAR */}
       <header className="rz-topbar">
         <div className="rz-logo-text" onClick={handleLogoClick} style={{ cursor: 'default' }}>
-          Re<span>Z</span>enha
+          <span className="rz-logo-style">
+  Re<span>Z</span>enha
+</span>
         </div>
         <div className="rz-topbar-right">
           <Link to="/jogo" className="rz-jogo-icone" title="Jogo do pênalti">
@@ -536,6 +538,12 @@ function Home() {
           </svg>
           @rezenha_barbearia
         </a>
+        <div className="rz-assinatura-dev">
+          Desenvolvido por <strong>Daniel Alves</strong> ·{' '}
+          <a href="https://daniel-alvesdev.com.br" target="_blank" rel="noopener noreferrer">
+            Quer um site assim? Confira meu portfólio
+          </a>
+        </div>
       </footer>
 
       <BotaoWhatsapp />

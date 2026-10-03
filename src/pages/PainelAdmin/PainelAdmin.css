@@ -9,7 +9,9 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+} 
 
 /* ── TOPBAR ── */
 .rz-topbar {

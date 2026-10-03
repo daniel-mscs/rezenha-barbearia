@@ -123,7 +123,7 @@ function Home() {
           <SaudacaoCliente />
           <ul className="rz-nav">
             <li className="active">
-              <a href="index.html">Início</a>
+              <Link to="/">Início</Link>
             </li>
             <li>
               <a href="#servicos">Serviços</a>

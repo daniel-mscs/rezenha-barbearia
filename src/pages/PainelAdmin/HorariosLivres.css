@@ -22,14 +22,14 @@
 }
 
 .rz-hl-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
-  letter-spacing: 2px;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
+  font-size: 24px;
   color: #fff;
 }
 
 .rz-hl-logo span {
-  color: #f07b00;
+  color: #F07B00;
 }
 
 .rz-hl-data {
@@ -120,4 +120,18 @@
   margin-top: 8px;
   font-size: 11px;
   color: #888;
+}
+
+.rz-hl-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rz-hl-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }

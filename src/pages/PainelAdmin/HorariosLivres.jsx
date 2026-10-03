@@ -150,8 +150,11 @@ function HorariosLivres() {
             <div className="rz-hl-preview-wrap">
               <div ref={cartaoRef} className="rz-hl-cartao">
                 <div className="rz-hl-topo">
-                  <div className="rz-hl-logo">
-                    RE<span>Z</span>ENHA
+                  <div className="rz-hl-logo-wrap">
+                    <img src="/logo.png" alt="Rezenha Barbearia" className="rz-hl-logo-img" crossOrigin="anonymous" />
+                    <div className="rz-hl-logo">
+                      Re<span>Z</span>enha
+                    </div>
                   </div>
                   <div className="rz-hl-data">{dataFormatadaHoje()}</div>
                 </div>
@@ -183,7 +186,7 @@ function HorariosLivres() {
 
                 <div className="rz-hl-rodape">
                   <div className="rz-hl-cta">AGENDE AGORA</div>
-                  <div className="rz-hl-link">rezenha-barbearia.vercel.app</div>
+                  <div className="rz-hl-link">barbeariarezenha.com.br</div>
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 
 const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
@@ -61,6 +62,7 @@ function Agendamentos() {
   const [proximosBloqueios, setProximosBloqueios] = useState([])
   const [aniversariantes, setAniversariantes] = useState([])
   const [mostrarAniversariantes, setMostrarAniversariantes] = useState(false)
+  const [totalVagasHoje, setTotalVagasHoje] = useState(null)
   const [visualizacao, setVisualizacao] = useState('tabela') // 'tabela' | 'agenda'
 
   const carregar = async () => {
@@ -86,6 +88,66 @@ function Agendamentos() {
   }, [filtroData])
 
   useEffect(() => {
+    const carregarVagasHoje = async () => {
+      const hojeStr = new Date().toISOString().split('T')[0]
+
+      const { data: diaFechado } = await supabase.from('dias_fechados').select('data').eq('data', hojeStr).maybeSingle()
+      if (diaFechado) {
+        setTotalVagasHoje(0)
+        return
+      }
+
+      const { data: barbeiros } = await supabase.from('barbeiros').select('id').eq('ativo', true)
+      const { data: config } = await supabase.from('configuracoes').select('*').eq('id', 1).maybeSingle()
+      const { data: agendamentosHoje } = await supabase
+        .from('agendamentos')
+        .select('barbeiro_id, horario, servicos(duracao_min)')
+        .eq('data', hojeStr)
+        .neq('status', 'cancelado')
+
+      if (!config || !barbeiros) {
+        setTotalVagasHoje(null)
+        return
+      }
+
+      const diaSemana = new Date().getDay()
+      if (diaSemana === 0 && !config.domingo_aberto) {
+        setTotalVagasHoje(0)
+        return
+      }
+
+      const [hA, mA] = (diaSemana === 6 ? config.horario_sabado_abertura : config.horario_semana_abertura).split(':').map(Number)
+      const [hF, mF] = (diaSemana === 6 ? config.horario_sabado_fechamento : config.horario_semana_fechamento).split(':').map(Number)
+      const abertura = hA * 60 + mA
+      const fechamento = hF * 60 + mF
+
+      const agora = new Date()
+      const minutosAgora = agora.getHours() * 60 + agora.getMinutes()
+
+      const slots = []
+      for (let m = abertura; m < fechamento; m += 15) {
+        slots.push(m)
+      }
+
+      let total = 0
+      for (const b of barbeiros) {
+        for (const m of slots) {
+          if (m <= minutosAgora) continue
+          const ocupado = (agendamentosHoje || []).some((a) => {
+            if (a.barbeiro_id !== b.id) return false
+            const [ah, am] = a.horario.slice(0, 5).split(':').map(Number)
+            const inicio = ah * 60 + am
+            const fim = inicio + (a.servicos?.duracao_min || 30)
+            return m >= inicio && m < fim
+          })
+          if (!ocupado) total += 1
+        }
+      }
+
+      setTotalVagasHoje(total)
+    }
+    carregarVagasHoje()
+
     const carregarAniversariantes = async () => {
       const { data } = await supabase.rpc('proximos_aniversarios', { p_dias: 7 })
       setAniversariantes((data || []).filter((c) => c.dias_ate_aniversario <= 7))
@@ -266,6 +328,14 @@ function Agendamentos() {
                 ))}
               </div>
             </div>
+          )}
+
+          {totalVagasHoje !== null && totalVagasHoje > 0 && totalVagasHoje <= 5 && (
+            <Link to="/admin/horarios-livres" className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00', background: '#1a1206', display: 'block', textDecoration: 'none', marginBottom: 12 }}>
+              <div className="rz-bloqueios-futuros-titulo" style={{ color: '#F07B00' }}>
+                🔥 Só {totalVagasHoje} {totalVagasHoje === 1 ? 'vaga livre' : 'vagas livres'} hoje — criar Story pra divulgar?
+              </div>
+            </Link>
           )}
 
           {aniversariantes.length > 0 && (

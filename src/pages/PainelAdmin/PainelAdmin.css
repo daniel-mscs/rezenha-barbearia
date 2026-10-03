@@ -664,19 +664,7 @@
     padding: 7px 12px;
   }
 
-  .rz-table-wrap {
-    position: relative;
-  }
-  .rz-table-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 24px;
-    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.4));
-    pointer-events: none;
-  }
+
 }
 
 .rz-section-title-mini {

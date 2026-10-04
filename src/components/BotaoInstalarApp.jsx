@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react'
+import './BotaoInstalarApp.css'
+
+const CHAVE_ADIADO = 'rz-instalar-adiado-ate'
+const SETE_DIAS = 7 * 24 * 60 * 60 * 1000
 
 function detectarDispositivo() {
   const ua = navigator.userAgent
@@ -10,165 +14,135 @@ function detectarDispositivo() {
 function BotaoInstalarApp() {
   const [promptEvento, setPromptEvento] = useState(null)
   const [instalado, setInstalado] = useState(false)
-  const [mostrarInstrucoes, setMostrarInstrucoes] = useState(false)
+  const [aberto, setAberto] = useState(false)
+  const [botaoFechado, setBotaoFechado] = useState(false)
+  const dispositivo = detectarDispositivo()
 
   useEffect(() => {
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+      setInstalado(true)
+      return
+    }
+
     const aoTerPrompt = (e) => {
       e.preventDefault()
       setPromptEvento(e)
-      e.prompt()
+    }
+    const aoInstalar = () => {
+      setInstalado(true)
+      setAberto(false)
     }
     window.addEventListener('beforeinstallprompt', aoTerPrompt)
-
-    const aoInstalar = () => setInstalado(true)
     window.addEventListener('appinstalled', aoInstalar)
 
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setInstalado(true)
+    let adiadoAte = 0
+    try {
+      adiadoAte = Number(localStorage.getItem(CHAVE_ADIADO)) || 0
+    } catch {
+      adiadoAte = 0
     }
+    const timer = setTimeout(() => {
+      if (dispositivo !== 'desktop' && Date.now() > adiadoAte) setAberto(true)
+    }, 3000)
 
     return () => {
+      clearTimeout(timer)
       window.removeEventListener('beforeinstallprompt', aoTerPrompt)
       window.removeEventListener('appinstalled', aoInstalar)
     }
   }, [])
 
-  const [fechado, setFechado] = useState(false)
-
-  const clicar = async () => {
-    if (promptEvento) {
-      promptEvento.prompt()
-      await promptEvento.userChoice
-      setPromptEvento(null)
-      return
+  const adiar = () => {
+    try {
+      localStorage.setItem(CHAVE_ADIADO, String(Date.now() + SETE_DIAS))
+    } catch {
+      // sem localStorage, só fecha
     }
-    setMostrarInstrucoes(true)
+    setAberto(false)
   }
 
-  if (instalado || fechado) return null
+  const instalar = async () => {
+    if (!promptEvento) return
+    promptEvento.prompt()
+    await promptEvento.userChoice
+    setPromptEvento(null)
+    setAberto(false)
+  }
 
-  const dispositivo = detectarDispositivo()
+  if (instalado) return null
 
   return (
     <>
-      <div style={{ position: 'fixed', bottom: 90, right: 20, zIndex: 998 }}>
-        <button
-          onClick={() => setFechado(true)}
-          style={{
-            position: 'absolute',
-            top: -8,
-            right: -8,
-            width: 20,
-            height: 20,
-            borderRadius: '50%',
-            background: '#333',
-            color: '#fff',
-            border: '2px solid #0d0d0d',
-            fontSize: 10,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 0,
-          }}
-          aria-label="Fechar"
-        >
-          ✕
-        </button>
-        <button
-          onClick={clicar}
-          style={{
-            background: '#161616',
-            color: '#fff',
-            border: '1px solid #F07B00',
-            borderRadius: 30,
-            padding: '10px 16px',
-            fontSize: 12,
-            fontWeight: 700,
-            cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
-          }}
-        >
-          📲 Instalar app
-        </button>
-      </div>
+      {!aberto && !botaoFechado && (
+        <div className="rz-pwa-flutuante">
+          <button className="rz-pwa-flutuante-x" onClick={() => setBotaoFechado(true)} aria-label="Fechar">
+            ✕
+          </button>
+          <button className="rz-pwa-flutuante-btn" onClick={() => setAberto(true)}>
+            📲 Instalar app
+          </button>
+        </div>
+      )}
 
-      {mostrarInstrucoes && (
+      {aberto && (
         <div
-          onClick={() => setMostrarInstrucoes(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 999,
-            padding: 20,
+          className="rz-pwa-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) adiar()
           }}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: '#111',
-              border: '1px solid #262626',
-              borderRadius: 12,
-              padding: 24,
-              maxWidth: 340,
-              width: '100%',
-              color: '#fff',
-            }}
-          >
-            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, letterSpacing: 1, marginBottom: 12 }}>Como instalar</div>
+          <div className="rz-pwa-card">
+            <img src="/logo.png" alt="Rezenha Barbearia" className="rz-pwa-logo" />
+            <div className="rz-pwa-titulo">
+              Instale o app da <span>Rezenha</span>
+            </div>
+            <p className="rz-pwa-texto">Agende mais rápido, direto da tela inicial do seu celular. Sem baixar nada na loja.</p>
 
-            {dispositivo === 'ios' && (
-              <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.7 }}>
-                1. Toque no ícone de <strong>Compartilhar</strong> (o quadrado com a seta pra cima), na barra do Safari
-                <br />
-                2. Escolha <strong>"Adicionar à Tela de Início"</strong>
-                <br />
-                3. Toque em <strong>"Adicionar"</strong>
-              </p>
+            <ul className="rz-pwa-beneficios">
+              <li>⚡ Abre em um toque</li>
+              <li>📅 Agendamento mais rápido</li>
+              <li>🔔 Tudo à mão, igual um app de verdade</li>
+            </ul>
+
+            {promptEvento ? (
+              <button className="rz-pwa-instalar" onClick={instalar}>
+                Instalar agora
+              </button>
+            ) : (
+              <div className="rz-pwa-passos">
+                {dispositivo === 'ios' && (
+                  <>
+                    <div>
+                      1. Toque em <strong>Compartilhar</strong> (o quadrado com a seta pra cima)
+                    </div>
+                    <div>
+                      2. Escolha <strong>Adicionar à Tela de Início</strong>
+                    </div>
+                    <div>
+                      3. Toque em <strong>Adicionar</strong>
+                    </div>
+                  </>
+                )}
+                {dispositivo === 'android' && (
+                  <>
+                    <div>
+                      1. Toque nos <strong>três pontinhos</strong> (⋮) do navegador
+                    </div>
+                    <div>
+                      2. Escolha <strong>Instalar app</strong> ou <strong>Adicionar à tela inicial</strong>
+                    </div>
+                  </>
+                )}
+                {dispositivo === 'desktop' && (
+                  <div>
+                    Procure o ícone de <strong>instalar</strong> na barra de endereço do navegador (Chrome ou Edge).
+                  </div>
+                )}
+              </div>
             )}
 
-            {dispositivo === 'android' && (
-              <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.7 }}>
-                1. Toque nos <strong>três pontinhos</strong> (⋮) no canto superior direito do Chrome
-                <br />
-                2. Escolha <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar app"</strong>
-                <br />
-                3. Confirme tocando em <strong>"Instalar"</strong>
-              </p>
-            )}
-
-            {dispositivo === 'desktop' && (
-              <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.7 }}>
-                1. Procure o ícone de <strong>instalação</strong> (geralmente um computador com uma seta) na barra de endereço do navegador
-                <br />
-                2. Clique nele e depois em <strong>"Instalar"</strong>
-                <br />
-                <br />
-                Se não aparecer, seu navegador pode não suportar essa função — tenta pelo Chrome ou Edge.
-              </p>
-            )}
-
-            <button
-              onClick={() => setMostrarInstrucoes(false)}
-              style={{
-                marginTop: 20,
-                width: '100%',
-                background: '#F07B00',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 8,
-                padding: 12,
-                fontWeight: 700,
-                fontSize: 13,
-                cursor: 'pointer',
-                textTransform: 'uppercase',
-              }}
-            >
-              Entendi
+            <button className="rz-pwa-agora-nao" onClick={adiar}>
+              Agora não
             </button>
           </div>
         </div>

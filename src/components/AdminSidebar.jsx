@@ -121,6 +121,9 @@ function AdminSidebar({ ativa }) {
       <Link to="/admin/horarios-livres" className={`rz-sidebar-item ${ativa === 'horarios-livres' ? 'active' : ''}`}>
         <i className="ti ti-share"></i> <span>Horários Livres</span>
       </Link>
+      <Link to="/admin/bloqueios" className={`rz-sidebar-item ${ativa === 'bloqueios' ? 'active' : ''}`}>
+        <i className="ti ti-calendar-off"></i> <span>Bloqueios</span>
+      </Link>
       <Link to="/admin/aniversarios" className={`rz-sidebar-item ${ativa === 'aniversarios' ? 'active' : ''}`}>
         <i className="ti ti-cake"></i> <span>Aniversários</span>
       </Link>

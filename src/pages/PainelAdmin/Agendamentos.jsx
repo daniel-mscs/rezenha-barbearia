@@ -10,6 +10,7 @@ function formatarDataCurta(dataStr) {
   return `${dia} ${MESES_CURTOS[parseInt(mes, 10) - 1]}`
 }
 import AdminSidebar from '../../components/AdminSidebar'
+import { buscarBloqueiosComoOcupacao } from '../../utils/bloqueios'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
 
@@ -129,11 +130,12 @@ function Agendamentos() {
         slots.push(m)
       }
 
+      const bloqueiosHoje = await buscarBloqueiosComoOcupacao(hojeStr)
       let total = 0
       for (const b of barbeiros) {
         for (const m of slots) {
           if (m <= minutosAgora) continue
-          const ocupado = (agendamentosHoje || []).some((a) => {
+          const ocupado = [...(agendamentosHoje || []), ...bloqueiosHoje].some((a) => {
             if (a.barbeiro_id !== b.id) return false
             const [ah, am] = a.horario.slice(0, 5).split(':').map(Number)
             const inicio = ah * 60 + am

@@ -14,6 +14,7 @@ import MeuPortfolio from './pages/PainelAdmin/MeuPortfolio'
 import Estoque from './pages/PainelAdmin/Estoque'
 import Aniversarios from './pages/PainelAdmin/Aniversarios'
 import HorariosLivres from './pages/PainelAdmin/HorariosLivres'
+import Bloqueios from './pages/PainelAdmin/Bloqueios'
 import MeuPerfil from './pages/PainelAdmin/MeuPerfil'
 import Relatorios from './pages/PainelAdmin/Relatorios'
 import Configuracoes from './pages/PainelAdmin/Configuracoes'
@@ -134,7 +135,8 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-      </Routes>
+        <Route path="/admin/bloqueios" element={<ProtectedAdminRoute><Bloqueios /></ProtectedAdminRoute>} />
+</Routes>
       <CookieBanner />
     </BrowserRouter>
   )

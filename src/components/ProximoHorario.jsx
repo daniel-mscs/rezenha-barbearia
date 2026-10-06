@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { buscarBloqueiosComoOcupacao } from '../utils/bloqueios'
 
 function gerarHorariosDoDia(data) {
   const diaSemana = data.getDay()
@@ -59,6 +60,8 @@ function ProximoHorario() {
           .eq('data', dataStr)
           .neq('status', 'cancelado')
 
+        const bloqueiosDoDia = await buscarBloqueiosComoOcupacao(dataStr)
+
         for (const h of horarios) {
           // Se for hoje, ignora horários que já passaram
           if (diasAFrente === 0) {
@@ -70,7 +73,7 @@ function ProximoHorario() {
           const fimSlot = inicioSlot + duracaoMinima
 
           const algumBarbeiroLivre = barbeiros.some((b) => {
-            const ocupacoes = (agendamentosDoDia || []).filter((a) => a.barbeiro_id === b.id)
+            const ocupacoes = [...(agendamentosDoDia || []), ...bloqueiosDoDia].filter((a) => (a.barbeiro_id === b.id || a.barbeiro_id === null))
             return !ocupacoes.some((a) => {
               const inicioExistente = horarioParaMinutos(a.horario.slice(0, 5))
               const fimExistente = inicioExistente + (a.servicos?.duracao_min || 30)

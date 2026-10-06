@@ -6,6 +6,7 @@ import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
 import { iconesParaExibir } from '../components/Icons'
 import { formatarDuracao } from '../utils/formatarDuracao'
+import { buscarBloqueiosComoOcupacao } from '../utils/bloqueios'
 import './Agendamento.css'
 
 function gerarHorarios(dataStr, config, diasFechados) {
@@ -49,7 +50,7 @@ function barbeiroDisponivel(barbeiroId, slot, duracaoMin, agendamentosDoDia, fec
   const fimNovo = inicioNovo + duracaoMin
   if (fimNovo > fechamentoMin) return false
 
-  const ocupacoesDoBarbeiro = agendamentosDoDia.filter((a) => a.barbeiro_id === barbeiroId)
+  const ocupacoesDoBarbeiro = agendamentosDoDia.filter((a) => (a.barbeiro_id === barbeiroId || a.barbeiro_id === null))
   for (const a of ocupacoesDoBarbeiro) {
     const inicioExistente = horarioParaMinutos(a.horario.slice(0, 5))
     const fimExistente = inicioExistente + (a.servicos?.duracao_min || 30)
@@ -175,7 +176,8 @@ function Agendamento() {
       .select('barbeiro_id, horario, servicos(duracao_min)')
       .eq('data', dataParaBuscar)
       .neq('status', 'cancelado')
-    setAgendamentosDoDia(existentes || [])
+    const bloqueios = await buscarBloqueiosComoOcupacao(dataParaBuscar)
+    setAgendamentosDoDia([...(existentes || []), ...bloqueios])
   }
 
   useEffect(() => {

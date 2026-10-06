@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import html2canvas from 'html2canvas'
 import { supabase } from '../../lib/supabase'
 import AdminSidebar from '../../components/AdminSidebar'
+import { buscarBloqueiosComoOcupacao } from '../../utils/bloqueios'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
 import './HorariosLivres.css'
@@ -43,7 +44,7 @@ function jaPassou(horario) {
 function barbeiroOcupado(barbeiroId, slot, agendamentosHoje) {
   const inicioSlot = horarioParaMinutos(slot)
   return agendamentosHoje.some((a) => {
-    if (a.barbeiro_id !== barbeiroId) return false
+    if (a.barbeiro_id !== null && a.barbeiro_id !== barbeiroId) return false
     const inicio = horarioParaMinutos(a.horario.slice(0, 5))
     const fim = inicio + (a.servicos?.duracao_min || 30)
     return inicioSlot >= inicio && inicioSlot < fim
@@ -88,11 +89,12 @@ function HorariosLivres() {
         return
       }
 
+      const bloqueiosHoje = await buscarBloqueiosComoOcupacao(hojeStr)
       const slots = gerarHorariosHoje(config)
 
       const resultado = (barbeiros || [])
         .map((b) => {
-          const livres = slots.filter((s) => !jaPassou(s) && !barbeiroOcupado(b.id, s, agendamentosHoje || []))
+          const livres = slots.filter((s) => !jaPassou(s) && !barbeiroOcupado(b.id, s, [...(agendamentosHoje || []), ...bloqueiosHoje]))
           return { ...b, livres }
         })
         .filter((b) => b.livres.length > 0)

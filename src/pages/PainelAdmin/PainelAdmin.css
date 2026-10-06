@@ -1040,3 +1040,72 @@
   color: #f07b00;
 }
 
+/* Menu hambúrguer também no computador */
+@media (min-width: 769px) {
+  .rz-menu-toggle {
+    display: flex;
+    position: fixed;
+    top: 12px;
+    left: 20px;
+    z-index: 210;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+  }
+  .rz-menu-toggle:hover {
+    border-color: #f07b00;
+    color: #f07b00;
+  }
+  .rz-menu-toggle-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: #f07b00;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rz-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 190;
+  }
+  .rz-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 270px;
+    padding: 76px 14px 24px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 200;
+  }
+  .rz-sidebar.aberto {
+    transform: translateX(0);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.6);
+  }
+  .rz-admin-root .rz-topbar {
+    padding-left: 76px;
+  }
+  .rz-admin-root .rz-sidebar-item {
+    font-size: 15px;
+  }
+}

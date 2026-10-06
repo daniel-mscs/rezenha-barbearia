@@ -582,24 +582,26 @@
     padding: 12px 16px;
   }
   .rz-sidebar {
-    width: 56px;
-    padding: 16px 8px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 270px;
+    padding: 70px 14px 24px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 200;
   }
-  .rz-sidebar-item span {
-    display: none;
+  .rz-sidebar.aberto {
+    transform: translateX(0);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.6);
   }
   .rz-sidebar-item {
-    padding: 12px;
-    justify-content: center;
+    padding: 14px;
   }
   .rz-sidebar-item.active {
-    padding-left: 12px;
-  }
-  .rz-sidebar-badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    margin-left: 0;
+    padding-left: 11px;
   }
 
   .rz-main {
@@ -907,4 +909,113 @@
   align-items: center;
   justify-content: center;
   font-size: 15px;
+}
+
+/* Menu hambúrguer (celular) */
+.rz-menu-toggle {
+  display: none;
+}
+.rz-sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .rz-menu-toggle {
+    display: flex;
+    position: fixed;
+    top: 10px;
+    left: 12px;
+    z-index: 210;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+  }
+  .rz-menu-toggle-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: #f07b00;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rz-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 190;
+  }
+  .rz-admin-root .rz-topbar {
+    padding-left: 66px;
+  }
+  .rz-admin-root .rz-sidebar-item {
+    font-size: 15px;
+  }
+  .rz-admin-root .rz-input {
+    font-size: 16px;
+  }
+}
+
+/* Letra maior no painel */
+.rz-admin-root .rz-table {
+  font-size: 14px;
+}
+.rz-admin-root .rz-table th {
+  font-size: 12px;
+}
+.rz-admin-root .rz-table td {
+  padding: 16px 18px;
+}
+.rz-admin-root .rz-sidebar-item {
+  font-size: 14px;
+}
+.rz-admin-root .rz-action-btn {
+  font-size: 12px;
+  padding: 7px 13px;
+}
+.rz-admin-root .rz-field-label {
+  font-size: 13px;
+}
+.rz-admin-root .rz-input {
+  font-size: 15px;
+}
+.rz-admin-root .rz-badge {
+  font-size: 12px;
+}
+.rz-admin-root .rz-stat-label {
+  font-size: 12px;
+}
+.rz-admin-root .rz-btn-primary,
+.rz-admin-root .rz-btn-outline {
+  font-size: 14px;
+}
+.rz-admin-root .rz-filter-btn,
+.rz-admin-root .rz-view-toggle button {
+  font-size: 13px;
+}
+.rz-admin-root .rz-cli-nome {
+  font-size: 15px;
+}
+.rz-admin-root .rz-cli-sub,
+.rz-admin-root .rz-cli-corte-data {
+  font-size: 14px;
+}
+.rz-admin-root .rz-cli-obs,
+.rz-admin-root .rz-cli-corte-dias {
+  font-size: 12px;
 }

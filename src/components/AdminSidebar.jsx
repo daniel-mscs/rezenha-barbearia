@@ -39,6 +39,7 @@ function tocarAlertaSonoro() {
 function AdminSidebar({ ativa }) {
   const [isDono, setIsDono] = useState(false)
   const [pendentes, setPendentes] = useState(0)
+  const [menuAberto, setMenuAberto] = useState(false)
 
   useEffect(() => {
     const destravarAudio = () => {
@@ -91,7 +92,31 @@ function AdminSidebar({ ativa }) {
   }, [])
 
   return (
-    <aside className="rz-sidebar">
+    <>
+      <button
+        type="button"
+        className="rz-menu-toggle"
+        onClick={() => setMenuAberto((v) => !v)}
+        aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          {menuAberto ? (
+            <>
+              <line x1="6" y1="6" x2="18" y2="18" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+            </>
+          ) : (
+            <>
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </>
+          )}
+        </svg>
+        {pendentes > 0 && <span className="rz-menu-toggle-badge">{pendentes}</span>}
+      </button>
+      {menuAberto && <div className="rz-sidebar-overlay" onClick={() => setMenuAberto(false)}></div>}
+      <aside className={`rz-sidebar ${menuAberto ? 'aberto' : ''}`} onClick={() => setMenuAberto(false)}>
       <Link to="/admin" className={`rz-sidebar-item ${ativa === 'agendamentos' ? 'active' : ''}`}>
         <i className="ti ti-calendar"></i> <span>Agendamentos</span>
         {pendentes > 0 && <span className="rz-sidebar-badge">{pendentes}</span>}
@@ -137,6 +162,7 @@ function AdminSidebar({ ativa }) {
         <i className="ti ti-photo"></i> <span>Meu Portfólio</span>
       </Link>
     </aside>
+    </>
   )
 }
 

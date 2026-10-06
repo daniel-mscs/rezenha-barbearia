@@ -57,6 +57,7 @@ function Barbeiros() {
     setNome(b.nome)
     setFotoFile(null)
     setCor(b.cor || '#F07B00')
+    setErroModal('')
     setModalAberto(true)
   }
 
@@ -78,8 +79,14 @@ function Barbeiros() {
         }
       }
 
-      await supabase.from('barbeiros').update({ nome, foto_url: fotoUrl, cor }).eq('id', editando.id)
+      const { error } = await supabase.from('barbeiros').update({ nome, foto_url: fotoUrl, cor }).eq('id', editando.id)
       setSalvando(false)
+
+      if (error) {
+        setErroModal('Não foi possível salvar: ' + error.message)
+        return
+      }
+
       setModalAberto(false)
       carregar()
       return
@@ -112,13 +119,21 @@ function Barbeiros() {
   }
 
   const alternarAtivo = async (b) => {
-    await supabase.from('barbeiros').update({ ativo: !b.ativo }).eq('id', b.id)
+    const { error } = await supabase.from('barbeiros').update({ ativo: !b.ativo }).eq('id', b.id)
+    if (error) {
+      alert('Não foi possível alterar: ' + error.message)
+      return
+    }
     carregar()
   }
 
   const confirmarExcluir = async () => {
     if (!barbeiroParaExcluir) return
-    await supabase.from('barbeiros').delete().eq('id', barbeiroParaExcluir.id)
+    const { error } = await supabase.from('barbeiros').delete().eq('id', barbeiroParaExcluir.id)
+    if (error) {
+      alert('Não foi possível remover: ' + error.message)
+      return
+    }
     setBarbeiroParaExcluir(null)
     carregar()
   }
@@ -164,31 +179,58 @@ function Barbeiros() {
               <table className="rz-table">
                 <thead>
                   <tr>
-                    <th>Nome</th>
-                    <th>Login vinculado</th>
+                    <th>Barbeiro</th>
                     <th>Status</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {barbeiros.map((b) => (
-                    <tr key={b.id}>
+                    <tr key={b.id} style={b.ativo ? undefined : { opacity: 0.55 }}>
                       <td>
-                        <strong style={{ color: '#fff' }}>{b.nome}</strong>
-                        {b.is_dono && ' 👑'}
+                        <div className="rz-cli-celula">
+                          <div className="rz-cli-avatar" style={{ borderColor: b.cor || '#F07B00', borderWidth: 2 }}>
+                            {b.foto_url ? <img src={b.foto_url} alt={b.nome} /> : b.nome.charAt(0).toUpperCase()}
+                          </div>
+                          <div style={{ minWidth: 0 }}>
+                            <div className="rz-cli-nome">
+                              {b.nome}
+                              {b.is_dono && <span className="rz-cli-tag-dono">Dono</span>}
+                            </div>
+                            <div className="rz-cli-sub">{b.auth_id ? 'Com acesso ao painel' : 'Sem login'}</div>
+                          </div>
+                        </div>
                       </td>
-                      <td>{b.auth_id ? 'Sim' : 'Não'}</td>
-                      <td>{b.ativo ? 'Ativo' : 'Inativo'}</td>
                       <td>
-                        <button className="rz-action-btn" onClick={() => abrirEdicao(b)}>
-                          Editar
-                        </button>
-                        <button className="rz-action-btn" onClick={() => alternarAtivo(b)}>
-                          {b.ativo ? 'Desativar' : 'Ativar'}
-                        </button>
-                        <button className="rz-action-btn danger" onClick={() => setBarbeiroParaExcluir(b)}>
-                          Excluir
-                        </button>
+                        <span
+                          className="rz-badge"
+                          style={b.ativo ? { background: '#0d2b0d', color: '#4caf50' } : { background: '#1f1f1f', color: '#888' }}
+                        >
+                          {b.ativo ? 'Ativo' : 'Inativo'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="rz-cli-acoes">
+                          <button className="rz-action-btn" onClick={() => abrirEdicao(b)}>
+                            Editar
+                          </button>
+                          <button
+                            className="rz-action-btn rz-cli-icone"
+                            onClick={() => alternarAtivo(b)}
+                            title={b.ativo ? 'Desativar' : 'Ativar'}
+                            aria-label={b.ativo ? 'Desativar' : 'Ativar'}
+                          >
+                            <i className={b.ativo ? 'ti ti-user-off' : 'ti ti-user-check'}></i>
+                          </button>
+                          <button
+                            className="rz-action-btn danger rz-cli-icone"
+                            onClick={() => setBarbeiroParaExcluir(b)}
+                            title="Excluir"
+                            aria-label="Excluir"
+                          >
+                            <i className="ti ti-trash"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -200,8 +242,13 @@ function Barbeiros() {
       </div>
 
       {modalAberto && (
-        <div className="rz-modal-overlay" onClick={() => setModalAberto(false)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setModalAberto(false)
+          }}
+        >
+          <div className="rz-modal">
             <div className="rz-modal-title">{editando ? 'Editar barbeiro' : 'Novo barbeiro'}</div>
             {erroModal && (
               <div
@@ -293,8 +340,13 @@ function Barbeiros() {
       )}
 
       {barbeiroParaExcluir && (
-        <div className="rz-modal-overlay" onClick={() => setBarbeiroParaExcluir(null)}>
-          <div className="rz-modal" onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setBarbeiroParaExcluir(null)
+          }}
+        >
+          <div className="rz-modal" style={{ textAlign: 'center' }}>
             <div className="rz-modal-title" style={{ fontSize: 18 }}>
               Remover {barbeiroParaExcluir.nome}?
             </div>

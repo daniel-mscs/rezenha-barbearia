@@ -15,6 +15,8 @@ function Clientes() {
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
   const [cpf, setCpf] = useState('')
+  const [barbeiroFavoritoId, setBarbeiroFavoritoId] = useState('')
+  const [barbeirosAtivos, setBarbeirosAtivos] = useState([])
   const [obs, setObs] = useState('')
   const [diaNascimento, setDiaNascimento] = useState('')
   const [mesNascimento, setMesNascimento] = useState('')
@@ -22,6 +24,14 @@ function Clientes() {
   const [intervaloLembrete, setIntervaloLembrete] = useState('30')
   const [salvando, setSalvando] = useState(false)
   const [clienteParaExcluir, setClienteParaExcluir] = useState(null)
+
+  useEffect(() => {
+    const carregarBarbeirosAtivos = async () => {
+      const { data } = await supabase.from('barbeiros').select('id, nome').eq('ativo', true).order('nome')
+      setBarbeirosAtivos(data || [])
+    }
+    carregarBarbeirosAtivos()
+  }, [])
 
   const carregar = async () => {
     setCarregando(true)
@@ -39,6 +49,7 @@ function Clientes() {
     setNome('')
     setTelefone('')
     setCpf('')
+    setBarbeiroFavoritoId('')
     setObs('')
     setDiaNascimento('')
     setMesNascimento('')
@@ -52,6 +63,7 @@ function Clientes() {
     setNome(c.nome)
     setTelefone(c.telefone)
     setCpf(c.cpf || '')
+    setBarbeiroFavoritoId(c.barbeiro_favorito_id || '')
     setObs(c.obs || '')
     if (c.data_nascimento) {
       const [ano, mes, dia] = c.data_nascimento.split('-')
@@ -83,6 +95,7 @@ function Clientes() {
       obs,
       data_nascimento: dataNascimentoMontada,
       intervalo_lembrete_dias: parseInt(intervaloLembrete, 10),
+      barbeiro_favorito_id: barbeiroFavoritoId || null,
     }
 
     if (editando) {
@@ -273,6 +286,16 @@ function Clientes() {
                 onChange={(e) => setCpf(e.target.value)}
                 maxLength={14}
               />
+
+              <label className="rz-field-label">Barbeiro favorito</label>
+              <select className="rz-input" value={barbeiroFavoritoId} onChange={(e) => setBarbeiroFavoritoId(e.target.value)}>
+                <option value="">Sem preferência</option>
+                {barbeirosAtivos.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.nome}
+                  </option>
+                ))}
+              </select>
 
               <label className="rz-field-label">Observação</label>
               <input

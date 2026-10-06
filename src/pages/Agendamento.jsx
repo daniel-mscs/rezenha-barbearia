@@ -146,7 +146,7 @@ function Agendamento() {
       if (session) {
         const { data: cliente } = await supabase
           .from('clientes')
-          .select('id, nome, telefone, email')
+          .select('id, nome, telefone, email, barbeiro_favorito_id')
           .eq('auth_id', session.user.id)
           .maybeSingle()
         if (cliente) {
@@ -158,6 +158,12 @@ function Agendamento() {
     }
     verificarSessao()
   }, [])
+
+  useEffect(() => {
+    if (!clienteLogado?.barbeiro_favorito_id || barbeirosLista.length === 0 || barbeiro) return
+    const favorito = barbeirosLista.find((b) => b.id === clienteLogado.barbeiro_favorito_id)
+    if (favorito) setBarbeiro(favorito)
+  }, [clienteLogado, barbeirosLista])
 
   const buscarAgendamentosDoDia = async (dataParaBuscar) => {
     if (!dataParaBuscar) {
@@ -537,7 +543,10 @@ function Agendamento() {
                       <div className="rz-barber-avatar">{b.nome.charAt(0).toUpperCase()}</div>
                     )}
                     <div className="rz-barber-info-wrap">
-                      <div className="rz-barber-name">{b.nome}</div>
+                      <div className="rz-barber-name">
+                        {b.nome}
+                        {clienteLogado?.barbeiro_favorito_id === b.id ? ' ★' : ''}
+                      </div>
                     </div>
                   </div>
                 ))}

@@ -15,6 +15,7 @@ function Clientes() {
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
   const [cpf, setCpf] = useState('')
+  const [telefoneInternacional, setTelefoneInternacional] = useState(false)
   const [barbeiroFavoritoId, setBarbeiroFavoritoId] = useState('')
   const [barbeirosAtivos, setBarbeirosAtivos] = useState([])
   const [obs, setObs] = useState('')
@@ -49,6 +50,7 @@ function Clientes() {
     setNome('')
     setTelefone('')
     setCpf('')
+    setTelefoneInternacional(false)
     setBarbeiroFavoritoId('')
     setObs('')
     setDiaNascimento('')
@@ -63,6 +65,8 @@ function Clientes() {
     setNome(c.nome)
     setTelefone(c.telefone)
     setCpf(c.cpf || '')
+    setTelefoneInternacional((c.telefone || '').startsWith('+'))
+    setTelefoneInternacional((c.telefone || '').startsWith('+'))
     setBarbeiroFavoritoId(c.barbeiro_favorito_id || '')
     setObs(c.obs || '')
     if (c.data_nascimento) {
@@ -169,7 +173,7 @@ function Clientes() {
     const mensagem = encodeURIComponent(
       `Oi ${clienteParaConvite.nome.split(' ')[0]}! Sua conta na Rezenha Barbearia já está pronta.\n\nEntre em https://rezenha-barbearia.vercel.app/login com:\nWhatsApp: ${clienteParaConvite.telefone}\nSenha: ${senhaConvite}`,
     )
-    window.open(`https://wa.me/55${telefoneLimpo}?text=${mensagem}`, '_blank')
+    window.open(`https://wa.me/${clienteParaConvite.telefone.startsWith('+') ? '' : '55'}${telefoneLimpo}?text=${mensagem}`, '_blank')
 
     setClienteParaConvite(null)
     carregar()
@@ -274,8 +278,25 @@ function Clientes() {
               <label className="rz-field-label">Nome</label>
               <input className="rz-input" type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
 
-              <label className="rz-field-label">Telefone</label>
-              <input className="rz-input" type="text" value={telefone} onChange={(e) => setTelefone(e.target.value)} required />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <label className="rz-field-label">Telefone</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const proximo = !telefoneInternacional
+                    setTelefoneInternacional(proximo)
+                    const digitos = telefone.replace(/\D/g, '')
+                    setTelefone(proximo && digitos ? '+' + digitos : digitos)
+                  }}
+                  style={{ background: 'none', border: 'none', color: '#555', fontSize: 11, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                >
+                  {telefoneInternacional ? 'Número do Brasil' : 'Outro país?'}
+                </button>
+              </div>
+              {telefoneInternacional && (
+                <p style={{ fontSize: 11, color: '#888', margin: '0 0 8px' }}>Digite com o código do país. Ex: +54 9 11 1234 5678</p>
+              )}
+              <input className="rz-input" type="text" value={telefone} onChange={(e) => setTelefone(telefoneInternacional ? '+' + e.target.value.replace(/\D/g, '') : e.target.value)} required />
 
               <label className="rz-field-label">CPF</label>
               <input

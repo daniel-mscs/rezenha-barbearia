@@ -4,8 +4,9 @@ import { supabase } from '../lib/supabase'
 import { IconEye, IconEyeOff, IconArrowLeft } from '../components/Icons'
 import './Login.css'
 
-function telefoneParaEmail(telefone) {
-  return `${telefone.replace(/\D/g, '')}@whatsapp.cliente`
+function telefoneParaEmail(telefone, internacional = false) {
+  const digitos = telefone.replace(/\D/g, '')
+  return internacional ? `${digitos}@whatsapp.internacional` : `${digitos}@whatsapp.cliente`
 }
 
 function apenasNumeros(valor) {
@@ -27,6 +28,7 @@ function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
+  const [internacional, setInternacional] = useState(false)
   const [senha, setSenha] = useState('')
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState('')
@@ -37,7 +39,7 @@ function Login() {
     setCarregando(true)
 
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: telefoneParaEmail(telefone),
+      email: telefoneParaEmail(telefone, internacional),
       password: senha,
     })
 
@@ -102,6 +104,13 @@ function Login() {
     navigate('/agendamento')
   }
 
+  const trocarAba = (nova) => {
+    setAba(nova)
+    setErro('')
+    setInternacional(false)
+    setTelefone('')
+  }
+
   return (
     <div className="rz-login-body">
       <div className="rz-login-box">
@@ -109,29 +118,17 @@ function Login() {
           <IconArrowLeft className="rz-icon-inline" /> Voltar para o início
         </Link>
         <div className="rz-login-logo">
-          <div className="rz-logo-text">
+          <div className="rz-login-logo-text">
             Re<span>Z</span>enha
           </div>
         </div>
         <div className="rz-login-sub">Acesso do cliente</div>
 
         <div className="rz-tabs">
-          <div
-            className={`rz-tab ${aba === 'entrar' ? 'active' : ''}`}
-            onClick={() => {
-              setAba('entrar')
-              setErro('')
-            }}
-          >
+          <div className={`rz-tab ${aba === 'entrar' ? 'active' : ''}`} onClick={() => trocarAba('entrar')}>
             Entrar
           </div>
-          <div
-            className={`rz-tab ${aba === 'criar' ? 'active' : ''}`}
-            onClick={() => {
-              setAba('criar')
-              setErro('')
-            }}
-          >
+          <div className={`rz-tab ${aba === 'criar' ? 'active' : ''}`} onClick={() => trocarAba('criar')}>
             Criar conta
           </div>
         </div>
@@ -141,18 +138,38 @@ function Login() {
         {aba === 'entrar' ? (
           <form onSubmit={entrar}>
             <div className="rz-input-group">
-              <div className="rz-field-label">WhatsApp</div>
+              <div className="rz-field-label">{internacional ? 'WhatsApp (com código do país)' : 'WhatsApp'}</div>
               <div className="rz-input-wrap">
                 <input
                   className="rz-input rz-input-sem-icone"
                   type="text"
-                  placeholder="(55) 9 9999-9999"
-                  value={formatarTelefone(telefone)}
-                  onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))}
-                  maxLength={16}
+                  inputMode="tel"
+                  placeholder={internacional ? '+54 9 11 1234 5678' : '(55) 9 9999-9999'}
+                  value={internacional ? (telefone ? '+' + telefone : '') : formatarTelefone(telefone)}
+                  onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, internacional ? 15 : 11))}
+                  maxLength={internacional ? 20 : 16}
                   required
                 />
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setInternacional((v) => !v)
+                  setTelefone('')
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#555',
+                  fontSize: 11,
+                  cursor: 'pointer',
+                  padding: 0,
+                  marginTop: 6,
+                  textDecoration: 'underline',
+                }}
+              >
+                {internacional ? 'Usar número do Brasil' : 'Número de outro país?'}
+              </button>
             </div>
             <div className="rz-input-group">
               <div className="rz-field-label">Senha</div>
@@ -202,6 +219,7 @@ function Login() {
                 <input
                   className="rz-input rz-input-sem-icone"
                   type="text"
+                  inputMode="tel"
                   placeholder="(55) 9 9999-9999"
                   value={formatarTelefone(telefone)}
                   onChange={(e) => setTelefone(apenasNumeros(e.target.value).slice(0, 11))}

@@ -102,7 +102,7 @@ function Aniversarios() {
                       <td data-label="Ações">
                         <a
                           className="rz-action-btn"
-                          href={`https://wa.me/55${c.telefone}?text=${mensagemParabens(c.nome)}`}
+                          href={`https://wa.me/${c.telefone.startsWith('+') ? c.telefone.replace(/\D/g, '') : '55' + c.telefone}?text=${mensagemParabens(c.nome)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

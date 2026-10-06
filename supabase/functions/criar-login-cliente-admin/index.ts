@@ -38,7 +38,7 @@ serve(async (req) => {
     if (erroCliente || !cliente) throw new Error('Cliente não encontrado')
 
     const telefoneLimpo = cliente.telefone.replace(/\D/g, '')
-    const emailSintetico = `${telefoneLimpo}@whatsapp.cliente`
+    const emailSintetico = `${telefoneLimpo}@${cliente.telefone.trim().startsWith('+') ? 'whatsapp.internacional' : 'whatsapp.cliente'}`
 
     // Se o cliente já tiver um auth_id (login já existe), só reseta a senha em vez de criar de novo
     const { data: clienteAtual } = await supabaseAdmin.from('clientes').select('auth_id').eq('id', cliente_id).maybeSingle()

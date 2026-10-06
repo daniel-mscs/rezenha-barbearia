@@ -413,7 +413,7 @@ function Agendamento() {
             Confirme seu <span>agendamento</span>
           </div>
           <p style={{ color: '#ccc', marginTop: 8, fontSize: 15 }}>
-            Verifique seu WhatsApp! Enviamos uma mensagem para <strong style={{ color: '#fff' }}>{formatarTelefone(telefoneFinal)}</strong>.
+            Verifique seu WhatsApp! Enviamos uma mensagem para <strong style={{ color: '#fff' }}>{(telefoneFinal?.startsWith('+') ? telefoneFinal : formatarTelefone(telefoneFinal))}</strong>.
           </p>
           <p style={{ color: '#888', marginTop: 4, fontSize: 14 }}>Toque em "Confirmar presença" na mensagem pra garantir seu horário.</p>
 

@@ -45,7 +45,7 @@ serve(async (req) => {
 
     let telefone = (ag.clientes?.telefone ?? '').replace(/\D/g, '')
     if (!telefone) throw new Error('Cliente sem telefone')
-    if (telefone.length <= 11) telefone = '55' + telefone
+    if (!(ag.clientes?.telefone ?? '').trim().startsWith('+') && telefone.length <= 11) telefone = '55' + telefone
 
     const dataFormatada = new Date(ag.data + 'T00:00:00').toLocaleDateString('pt-BR', {
       day: '2-digit',

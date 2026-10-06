@@ -135,8 +135,15 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-        <Route path="/admin/bloqueios" element={<ProtectedAdminRoute><Bloqueios /></ProtectedAdminRoute>} />
-</Routes>
+        <Route
+          path="/admin/bloqueios"
+          element={
+            <ProtectedAdminRoute>
+              <Bloqueios />
+            </ProtectedAdminRoute>
+          }
+        />
+      </Routes>
       <CookieBanner />
     </BrowserRouter>
   )

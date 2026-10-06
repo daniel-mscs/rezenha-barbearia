@@ -50,7 +50,7 @@ function barbeiroDisponivel(barbeiroId, slot, duracaoMin, agendamentosDoDia, fec
   const fimNovo = inicioNovo + duracaoMin
   if (fimNovo > fechamentoMin) return false
 
-  const ocupacoesDoBarbeiro = agendamentosDoDia.filter((a) => (a.barbeiro_id === barbeiroId || a.barbeiro_id === null))
+  const ocupacoesDoBarbeiro = agendamentosDoDia.filter((a) => a.barbeiro_id === barbeiroId || a.barbeiro_id === null)
   for (const a of ocupacoesDoBarbeiro) {
     const inicioExistente = horarioParaMinutos(a.horario.slice(0, 5))
     const fimExistente = inicioExistente + (a.servicos?.duracao_min || 30)
@@ -413,7 +413,8 @@ function Agendamento() {
             Confirme seu <span>agendamento</span>
           </div>
           <p style={{ color: '#ccc', marginTop: 8, fontSize: 15 }}>
-            Verifique seu WhatsApp! Enviamos uma mensagem para <strong style={{ color: '#fff' }}>{(telefoneFinal?.startsWith('+') ? telefoneFinal : formatarTelefone(telefoneFinal))}</strong>.
+            Verifique seu WhatsApp! Enviamos uma mensagem para{' '}
+            <strong style={{ color: '#fff' }}>{telefoneFinal?.startsWith('+') ? telefoneFinal : formatarTelefone(telefoneFinal)}</strong>.
           </p>
           <p style={{ color: '#888', marginTop: 4, fontSize: 14 }}>Toque em "Confirmar presença" na mensagem pra garantir seu horário.</p>
 

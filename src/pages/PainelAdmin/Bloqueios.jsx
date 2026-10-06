@@ -29,12 +29,7 @@ function Bloqueios() {
   const hoje = new Date().toLocaleDateString('en-CA')
 
   const carregarLista = async () => {
-    const { data: lista } = await supabase
-      .from('bloqueios_agenda')
-      .select('*')
-      .gte('data', hoje)
-      .order('data')
-      .order('hora_inicio')
+    const { data: lista } = await supabase.from('bloqueios_agenda').select('*').gte('data', hoje).order('data').order('hora_inicio')
     setBloqueios(lista || [])
   }
 
@@ -108,7 +103,9 @@ function Bloqueios() {
     const { count } = await consulta
 
     if (count > 0) {
-      setAviso(`Bloqueio salvo, mas já existem ${count} agendamento(s) nesse período. Eles não foram cancelados, confira na tela de Agendamentos.`)
+      setAviso(
+        `Bloqueio salvo, mas já existem ${count} agendamento(s) nesse período. Eles não foram cancelados, confira na tela de Agendamentos.`,
+      )
     }
 
     setSalvando(false)
@@ -251,7 +248,17 @@ function Bloqueios() {
                     )}
                   </div>
 
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 13, color: '#ccc', cursor: 'pointer' }}>
+                  <label
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      marginBottom: 16,
+                      fontSize: 13,
+                      color: '#ccc',
+                      cursor: 'pointer',
+                    }}
+                  >
                     <input type="checkbox" checked={diaInteiro} onChange={(e) => setDiaInteiro(e.target.checked)} />
                     Bloquear o dia inteiro
                   </label>

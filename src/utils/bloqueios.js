@@ -6,10 +6,7 @@ function paraMinutos(hora) {
 }
 
 export async function buscarBloqueiosComoOcupacao(dataStr) {
-  const { data } = await supabase
-    .from('bloqueios_agenda_publico')
-    .select('barbeiro_id, hora_inicio, hora_fim')
-    .eq('data', dataStr)
+  const { data } = await supabase.from('bloqueios_agenda_publico').select('barbeiro_id, hora_inicio, hora_fim').eq('data', dataStr)
 
   return (data || []).map((b) => ({
     barbeiro_id: b.barbeiro_id,

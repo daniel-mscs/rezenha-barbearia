@@ -5,6 +5,34 @@ import AdminSidebar from '../../components/AdminSidebar'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
 
+const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
+
+function formatarTelefoneExibicao(telefone) {
+  if (!telefone) return '—'
+  if (telefone.startsWith('+')) return telefone
+  const d = telefone.replace(/\D/g, '')
+  if (d.length === 11) return `(${d.slice(0, 2)}) ${d[2]} ${d.slice(3, 7)}-${d.slice(7)}`
+  if (d.length === 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
+  return telefone
+}
+
+function formatarDataBR(dataStr) {
+  const [ano, mes, dia] = dataStr.split('-')
+  return `${dia}/${mes}/${ano}`
+}
+
+function diasDesde(dataStr) {
+  const hoje = new Date()
+  hoje.setHours(0, 0, 0, 0)
+  const data = new Date(dataStr + 'T00:00:00')
+  return Math.max(0, Math.round((hoje - data) / 86400000))
+}
+
+function aniversarioCurto(dataStr) {
+  const [, mes, dia] = dataStr.split('-')
+  return `${dia} ${MESES_CURTOS[parseInt(mes, 10) - 1]}`
+}
+
 function Clientes() {
   const navigate = useNavigate()
   const [clientes, setClientes] = useState([])
@@ -66,7 +94,6 @@ function Clientes() {
     setTelefone(c.telefone)
     setCpf(c.cpf || '')
     setTelefoneInternacional((c.telefone || '').startsWith('+'))
-    setTelefoneInternacional((c.telefone || '').startsWith('+'))
     setBarbeiroFavoritoId(c.barbeiro_favorito_id || '')
     setObs(c.obs || '')
     if (c.data_nascimento) {
@@ -102,13 +129,17 @@ function Clientes() {
       barbeiro_favorito_id: barbeiroFavoritoId || null,
     }
 
-    if (editando) {
-      await supabase.from('clientes').update(payload).eq('id', editando.id)
-    } else {
-      await supabase.from('clientes').insert(payload)
-    }
+    const { error } = editando
+      ? await supabase.from('clientes').update(payload).eq('id', editando.id)
+      : await supabase.from('clientes').insert(payload)
 
     setSalvando(false)
+
+    if (error) {
+      alert('Não foi possível salvar: ' + error.message)
+      return
+    }
+
     setModalAberto(false)
     carregar()
   }
@@ -225,41 +256,86 @@ function Clientes() {
               <table className="rz-table">
                 <thead>
                   <tr>
-                    <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>Observação</th>
+                    <th>Cliente</th>
                     <th>Favorito</th>
-                    <th>Nascimento</th>
                     <th>Último corte</th>
-                    <th>Lembrete</th>
+                    <th>Aniversário</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {clientesFiltrados.map((c) => (
-                    <tr key={c.id}>
-                      <td>
-                        <strong style={{ color: '#fff' }}>{c.nome}</strong>
-                      </td>
-                      <td>{c.telefone}</td>
-                      <td>{c.obs || '—'}</td>
-                      <td>{barbeirosAtivos.find((b) => b.id === c.barbeiro_favorito_id)?.nome || '—'}</td>
-                      <td>{c.data_nascimento ? new Date(c.data_nascimento + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</td>
-                      <td>{c.data_ultimo_corte || '—'}</td>
-                      <td>{c.intervalo_lembrete_dias || 30} dias</td>
-                      <td>
-                        <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>
-                          Editar
-                        </button>
-                        <button className="rz-action-btn" onClick={() => abrirConvite(c)}>
-                          {c.auth_id ? 'Redefinir senha' : 'Criar login'}
-                        </button>
-                        <button className="rz-action-btn danger" onClick={() => setClienteParaExcluir(c)}>
-                          Excluir
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {clientesFiltrados.map((c) => {
+                    const favorito = barbeirosAtivos.find((b) => b.id === c.barbeiro_favorito_id)
+                    const dias = c.data_ultimo_corte ? diasDesde(c.data_ultimo_corte) : null
+                    const intervalo = c.intervalo_lembrete_dias || 30
+                    const atrasado = dias !== null && dias > intervalo
+                    const textoDias = dias === 0 ? 'hoje' : dias === 1 ? 'há 1 dia' : `há ${dias} dias`
+
+                    return (
+                      <tr key={c.id}>
+                        <td>
+                          <div className="rz-cli-celula">
+                            <div className="rz-cli-avatar">{c.nome.charAt(0).toUpperCase()}</div>
+                            <div style={{ minWidth: 0 }}>
+                              <div className="rz-cli-nome">
+                                {c.nome}
+                                {c.auth_id && <span className="rz-cli-tag-login">Com login</span>}
+                              </div>
+                              <div className="rz-cli-sub">{formatarTelefoneExibicao(c.telefone)}</div>
+                              {c.obs && <div className="rz-cli-obs">{c.obs}</div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td>{favorito ? <span className="rz-cli-fav">{favorito.nome}</span> : <span className="rz-cli-vazio">—</span>}</td>
+                        <td>
+                          {c.data_ultimo_corte ? (
+                            <>
+                              <div className="rz-cli-corte-data">{formatarDataBR(c.data_ultimo_corte)}</div>
+                              <div
+                                className={`rz-cli-corte-dias ${atrasado ? 'atrasado' : ''}`}
+                                title={atrasado ? `Passou do lembrete de ${intervalo} dias` : ''}
+                              >
+                                {textoDias}
+                                {atrasado ? ' · atrasado' : ''}
+                              </div>
+                            </>
+                          ) : (
+                            <span className="rz-cli-vazio">Sem corte ainda</span>
+                          )}
+                        </td>
+                        <td>
+                          {c.data_nascimento ? (
+                            <span className="rz-cli-corte-data">{aniversarioCurto(c.data_nascimento)}</span>
+                          ) : (
+                            <span className="rz-cli-vazio">—</span>
+                          )}
+                        </td>
+                        <td>
+                          <div className="rz-cli-acoes">
+                            <button className="rz-action-btn" onClick={() => abrirEdicao(c)}>
+                              Editar
+                            </button>
+                            <button
+                              className="rz-action-btn rz-cli-icone"
+                              onClick={() => abrirConvite(c)}
+                              title={c.auth_id ? 'Redefinir senha' : 'Criar login'}
+                              aria-label={c.auth_id ? 'Redefinir senha' : 'Criar login'}
+                            >
+                              <i className="ti ti-key"></i>
+                            </button>
+                            <button
+                              className="rz-action-btn danger rz-cli-icone"
+                              onClick={() => setClienteParaExcluir(c)}
+                              title="Excluir"
+                              aria-label="Excluir"
+                            >
+                              <i className="ti ti-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             )}
@@ -290,7 +366,15 @@ function Clientes() {
                     const digitos = telefone.replace(/\D/g, '')
                     setTelefone(proximo && digitos ? '+' + digitos : digitos)
                   }}
-                  style={{ background: 'none', border: 'none', color: '#555', fontSize: 11, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#555',
+                    fontSize: 11,
+                    cursor: 'pointer',
+                    padding: 0,
+                    textDecoration: 'underline',
+                  }}
                 >
                   {telefoneInternacional ? 'Número do Brasil' : 'Outro país?'}
                 </button>
@@ -298,7 +382,13 @@ function Clientes() {
               {telefoneInternacional && (
                 <p style={{ fontSize: 11, color: '#888', margin: '0 0 8px' }}>Digite com o código do país. Ex: +54 9 11 1234 5678</p>
               )}
-              <input className="rz-input" type="text" value={telefone} onChange={(e) => setTelefone(telefoneInternacional ? '+' + e.target.value.replace(/\D/g, '') : e.target.value)} required />
+              <input
+                className="rz-input"
+                type="text"
+                value={telefone}
+                onChange={(e) => setTelefone(telefoneInternacional ? '+' + e.target.value.replace(/\D/g, '') : e.target.value)}
+                required
+              />
 
               <label className="rz-field-label">CPF</label>
               <input

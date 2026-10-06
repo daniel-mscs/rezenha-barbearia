@@ -73,7 +73,9 @@ function ProximoHorario() {
           const fimSlot = inicioSlot + duracaoMinima
 
           const algumBarbeiroLivre = barbeiros.some((b) => {
-            const ocupacoes = [...(agendamentosDoDia || []), ...bloqueiosDoDia].filter((a) => (a.barbeiro_id === b.id || a.barbeiro_id === null))
+            const ocupacoes = [...(agendamentosDoDia || []), ...bloqueiosDoDia].filter(
+              (a) => a.barbeiro_id === b.id || a.barbeiro_id === null,
+            )
             return !ocupacoes.some((a) => {
               const inicioExistente = horarioParaMinutos(a.horario.slice(0, 5))
               const fimExistente = inicioExistente + (a.servicos?.duracao_min || 30)

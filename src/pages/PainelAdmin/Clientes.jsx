@@ -228,6 +228,7 @@ function Clientes() {
                     <th>Nome</th>
                     <th>Telefone</th>
                     <th>Observação</th>
+                    <th>Favorito</th>
                     <th>Nascimento</th>
                     <th>Último corte</th>
                     <th>Lembrete</th>
@@ -242,6 +243,7 @@ function Clientes() {
                       </td>
                       <td>{c.telefone}</td>
                       <td>{c.obs || '—'}</td>
+                      <td>{barbeirosAtivos.find((b) => b.id === c.barbeiro_favorito_id)?.nome || '—'}</td>
                       <td>{c.data_nascimento ? new Date(c.data_nascimento + 'T00:00:00').toLocaleDateString('pt-BR') : '—'}</td>
                       <td>{c.data_ultimo_corte || '—'}</td>
                       <td>{c.intervalo_lembrete_dias || 30} dias</td>

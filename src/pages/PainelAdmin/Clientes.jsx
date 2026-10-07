@@ -235,7 +235,7 @@ function Clientes() {
 
     const telefoneLimpo = clienteParaConvite.telefone.replace(/\D/g, '')
     const mensagem = encodeURIComponent(
-      `Oi ${clienteParaConvite.nome.split(' ')[0]}! Sua conta na Rezenha Barbearia já está pronta.\n\nEntre em https://barbeariarezenha.com.br/login com:\nWhatsApp: ${clienteParaConvite.telefone}\nSenha: ${senhaConvite}`,
+      `Oi ${clienteParaConvite.nome.split(' ')[0]}! Sua conta na Rezenha Barbearia já está pronta.\n\nEntre em https://barbeariarezenha.com.br/login com:\nWhatsApp: ${formatarTelefoneExibicao(clienteParaConvite.telefone)}\nSenha: ${senhaConvite}`,
     )
     window.open(`https://wa.me/${clienteParaConvite.telefone.startsWith('+') ? '' : '55'}${telefoneLimpo}?text=${mensagem}`, '_blank')
 

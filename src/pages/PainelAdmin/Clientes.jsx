@@ -7,6 +7,22 @@ import '../PainelAdmin/PainelAdmin.css'
 
 const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
+const OPCOES_ORDEM = [
+  { valor: 'nome-asc', rotulo: 'Nome (A–Z)' },
+  { valor: 'nome-desc', rotulo: 'Nome (Z–A)' },
+  { valor: 'recentes', rotulo: 'Cadastrados recentemente' },
+  { valor: 'sem-cortar', rotulo: 'Mais tempo sem cortar' },
+  { valor: 'cortou-recente', rotulo: 'Cortou há pouco' },
+  { valor: 'aniversario', rotulo: 'Aniversário mais próximo' },
+]
+
+function semAcento(texto) {
+  return (texto || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
 function formatarTelefoneExibicao(telefone) {
   if (!telefone) return '—'
   if (telefone.startsWith('+')) return telefone
@@ -33,11 +49,28 @@ function aniversarioCurto(dataStr) {
   return `${dia} ${MESES_CURTOS[parseInt(mes, 10) - 1]}`
 }
 
+function diasAteAniversario(dataStr) {
+  const hoje = new Date()
+  hoje.setHours(0, 0, 0, 0)
+  const [, mes, dia] = dataStr.split('-').map(Number)
+  let proximo = new Date(hoje.getFullYear(), mes - 1, dia)
+  if (proximo < hoje) proximo = new Date(hoje.getFullYear() + 1, mes - 1, dia)
+  return Math.round((proximo - hoje) / 86400000)
+}
+
+function compararNulosPorUltimo(a, b, comparar) {
+  if (a == null && b == null) return 0
+  if (a == null) return 1
+  if (b == null) return -1
+  return comparar(a, b)
+}
+
 function Clientes() {
   const navigate = useNavigate()
   const [clientes, setClientes] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [busca, setBusca] = useState('')
+  const [ordem, setOrdem] = useState('nome-asc')
   const [modalAberto, setModalAberto] = useState(false)
   const [editando, setEditando] = useState(null)
   const [nome, setNome] = useState('')
@@ -210,7 +243,37 @@ function Clientes() {
     carregar()
   }
 
-  const clientesFiltrados = clientes.filter((c) => c.nome.toLowerCase().includes(busca.toLowerCase()) || c.telefone.includes(busca))
+  const buscaNormalizada = semAcento(busca.trim())
+  const buscaEhNumero = /^[\d\s()+\-.]+$/.test(busca.trim())
+  const buscaDigitos = busca.replace(/\D/g, '')
+
+  const clientesFiltrados = clientes
+    .filter((c) => {
+      if (!buscaNormalizada) return true
+      const porNome = semAcento(c.nome).includes(buscaNormalizada)
+      const porTelefone = buscaEhNumero && buscaDigitos.length > 0 && (c.telefone || '').replace(/\D/g, '').includes(buscaDigitos)
+      return porNome || porTelefone
+    })
+    .sort((a, b) => {
+      switch (ordem) {
+        case 'nome-desc':
+          return b.nome.localeCompare(a.nome, 'pt-BR', { sensitivity: 'base' })
+        case 'recentes':
+          return new Date(b.created_at || 0) - new Date(a.created_at || 0)
+        case 'sem-cortar':
+          return compararNulosPorUltimo(a.data_ultimo_corte, b.data_ultimo_corte, (x, y) => x.localeCompare(y))
+        case 'cortou-recente':
+          return compararNulosPorUltimo(a.data_ultimo_corte, b.data_ultimo_corte, (x, y) => y.localeCompare(x))
+        case 'aniversario':
+          return compararNulosPorUltimo(
+            a.data_nascimento ? diasAteAniversario(a.data_nascimento) : null,
+            b.data_nascimento ? diasAteAniversario(b.data_nascimento) : null,
+            (x, y) => x - y,
+          )
+        default:
+          return a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' })
+      }
+    })
 
   return (
     <div className="rz-admin-root">
@@ -232,7 +295,7 @@ function Clientes() {
         <main className="rz-main">
           <div className="rz-page-header">
             <div className="rz-page-title">Clientes</div>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <input
                 className="rz-input"
                 style={{ margin: 0, width: 220 }}
@@ -241,10 +304,29 @@ function Clientes() {
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
+              <select className="rz-input" style={{ margin: 0, width: 'auto' }} value={ordem} onChange={(e) => setOrdem(e.target.value)}>
+                {OPCOES_ORDEM.map((o) => (
+                  <option key={o.valor} value={o.valor}>
+                    {o.rotulo}
+                  </option>
+                ))}
+              </select>
               <button className="rz-btn-primary" onClick={abrirNovo}>
                 + Novo cliente
               </button>
             </div>
+          </div>
+
+          <div className="rz-cli-legenda">
+            <span>
+              <span className="rz-cli-ponto ok"></span> Em dia
+            </span>
+            <span>
+              <span className="rz-cli-ponto atrasado"></span> Passou do lembrete
+            </span>
+            <span>
+              <span className="rz-cli-ponto sem"></span> Sem corte registrado
+            </span>
           </div>
 
           <div className="rz-table-wrap">
@@ -270,21 +352,20 @@ function Clientes() {
                     const intervalo = c.intervalo_lembrete_dias || 30
                     const atrasado = dias !== null && dias > intervalo
                     const textoDias = dias === 0 ? 'hoje' : dias === 1 ? 'há 1 dia' : `há ${dias} dias`
+                    const status = dias === null ? 'sem' : atrasado ? 'atrasado' : 'ok'
+                    const tituloStatus =
+                      status === 'sem' ? 'Sem corte registrado' : status === 'atrasado' ? `Passou do lembrete de ${intervalo} dias` : 'Em dia'
 
                     return (
                       <tr key={c.id}>
                         <td>
-                          <div className="rz-cli-celula">
-                            <div className="rz-cli-avatar">{c.nome.charAt(0).toUpperCase()}</div>
-                            <div style={{ minWidth: 0 }}>
-                              <div className="rz-cli-nome">
-                                {c.nome}
-                                {c.auth_id && <span className="rz-cli-tag-login">Com login</span>}
-                              </div>
-                              <div className="rz-cli-sub">{formatarTelefoneExibicao(c.telefone)}</div>
-                              {c.obs && <div className="rz-cli-obs">{c.obs}</div>}
-                            </div>
+                          <div className="rz-cli-nome">
+                            <span className={`rz-cli-ponto ${status}`} title={tituloStatus}></span>
+                            {c.nome}
+                            {c.auth_id && <span className="rz-cli-tag-login">Com login</span>}
                           </div>
+                          <div className="rz-cli-sub rz-cli-recuo">{formatarTelefoneExibicao(c.telefone)}</div>
+                          {c.obs && <div className="rz-cli-obs rz-cli-recuo">{c.obs}</div>}
                         </td>
                         <td>{favorito ? <span className="rz-cli-fav">{favorito.nome}</span> : <span className="rz-cli-vazio">—</span>}</td>
                         <td>

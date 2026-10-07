@@ -1109,3 +1109,38 @@
     font-size: 15px;
   }
 }
+
+.rz-cli-ponto {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #444;
+}
+.rz-cli-ponto.ok {
+  background: #4caf50;
+}
+.rz-cli-ponto.atrasado {
+  background: #f07b00;
+  box-shadow: 0 0 6px rgba(240, 123, 0, 0.6);
+}
+.rz-cli-ponto.sem {
+  background: #444;
+}
+.rz-cli-recuo {
+  padding-left: 17px;
+}
+.rz-cli-legenda {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #777;
+  margin: -12px 0 14px;
+}
+.rz-cli-legenda > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

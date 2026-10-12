@@ -556,11 +556,16 @@ function Clientes() {
                 </select>
               </div>
 
-              <label className="rz-field-label">Lembrete a cada</label>
+              <label className="rz-field-label">Lembrar de chamar a cada</label>
               <select className="rz-input" value={intervaloLembrete} onChange={(e) => setIntervaloLembrete(e.target.value)}>
-                <option value="15">15 dias</option>
-                <option value="30">30 dias</option>
-                <option value="60">60 dias</option>
+                {![10, 15, 20, 25, 30, 35, 40, 50, 60, 90].includes(Number(intervaloLembrete)) && (
+                  <option value={intervaloLembrete}>{intervaloLembrete} dias</option>
+                )}
+                {[10, 15, 20, 25, 30, 35, 40, 50, 60, 90].map((d) => (
+                  <option key={d} value={d}>
+                    {d} dias
+                  </option>
+                ))}
               </select>
 
               <div className="rz-modal-actions">

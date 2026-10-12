@@ -3,7 +3,7 @@ import './BotaoWhatsapp.css'
 
 function BotaoWhatsapp() {
   const [fechado, setFechado] = useState(false)
-  const numero = '5555991975065'
+  const numero = '5555999053882'
   const mensagem = encodeURIComponent('Olá! Preciso de ajuda com meu agendamento na Rezenha Barbearia.')
   const link = 'https://wa.me/' + numero + '?text=' + mensagem
 

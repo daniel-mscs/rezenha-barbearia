@@ -158,7 +158,7 @@ function Clientes() {
       cpf: cpf || null,
       obs,
       data_nascimento: dataNascimentoMontada,
-      intervalo_lembrete_dias: parseInt(intervaloLembrete, 10),
+      intervalo_lembrete_dias: Math.min(365, Math.max(1, parseInt(intervaloLembrete, 10) || 30)),
       barbeiro_favorito_id: barbeiroFavoritoId || null,
     }
 
@@ -556,17 +556,24 @@ function Clientes() {
                 </select>
               </div>
 
-              <label className="rz-field-label">Lembrar de chamar a cada</label>
-              <select className="rz-input" value={intervaloLembrete} onChange={(e) => setIntervaloLembrete(e.target.value)}>
-                {![10, 15, 20, 25, 30, 35, 40, 50, 60, 90].includes(Number(intervaloLembrete)) && (
-                  <option value={intervaloLembrete}>{intervaloLembrete} dias</option>
-                )}
-                {[10, 15, 20, 25, 30, 35, 40, 50, 60, 90].map((d) => (
-                  <option key={d} value={d}>
-                    {d} dias
-                  </option>
+              <label className="rz-field-label">Lembrar de chamar a cada (dias)</label>
+              <input
+                className="rz-input"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                max="365"
+                list="opcoes-lembrete"
+                placeholder="Ex: 30"
+                value={intervaloLembrete}
+                onChange={(e) => setIntervaloLembrete(e.target.value)}
+                required
+              />
+              <datalist id="opcoes-lembrete">
+                {[7, 10, 15, 20, 25, 30, 35, 40, 50, 60, 90].map((d) => (
+                  <option key={d} value={d} />
                 ))}
-              </select>
+              </datalist>
 
               <div className="rz-modal-actions">
                 <button type="button" className="rz-btn-outline" onClick={() => setModalAberto(false)}>

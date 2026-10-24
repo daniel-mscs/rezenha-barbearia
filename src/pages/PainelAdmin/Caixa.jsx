@@ -18,6 +18,7 @@ function Caixa() {
   const [categorias, setCategorias] = useState([])
   const [carregando, setCarregando] = useState(true)
   const [mesFiltro, setMesFiltro] = useState(mesAtual())
+  const [barbeiros, setBarbeiros] = useState([])
 
   const [modalAberto, setModalAberto] = useState(false)
   const [tipo, setTipo] = useState('entrada')
@@ -39,6 +40,8 @@ function Caixa() {
       .order('data', { ascending: false })
       .order('created_at', { ascending: false })
     const { data: catData } = await supabase.from('caixa_categorias').select('*').eq('ativo', true).order('nome')
+    const { data: barbData } = await supabase.from('barbeiros').select('id, nome').order('nome')
+    setBarbeiros(barbData || [])
     setLancamentos(lancData || [])
     setCategorias(catData || [])
     setCarregando(false)
@@ -127,6 +130,22 @@ function Caixa() {
   const totalEntradas = lancamentosDoMes.filter((l) => l.tipo === 'entrada').reduce((acc, l) => acc + Number(l.valor), 0)
   const totalSaidas = lancamentosDoMes.filter((l) => l.tipo === 'saida').reduce((acc, l) => acc + Number(l.valor), 0)
   const saldoMes = totalEntradas - totalSaidas
+
+  const agora = new Date()
+  const hojeStr = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`
+  const entradasHoje = lancamentos.filter((l) => l.data === hojeStr && l.tipo === 'entrada')
+  const totalHoje = entradasHoje.reduce((acc, l) => acc + Number(l.valor), 0)
+  const resumoHoje = barbeiros
+    .map((b) => {
+      const dele = entradasHoje.filter((l) => l.barbeiro_id === b.id)
+      return {
+        id: b.id,
+        nome: b.nome,
+        cortes: dele.filter((l) => l.origem === 'agendamento').length,
+        total: dele.reduce((acc, l) => acc + Number(l.valor), 0),
+      }
+    })
+    .filter((r) => r.cortes > 0 || r.total > 0)
 
   const categoriasFiltradas = categorias.filter((c) => c.tipo === tipo)
 
@@ -220,6 +239,28 @@ function Caixa() {
                 R$ {saldoMes.toFixed(2)}
               </div>
             </div>
+          </div>
+
+          <div className="rz-caixa-hoje">
+            <div className="rz-caixa-hoje-titulo">
+              <span>Hoje · {agora.toLocaleDateString('pt-BR')}</span>
+              <strong>R$ {totalHoje.toFixed(2)}</strong>
+            </div>
+            {resumoHoje.length === 0 ? (
+              <div className="rz-caixa-hoje-vazio">Nenhuma entrada hoje ainda.</div>
+            ) : (
+              <div className="rz-caixa-hoje-grid">
+                {resumoHoje.map((r) => (
+                  <div key={r.id} className="rz-caixa-hoje-item">
+                    <span className="rz-caixa-hoje-nome">{r.nome}</span>
+                    <strong>R$ {r.total.toFixed(2)}</strong>
+                    <span className="rz-caixa-hoje-cortes">
+                      {r.cortes} {r.cortes === 1 ? 'corte' : 'cortes'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="rz-table-wrap">

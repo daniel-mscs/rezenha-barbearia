@@ -25,6 +25,7 @@ function Relatorios() {
   const [agendamentos, setAgendamentos] = useState([])
   const [isDono, setIsDono] = useState(false)
   const [meuBarbeiroId, setMeuBarbeiroId] = useState(null)
+  const [ranking, setRanking] = useState([])
 
   useEffect(() => {
     const iniciar = async () => {
@@ -70,6 +71,32 @@ function Relatorios() {
   useEffect(() => {
     if (meuBarbeiroId) carregarDados()
   }, [dataInicio, dataFim, meuBarbeiroId])
+
+  useEffect(() => {
+    if (!isDono) return
+    const carregarRanking = async () => {
+      const ano = new Date().getFullYear()
+      const { data } = await supabase
+        .from('agendamentos')
+        .select('cliente_id, clientes(nome)')
+        .eq('status', 'confirmado')
+        .gte('data', `${ano}-01-01`)
+        .lte('data', `${ano}-12-31`)
+
+      const contagem = {}
+      for (const a of data || []) {
+        if (!a.cliente_id) continue
+        if (!contagem[a.cliente_id]) contagem[a.cliente_id] = { id: a.cliente_id, nome: a.clientes?.nome || 'Cliente', cortes: 0 }
+        contagem[a.cliente_id].cortes += 1
+      }
+      setRanking(
+        Object.values(contagem)
+          .sort((a, b) => b.cortes - a.cortes || a.nome.localeCompare(b.nome, 'pt-BR'))
+          .slice(0, 10),
+      )
+    }
+    carregarRanking()
+  }, [isDono])
 
   const faturamentoTotal = agendamentos.reduce((soma, a) => soma + Number(a.servicos?.preco || 0), 0)
   const totalCortes = agendamentos.length
@@ -307,6 +334,24 @@ function Relatorios() {
                 </div>
               </div>
             </>
+          )}
+          {isDono && ranking.length > 0 && (
+            <div className="rz-table-wrap" style={{ padding: 20, marginTop: 16 }}>
+              <div className="rz-section-title-mini">🏆 Clientes mais fiéis de {new Date().getFullYear()}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {ranking.map((c, i) => (
+                  <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 14 }}>
+                    <span style={{ width: 32, color: i < 3 ? '#F07B00' : '#666', fontWeight: 700 }}>
+                      {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`}
+                    </span>
+                    <span style={{ flex: 1, color: '#fff' }}>{c.nome}</span>
+                    <span style={{ color: '#F07B00', fontWeight: 700 }}>
+                      {c.cortes} {c.cortes === 1 ? 'corte' : 'cortes'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </main>
       </div>

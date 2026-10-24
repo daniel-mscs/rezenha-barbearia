@@ -65,6 +65,21 @@ function Agendamentos() {
   const [mostrarAniversariantes, setMostrarAniversariantes] = useState(false)
   const [totalVagasHoje, setTotalVagasHoje] = useState(null)
   const [visualizacao, setVisualizacao] = useState('tabela') // 'tabela' | 'agenda'
+  const [pendentesAntigos, setPendentesAntigos] = useState([])
+  const [mostrarPendentesAntigos, setMostrarPendentesAntigos] = useState(false)
+
+  const carregarPendentesAntigos = async () => {
+    const agora = new Date()
+    const hojeLocal = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`
+    const { data } = await supabase
+      .from('agendamentos')
+      .select('id, data, horario, clientes(nome), barbeiros(nome), servicos(nome)')
+      .eq('status', 'pendente')
+      .lt('data', hojeLocal)
+      .order('data', { ascending: false })
+      .order('horario')
+    setPendentesAntigos(data || [])
+  }
 
   const carregar = async () => {
     setCarregando(true)
@@ -75,6 +90,7 @@ function Agendamentos() {
       .order('horario')
 
     setAgendamentos(data || [])
+    carregarPendentesAntigos()
 
     if (barbeiros.length === 0) {
       const { data: barbeirosData } = await supabase.from('barbeiros').select('id, nome, cor').eq('ativo', true).order('nome')
@@ -310,6 +326,43 @@ function Agendamentos() {
               <div className="rz-stat-sub">estimado nessa data</div>
             </div>
           </div>
+
+          {pendentesAntigos.length > 0 && (
+            <div className="rz-bloqueios-futuros" style={{ borderColor: '#e53935', background: '#1a0a0a' }}>
+              <div
+                className="rz-bloqueios-futuros-titulo"
+                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                onClick={() => setMostrarPendentesAntigos((v) => !v)}
+              >
+                <span>
+                  ⚠️ {pendentesAntigos.length} {pendentesAntigos.length === 1 ? 'agendamento pendente' : 'agendamentos pendentes'} de dias
+                  anteriores — resolver
+                </span>
+                <span>{mostrarPendentesAntigos ? '▲' : '▼'}</span>
+              </div>
+              {mostrarPendentesAntigos && (
+                <div className="rz-bloqueios-futuros-lista" style={{ marginTop: 10 }}>
+                  {pendentesAntigos.map((a) => (
+                    <div key={a.id} className="rz-bloqueio-chip" style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                      <span>
+                        <strong>
+                          {formatarDataCurta(a.data)} {a.horario?.slice(0, 5)}
+                        </strong>{' '}
+                        — {a.clientes?.nome || 'Cliente'} com {a.barbeiros?.nome || '—'}
+                        {a.servicos?.nome ? ` (${a.servicos.nome})` : ''}
+                      </span>
+                      <button className="rz-action-btn" onClick={() => atualizarStatus(a.id, 'confirmado')}>
+                        Compareceu
+                      </button>
+                      <button className="rz-action-btn danger" onClick={() => atualizarStatus(a.id, 'cancelado')}>
+                        Faltou
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {pendentesAtrasados.length > 0 && (
             <div className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00' }}>

@@ -86,6 +86,7 @@ function Clientes() {
   const [intervaloLembrete, setIntervaloLembrete] = useState('30')
   const [salvando, setSalvando] = useState(false)
   const [clienteParaExcluir, setClienteParaExcluir] = useState(null)
+  const [ehDono, setEhDono] = useState(false)
 
   useEffect(() => {
     const carregarBarbeirosAtivos = async () => {
@@ -250,6 +251,55 @@ function Clientes() {
     (c) => c.data_ultimo_corte && diasDesde(c.data_ultimo_corte) > (c.intervalo_lembrete_dias || 30),
   ).length
 
+  useEffect(() => {
+    const verificarDono = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) return
+      const { data } = await supabase.from('barbeiros').select('is_dono').eq('auth_id', session.user.id).maybeSingle()
+      setEhDono(!!data?.is_dono)
+    }
+    verificarDono()
+  }, [])
+
+  const baixarBackup = () => {
+    const aspas = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
+    const cabecalho = [
+      'Nome',
+      'Telefone',
+      'CPF',
+      'Aniversário',
+      'Barbeiro favorito',
+      'Último corte',
+      'Lembrete (dias)',
+      'Com login',
+      'Observação',
+    ]
+    const linhas = clientes.map((c) => {
+      const fav = barbeirosAtivos.find((b) => b.id === c.barbeiro_favorito_id)
+      return [
+        c.nome,
+        formatarTelefoneExibicao(c.telefone),
+        c.cpf || '',
+        c.data_nascimento ? formatarDataBR(c.data_nascimento) : '',
+        fav ? fav.nome : '',
+        c.data_ultimo_corte ? formatarDataBR(c.data_ultimo_corte) : '',
+        c.intervalo_lembrete_dias || 30,
+        c.auth_id ? 'Sim' : 'Não',
+        c.obs || '',
+      ]
+    })
+    const csv = [cabecalho, ...linhas].map((l) => l.map(aspas).join(';')).join('\r\n')
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `clientes-rezenha-${new Date().toLocaleDateString('sv-SE')}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const buscaNormalizada = semAcento(busca.trim())
   const buscaEhNumero = /^[\d\s()+\-.]+$/.test(busca.trim())
   const buscaDigitos = busca.replace(/\D/g, '')
@@ -318,6 +368,11 @@ function Clientes() {
                   </option>
                 ))}
               </select>
+              {ehDono && (
+                <button className="rz-btn-outline" onClick={baixarBackup}>
+                  Baixar planilha
+                </button>
+              )}
               <button className="rz-btn-primary" onClick={abrirNovo}>
                 + Novo cliente
               </button>

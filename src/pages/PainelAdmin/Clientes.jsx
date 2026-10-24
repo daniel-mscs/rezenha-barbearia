@@ -243,6 +243,13 @@ function Clientes() {
     carregar()
   }
 
+  const totalClientes = clientes.length
+  const comLogin = clientes.filter((c) => c.auth_id).length
+  const semLogin = totalClientes - comLogin
+  const atrasadosLembrete = clientes.filter(
+    (c) => c.data_ultimo_corte && diasDesde(c.data_ultimo_corte) > (c.intervalo_lembrete_dias || 30),
+  ).length
+
   const buscaNormalizada = semAcento(busca.trim())
   const buscaEhNumero = /^[\d\s()+\-.]+$/.test(busca.trim())
   const buscaDigitos = busca.replace(/\D/g, '')
@@ -314,6 +321,25 @@ function Clientes() {
               <button className="rz-btn-primary" onClick={abrirNovo}>
                 + Novo cliente
               </button>
+            </div>
+          </div>
+
+          <div className="rz-cli-resumo">
+            <div className="rz-cli-resumo-item">
+              <strong>{totalClientes}</strong>
+              <span>Cadastrados</span>
+            </div>
+            <div className="rz-cli-resumo-item">
+              <strong>{comLogin}</strong>
+              <span>Com login</span>
+            </div>
+            <div className="rz-cli-resumo-item">
+              <strong>{semLogin}</strong>
+              <span>Sem login</span>
+            </div>
+            <div className="rz-cli-resumo-item">
+              <strong>{atrasadosLembrete}</strong>
+              <span>Passaram do lembrete</span>
             </div>
           </div>
 

@@ -54,11 +54,11 @@ function ProximoHorario() {
         const horarios = gerarHorariosDoDia(dataAlvo)
         if (horarios.length === 0) continue
 
-        const { data: agendamentosDoDia } = await supabase
-          .from('agendamentos')
-          .select('barbeiro_id, horario, servicos(duracao_min)')
+        const { data: agendamentosView } = await supabase
+          .from('agendamentos_publico')
+          .select('barbeiro_id, horario, duracao_min')
           .eq('data', dataStr)
-          .neq('status', 'cancelado')
+        const agendamentosDoDia = (agendamentosView || []).map((a) => ({ ...a, servicos: { duracao_min: a.duracao_min } }))
 
         const bloqueiosDoDia = await buscarBloqueiosComoOcupacao(dataStr)
 

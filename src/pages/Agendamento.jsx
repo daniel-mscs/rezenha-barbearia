@@ -171,11 +171,11 @@ function Agendamento() {
       setAgendamentosDoDia([])
       return
     }
-    const { data: existentes } = await supabase
-      .from('agendamentos')
-      .select('barbeiro_id, horario, servicos(duracao_min)')
+    const { data: existentesView } = await supabase
+      .from('agendamentos_publico')
+      .select('barbeiro_id, horario, duracao_min')
       .eq('data', dataParaBuscar)
-      .neq('status', 'cancelado')
+    const existentes = (existentesView || []).map((a) => ({ ...a, servicos: { duracao_min: a.duracao_min } }))
     const bloqueios = await buscarBloqueiosComoOcupacao(dataParaBuscar)
     setAgendamentosDoDia([...(existentes || []), ...bloqueios])
   }
@@ -282,9 +282,12 @@ function Agendamento() {
       clienteId = idCliente
     }
 
-    const { data: novoAgendamento, error } = await supabase
+    const idNovo = crypto.randomUUID()
+    const novoAgendamento = { id: idNovo }
+    const { error } = await supabase
       .from('agendamentos')
       .insert({
+        id: idNovo,
         cliente_id: clienteId,
         barbeiro_id: barbeiro.id,
         servico_id: servico.id,
@@ -292,8 +295,6 @@ function Agendamento() {
         horario,
         status: 'pendente',
       })
-      .select('id')
-      .single()
 
     setEnviando(false)
 

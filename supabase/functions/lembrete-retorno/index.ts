@@ -18,7 +18,7 @@ serve(async (req) => {
   const versao = Deno.env.get('WHATSAPP_API_VERSION') ?? 'v21.0'
   if (!token || !phoneId || !empresaId) return json({ erro: 'Configuração incompleta' }, 500)
 
-  const { simular } = await req.json().catch(() => ({ simular: false }))
+  const { simular, apenas_cliente_id } = await req.json().catch(() => ({ simular: false, apenas_cliente_id: null }))
   const supabaseAdmin = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '')
 
   try {
@@ -41,6 +41,7 @@ serve(async (req) => {
     const comHorarioMarcado = new Set((futuros || []).map((a) => a.cliente_id))
 
     const paraAvisar = (clientes || []).filter((c) => {
+      if (apenas_cliente_id && c.id !== apenas_cliente_id) return false
       if (comHorarioMarcado.has(c.id)) return false
       if (diasEntre(c.data_ultimo_corte, hoje) < (c.intervalo_lembrete_dias || 30)) return false
       if (c.lembrete_enviado_em && c.lembrete_enviado_em.slice(0, 10) >= c.data_ultimo_corte) return false

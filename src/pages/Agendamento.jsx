@@ -273,6 +273,7 @@ function Agendamento() {
         p_telefone: telefoneFinal,
         p_email: emailFinal,
         p_cpf: cpf || null,
+        p_empresa_id: import.meta.env.VITE_EMPRESA_ID,
       })
       if (erroCliente || !idCliente) {
         setEnviando(false)

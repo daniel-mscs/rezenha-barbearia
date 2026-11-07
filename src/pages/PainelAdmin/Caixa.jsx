@@ -148,6 +148,26 @@ function Caixa() {
     })
     .filter((r) => r.cortes > 0 || r.total > 0)
 
+  const nomeBarbeiro = (id) => barbeiros.find((b) => b.id === id)?.nome
+  const ROTULO_ORIGEM = { agendamento: 'Agendamento', estoque: 'Estoque', manual: 'Manual' }
+
+  const ontem = new Date()
+  ontem.setDate(ontem.getDate() - 1)
+  const ontemStr = `${ontem.getFullYear()}-${String(ontem.getMonth() + 1).padStart(2, '0')}-${String(ontem.getDate()).padStart(2, '0')}`
+  const rotuloDia = (dataStr) => {
+    if (dataStr === hojeStr) return 'Hoje'
+    if (dataStr === ontemStr) return 'Ontem'
+    return new Date(dataStr + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' })
+  }
+
+  const diasDoMes = Object.entries(
+    lancamentosDoMes.reduce((acc, l) => {
+      if (!acc[l.data]) acc[l.data] = []
+      acc[l.data].push(l)
+      return acc
+    }, {}),
+  ).sort((a, b) => b[0].localeCompare(a[0]))
+
   const categoriasFiltradas = categorias.filter((c) => c.tipo === tipo)
 
   const [anoFiltro, mesNumFiltro] = mesFiltro.split('-')
@@ -272,18 +292,50 @@ function Caixa() {
                 Nenhum lançamento nesse mês.
               </div>
             ) : (
-              <table className="rz-table">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Tipo</th>
-                    <th>Categoria</th>
-                    <th>Descrição</th>
-                    <th>Origem</th>
-                    <th>Valor</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
+              <div className="rz-cx-lista">
+                {diasDoMes.map(([dia, itens]) => {
+                  const saldoDia = itens.reduce((s, l) => s + (l.tipo === 'entrada' ? 1 : -1) * Number(l.valor), 0)
+                  return (
+                    <div key={dia} className="rz-cx-dia">
+                      <div className="rz-cx-dia-topo">
+                        <span>{rotuloDia(dia)}</span>
+                        <strong className={saldoDia >= 0 ? 'pos' : 'neg'}>R$ {saldoDia.toFixed(2)}</strong>
+                      </div>
+                      {itens.map((l) => {
+                        const entrada = l.tipo === 'entrada'
+                        const detalhes = [l.caixa_categorias?.nome, nomeBarbeiro(l.barbeiro_id), ROTULO_ORIGEM[l.origem] || 'Manual']
+                          .filter(Boolean)
+                          .join(' · ')
+                        return (
+                          <div key={l.id} className="rz-cx-item">
+                            <div className={`rz-cx-icone ${entrada ? 'entrada' : 'saida'}`}>
+                              <i className={`ti ${entrada ? 'ti-arrow-up' : 'ti-arrow-down'}`}></i>
+                            </div>
+                            <div className="rz-cx-info">
+                              <div className="rz-cx-desc">{l.descricao || (entrada ? 'Entrada' : 'Saída')}</div>
+                              <div className="rz-cx-detalhes">{detalhes}</div>
+                            </div>
+                            <div className={`rz-cx-valor ${entrada ? 'entrada' : 'saida'}`}>
+                              {entrada ? '+' : '−'} R$ {Number(l.valor).toFixed(2)}
+                            </div>
+                            {l.origem === 'manual' ? (
+                              <button className="rz-cx-excluir" onClick={() => setParaExcluir(l)} title="Excluir" aria-label="Excluir">
+                                <i className="ti ti-trash"></i>
+                              </button>
+                            ) : (
+                              <span className="rz-cx-excluir-vazio"></span>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+          {false && (
+            <table>
                 <tbody>
                   {lancamentosDoMes.map((l) => (
                     <tr key={l.id}>
@@ -305,9 +357,8 @@ function Caixa() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            )}
-          </div>
+            </table>
+          )}
         </main>
       </div>
 

@@ -67,6 +67,14 @@ function Agendamentos() {
   const [visualizacao, setVisualizacao] = useState('tabela') // 'tabela' | 'agenda'
   const [pendentesAntigos, setPendentesAntigos] = useState([])
   const [mostrarPendentesAntigos, setMostrarPendentesAntigos] = useState(false)
+  const [modalAvulso, setModalAvulso] = useState(false)
+  const [clientesLista, setClientesLista] = useState([])
+  const [servicosLista, setServicosLista] = useState([])
+  const [avulsoCliente, setAvulsoCliente] = useState('')
+  const [avulsoBarbeiro, setAvulsoBarbeiro] = useState('')
+  const [avulsoServico, setAvulsoServico] = useState('')
+  const [salvandoAvulso, setSalvandoAvulso] = useState(false)
+  const [erroAvulso, setErroAvulso] = useState('')
 
   const carregarPendentesAntigos = async () => {
     const agora = new Date()
@@ -238,6 +246,67 @@ function Agendamentos() {
     carregar()
   }
 
+  const abrirAvulso = async () => {
+    setErroAvulso('')
+    setAvulsoCliente('')
+    setAvulsoServico('')
+    setAvulsoBarbeiro(barbeiros[0]?.id || '')
+    setModalAvulso(true)
+    const [{ data: cli }, { data: serv }] = await Promise.all([
+      supabase.from('clientes').select('id, nome, telefone').order('nome'),
+      supabase.from('servicos').select('id, nome, preco').eq('ativo', true).order('nome'),
+    ])
+    setClientesLista(cli || [])
+    setServicosLista(serv || [])
+  }
+
+  const salvarAvulso = async (e) => {
+    e.preventDefault()
+    setErroAvulso('')
+    if (!avulsoBarbeiro || !avulsoServico) {
+      setErroAvulso('Escolhe o barbeiro e o serviço.')
+      return
+    }
+    setSalvandoAvulso(true)
+
+    const agora = new Date()
+    const dataLocal = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`
+    const minutos = Math.floor(agora.getMinutes() / 15) * 15
+    const horarioAgora = `${String(agora.getHours()).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`
+    const idNovo = crypto.randomUUID()
+
+    const { error: erroInsert } = await supabase.from('agendamentos').insert({
+      id: idNovo,
+      cliente_id: avulsoCliente || null,
+      barbeiro_id: avulsoBarbeiro,
+      servico_id: avulsoServico,
+      data: dataLocal,
+      horario: horarioAgora,
+      status: 'pendente',
+    })
+    if (erroInsert) {
+      setSalvandoAvulso(false)
+      setErroAvulso(
+        erroInsert.message.includes('já tem um agendamento')
+          ? 'Esse barbeiro já tem um horário marcado agora. Confere a agenda.'
+          : 'Não foi possível registrar: ' + erroInsert.message,
+      )
+      return
+    }
+
+    const { error: erroConfirmar } = await supabase.from('agendamentos').update({ status: 'confirmado' }).eq('id', idNovo)
+    setSalvandoAvulso(false)
+    if (erroConfirmar) {
+      setErroAvulso('Registrou, mas não conseguiu confirmar: ' + erroConfirmar.message)
+      carregar()
+      return
+    }
+
+    setModalAvulso(false)
+    if (filtroData !== dataLocal) setFiltroData(dataLocal)
+    else carregar()
+  }
+
   const sair = async () => {
     await supabase.auth.signOut()
     navigate('/admin/login')
@@ -294,9 +363,14 @@ function Agendamentos() {
             <div className="rz-page-title">
               Agendamentos de <span>{filtroData === hoje() ? 'hoje' : 'outra data'}</span>
             </div>
-            <div className="rz-date-badge">
-              <i className="ti ti-calendar" style={{ fontSize: 14 }}></i>
-              <input type="date" value={filtroData} onChange={(e) => setFiltroData(e.target.value)} />
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <button className="rz-btn-primary" style={{ width: 'auto' }} onClick={abrirAvulso}>
+                + Atendimento sem agendamento
+              </button>
+              <div className="rz-date-badge">
+                <i className="ti ti-calendar" style={{ fontSize: 14 }}></i>
+                <input type="date" value={filtroData} onChange={(e) => setFiltroData(e.target.value)} />
+              </div>
             </div>
           </div>
 
@@ -603,6 +677,76 @@ function Agendamentos() {
           )}
         </main>
       </div>
+
+      {modalAvulso && (
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setModalAvulso(false)
+          }}
+        >
+          <div className="rz-modal">
+            <div className="rz-modal-title">Atendimento sem agendamento</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 16 }}>
+              Registra o atendimento de agora, já confirmado. Entra no caixa, nos relatórios e no último corte do cliente.
+            </p>
+            {erroAvulso && (
+              <div
+                style={{
+                  background: '#2b0d0d',
+                  border: '1px solid #e53935',
+                  color: '#ff6b6b',
+                  fontSize: 12,
+                  padding: '10px 14px',
+                  borderRadius: 6,
+                  marginBottom: 16,
+                }}
+              >
+                {erroAvulso}
+              </div>
+            )}
+            <form onSubmit={salvarAvulso}>
+              <label className="rz-field-label">Cliente</label>
+              <select className="rz-input" value={avulsoCliente} onChange={(e) => setAvulsoCliente(e.target.value)}>
+                <option value="">Cliente avulso (sem cadastro)</option>
+                {clientesLista.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nome} — {c.telefone}
+                  </option>
+                ))}
+              </select>
+
+              <label className="rz-field-label">Barbeiro</label>
+              <select className="rz-input" value={avulsoBarbeiro} onChange={(e) => setAvulsoBarbeiro(e.target.value)} required>
+                {barbeiros.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.nome}
+                  </option>
+                ))}
+              </select>
+
+              <label className="rz-field-label">Serviço</label>
+              <select className="rz-input" value={avulsoServico} onChange={(e) => setAvulsoServico(e.target.value)} required>
+                <option value="">Escolhe o serviço</option>
+                {servicosLista.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.nome} — R$ {Number(s.preco).toFixed(2)}
+                  </option>
+                ))}
+              </select>
+
+              <div className="rz-modal-actions">
+                <button type="button" className="rz-btn-outline" onClick={() => setModalAvulso(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="rz-btn-primary" style={{ flex: 1 }} disabled={salvandoAvulso}>
+                  {salvandoAvulso ? 'Registrando...' : 'Registrar atendimento'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

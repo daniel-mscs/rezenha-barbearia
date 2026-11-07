@@ -32,7 +32,7 @@ serve(async (req) => {
 
     const { data: cliente, error: erroCliente } = await supabaseAdmin
       .from('clientes')
-      .select('nome, telefone')
+      .select('nome, telefone, empresa_id')
       .eq('id', cliente_id)
       .maybeSingle()
     if (erroCliente || !cliente) throw new Error('Cliente não encontrado')
@@ -47,6 +47,27 @@ serve(async (req) => {
       const { error: erroReset } = await supabaseAdmin.auth.admin.updateUserById(clienteAtual.auth_id, { password: senha })
       if (erroReset) throw erroReset
     } else {
+      // Login é um por telefone: se alguém da família já tem, avisa em vez de dar erro técnico
+      const { data: jaTemLogin } = await supabaseAdmin
+        .from('clientes')
+        .select('nome, empresa_id')
+        .eq('telefone', cliente.telefone)
+        .not('auth_id', 'is', null)
+        .neq('id', cliente_id)
+        .limit(1)
+        .maybeSingle()
+
+      if (jaTemLogin) {
+        const mensagem =
+          jaTemLogin.empresa_id === cliente.empresa_id
+            ? `Esse telefone já tem login com ${jaTemLogin.nome.trim().split(/\s+/)[0]}. A família usa o mesmo login: no site, na hora de agendar, ele escolhe "Pra quem é o corte?".`
+            : 'Esse telefone já tem um login criado.'
+        return new Response(JSON.stringify({ erro: mensagem }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        })
+      }
+
       const { data: novoUsuario, error: erroCriar } = await supabaseAdmin.auth.admin.createUser({
         email: emailSintetico,
         password: senha,

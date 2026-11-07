@@ -392,7 +392,7 @@ function Agendamento() {
     const dataFormatada = data
       ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
       : ''
-    const linkAjuda = `https://wa.me/5555991975065?text=${encodeURIComponent(
+    const linkAjuda = `https://wa.me/5555999053882?text=${encodeURIComponent(
       'Olá! Fiz um agendamento pelo site e não recebi a mensagem de confirmação no WhatsApp.',
     )}`
 

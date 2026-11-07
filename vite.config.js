@@ -7,7 +7,6 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      registerType: 'autoUpdate',
       manifest: {
         name: 'Rezenha Barbearia',
         short_name: 'Rezenha',

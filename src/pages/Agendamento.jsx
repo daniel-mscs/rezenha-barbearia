@@ -95,6 +95,9 @@ function Agendamento() {
 
   const [verificandoSessao, setVerificandoSessao] = useState(true)
   const [clienteLogado, setClienteLogado] = useState(null)
+  const [familia, setFamilia] = useState([])
+  const [paraQuem, setParaQuem] = useState(null) // id do cliente ou 'novo'
+  const [nomeDependente, setNomeDependente] = useState('')
 
   const [barbeirosLista, setBarbeirosLista] = useState([])
   const [servicosLista, setServicosLista] = useState([])
@@ -166,6 +169,12 @@ function Agendamento() {
     if (favorito) setBarbeiro(favorito)
   }, [clienteLogado, barbeirosLista])
 
+  useEffect(() => {
+    if (!clienteLogado) return
+    setParaQuem(clienteLogado.id)
+    supabase.rpc('minha_familia').then(({ data }) => setFamilia(data || []))
+  }, [clienteLogado])
+
   const buscarAgendamentosDoDia = async (dataParaBuscar) => {
     if (!dataParaBuscar) {
       setAgendamentosDoDia([])
@@ -201,7 +210,12 @@ function Agendamento() {
   }
 
   const total = servico ? servico.preco : 0
-  const nomeFinal = clienteLogado ? clienteLogado.nome : nome
+  const membroEscolhido = familia.find((f) => f.id === paraQuem)
+  const nomeFinal = clienteLogado
+    ? paraQuem === 'novo'
+      ? nomeDependente.trim()
+      : membroEscolhido?.nome || clienteLogado.nome
+    : nome
   const telefoneFinal = clienteLogado ? clienteLogado.telefone : telefone
   const emailFinal = clienteLogado ? clienteLogado.email : email
 
@@ -265,7 +279,22 @@ function Agendamento() {
     setErroEnvio('')
     setEnviando(true)
 
-    let clienteId = clienteLogado?.id
+    let clienteId = clienteLogado ? (paraQuem === 'novo' ? null : paraQuem || clienteLogado.id) : null
+
+    if (clienteLogado && paraQuem === 'novo') {
+      if (!nomeDependente.trim()) {
+        setEnviando(false)
+        setErroEnvio('Digite o nome de quem vai cortar.')
+        return
+      }
+      const { data: idDependente, error: erroDependente } = await supabase.rpc('adicionar_dependente', { p_nome: nomeDependente })
+      if (erroDependente || !idDependente) {
+        setEnviando(false)
+        setErroEnvio('Não foi possível salvar o nome. Tenta de novo.')
+        return
+      }
+      clienteId = idDependente
+    }
 
     if (!clienteId) {
       const { data: idCliente, error: erroCliente } = await supabase.rpc('criar_cliente_publico', {
@@ -762,6 +791,57 @@ function Agendamento() {
                 }}
               >
                 {erroEnvio}
+              </div>
+            )}
+            {clienteLogado && (
+              <div style={{ marginBottom: 16 }}>
+                <div className="rz-field-label">Pra quem é o corte?</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {(familia.length > 0 ? familia : [{ id: clienteLogado.id, nome: clienteLogado.nome }]).map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setParaQuem(f.id)}
+                      style={{
+                        padding: '8px 14px',
+                        borderRadius: 999,
+                        border: `1px solid ${paraQuem === f.id ? '#F07B00' : '#333'}`,
+                        background: paraQuem === f.id ? '#2b1e00' : 'transparent',
+                        color: paraQuem === f.id ? '#F07B00' : '#ccc',
+                        cursor: 'pointer',
+                        fontSize: 13,
+                      }}
+                    >
+                      {f.nome.trim().split(/\s+/)[0]}
+                      {f.id === clienteLogado.id ? ' (eu)' : ''}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setParaQuem('novo')}
+                    style={{
+                      padding: '8px 14px',
+                      borderRadius: 999,
+                      border: `1px dashed ${paraQuem === 'novo' ? '#F07B00' : '#444'}`,
+                      background: paraQuem === 'novo' ? '#2b1e00' : 'transparent',
+                      color: paraQuem === 'novo' ? '#F07B00' : '#888',
+                      cursor: 'pointer',
+                      fontSize: 13,
+                    }}
+                  >
+                    + Outra pessoa
+                  </button>
+                </div>
+                {paraQuem === 'novo' && (
+                  <input
+                    className="rz-input"
+                    type="text"
+                    placeholder="Nome completo (ex: filho)"
+                    value={nomeDependente}
+                    onChange={(e) => setNomeDependente(e.target.value)}
+                    style={{ marginTop: 10 }}
+                  />
+                )}
               </div>
             )}
             <div className="rz-summary">

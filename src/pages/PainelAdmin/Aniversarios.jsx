@@ -14,7 +14,7 @@ function formatarDataCurta(dataStr) {
 
 function mensagemParabens(nome) {
   return encodeURIComponent(
-    `Parabéns, ${nome.trim().split(/\s+/)[0].charAt(0).toUpperCase() + nome.trim().split(/\s+/)[0].slice(1).toLowerCase()}! 🎉 A Rezenha Barbearia te deseja um feliz aniversário! Teu presente: uma bebida grátis no próximo corte.\n\nJá garante teu horário: https://barbeariarezenha.com.br/agendamento`,
+    `Parabéns, ${nome.trim().split(/\s+/)[0].charAt(0).toUpperCase() + nome.trim().split(/\s+/)[0].slice(1).toLowerCase()}! A Rezenha Barbearia te deseja um feliz aniversário! Teu presente: uma bebida grátis no próximo corte.\n\nJá garante teu horário: https://barbeariarezenha.com.br/agendamento`,
   )
 }
 

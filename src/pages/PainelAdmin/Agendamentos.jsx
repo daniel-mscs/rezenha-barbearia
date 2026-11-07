@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import { hojeLocal } from '../../utils/data'
 
 const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
@@ -14,7 +15,7 @@ import { buscarBloqueiosComoOcupacao } from '../../utils/bloqueios'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
 
-const hoje = () => new Date().toISOString().split('T')[0]
+const hoje = () => hojeLocal()
 const CORES_BARBEIRO = ['#F07B00', '#4caf50', '#2196f3', '#ab47bc', '#ef5350']
 
 function gerarHorariosDoDia(dataStr) {
@@ -114,7 +115,7 @@ function Agendamentos() {
 
   useEffect(() => {
     const carregarVagasHoje = async () => {
-      const hojeStr = new Date().toISOString().split('T')[0]
+      const hojeStr = hojeLocal()
 
       const { data: diaFechado } = await supabase.from('dias_fechados').select('data').eq('data', hojeStr).maybeSingle()
       if (diaFechado) {
@@ -181,7 +182,7 @@ function Agendamentos() {
     carregarAniversariantes()
 
     const carregarBloqueios = async () => {
-      const hoje = new Date().toISOString().split('T')[0]
+      const hoje = hojeLocal()
       const { data } = await supabase.from('dias_fechados').select('*').gte('data', hoje).order('data').limit(10)
       setProximosBloqueios(data || [])
     }

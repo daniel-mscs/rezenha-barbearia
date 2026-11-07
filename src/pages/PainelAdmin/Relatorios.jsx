@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import { hojeLocal } from '../../utils/data'
 import AdminSidebar from '../../components/AdminSidebar'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
@@ -14,7 +15,7 @@ function primeiroDiaDoMes() {
 }
 
 function hoje() {
-  return new Date().toISOString().split('T')[0]
+  return hojeLocal()
 }
 
 function Relatorios() {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { hojeLocal } from '../utils/data'
 import { iconesParaExibir } from '../components/Icons'
 import BotaoWhatsapp from '../components/BotaoWhatsapp'
 import BotaoInstalarApp from '../components/BotaoInstalarApp'
@@ -97,7 +98,7 @@ function Home() {
 
   useEffect(() => {
     const verificarFechado = async () => {
-      const hoje = new Date().toISOString().split('T')[0]
+      const hoje = hojeLocal()
       const { data } = await supabase.from('dias_fechados').select('motivo').eq('data', hoje).maybeSingle()
       if (data) setFechadoHoje(data.motivo || 'Fechado hoje')
     }

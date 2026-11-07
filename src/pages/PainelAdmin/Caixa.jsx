@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
+import { hojeLocal } from '../../utils/data'
 import AdminSidebar from '../../components/AdminSidebar'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
 import '../PainelAdmin/PainelAdmin.css'
@@ -26,7 +27,7 @@ function Caixa() {
   const [categoriaId, setCategoriaId] = useState('')
   const [novaCategoria, setNovaCategoria] = useState('')
   const [descricao, setDescricao] = useState('')
-  const [data, setData] = useState(new Date().toISOString().split('T')[0])
+  const [data, setData] = useState(hojeLocal())
   const [salvando, setSalvando] = useState(false)
   const [erroModal, setErroModal] = useState('')
 
@@ -68,7 +69,7 @@ function Caixa() {
     setCategoriaId('')
     setNovaCategoria('')
     setDescricao('')
-    setData(new Date().toISOString().split('T')[0])
+    setData(hojeLocal())
     setErroModal('')
     setModalAberto(true)
   }

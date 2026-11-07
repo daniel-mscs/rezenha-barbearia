@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import html2canvas from 'html2canvas'
 import { supabase } from '../../lib/supabase'
+import { hojeLocal } from '../../utils/data'
 import AdminSidebar from '../../components/AdminSidebar'
 import { buscarBloqueiosComoOcupacao } from '../../utils/bloqueios'
 import SaudacaoUsuario from '../../components/SaudacaoUsuario'
@@ -72,7 +73,7 @@ function HorariosLivres() {
         return
       }
 
-      const hojeStr = new Date().toISOString().split('T')[0]
+      const hojeStr = hojeLocal()
 
       const { data: barbeiros } = await supabase.from('barbeiros').select('id, nome').eq('ativo', true).order('nome')
       const { data: config } = await supabase.from('configuracoes').select('*').eq('id', 1).maybeSingle()
@@ -110,7 +111,7 @@ function HorariosLivres() {
     setExportando(true)
     const canvas = await html2canvas(cartaoRef.current, { backgroundColor: '#0d0d0d', scale: 2 })
     const link = document.createElement('a')
-    link.download = `rezenha-horarios-${new Date().toISOString().split('T')[0]}.png`
+    link.download = `rezenha-horarios-${hojeLocal()}.png`
     link.href = canvas.toDataURL('image/png')
     link.click()
     setExportando(false)

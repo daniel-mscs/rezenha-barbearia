@@ -77,7 +77,13 @@ serve(async (req) => {
               {
                 type: 'body',
                 parameters: [
-                  { type: 'text', text: (c.nome || 'cliente').split(' ')[0] },
+                  {
+                    type: 'text',
+                    text: (() => {
+                      const n = (c.nome || 'cliente').trim().split(/\s+/)[0]
+                      return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase()
+                    })(),
+                  },
                   { type: 'text', text: String(diasEntre(c.data_ultimo_corte, hoje)) },
                 ],
               },

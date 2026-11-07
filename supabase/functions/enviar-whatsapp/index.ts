@@ -52,7 +52,8 @@ serve(async (req) => {
       month: '2-digit',
       year: 'numeric',
     })
-    const primeiroNome = (ag.clientes?.nome ?? 'cliente').split(' ')[0]
+    const nomeBruto = (ag.clientes?.nome ?? 'cliente').trim().split(/\s+/)[0]
+    const primeiroNome = nomeBruto.charAt(0).toUpperCase() + nomeBruto.slice(1).toLowerCase()
 
     const valores = [
       primeiroNome,

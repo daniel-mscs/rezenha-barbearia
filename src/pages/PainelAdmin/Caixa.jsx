@@ -334,31 +334,6 @@ function Caixa() {
               </div>
             )}
           </div>
-          {false && (
-            <table>
-                <tbody>
-                  {lancamentosDoMes.map((l) => (
-                    <tr key={l.id}>
-                      <td>{new Date(l.data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
-                      <td style={{ color: l.tipo === 'entrada' ? '#4caf50' : '#e53935' }}>{l.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
-                      <td>{l.caixa_categorias?.nome || '—'}</td>
-                      <td>{l.descricao || '—'}</td>
-                      <td>{l.origem === 'agendamento' ? 'Agendamento' : l.origem === 'estoque' ? 'Estoque' : 'Manual'}</td>
-                      <td style={{ color: l.tipo === 'entrada' ? '#4caf50' : '#e53935', fontWeight: 700 }}>
-                        R$ {Number(l.valor).toFixed(2)}
-                      </td>
-                      <td>
-                        {l.origem === 'manual' && (
-                          <button className="rz-action-btn danger" onClick={() => setParaExcluir(l)}>
-                            Excluir
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-            </table>
-          )}
         </main>
       </div>
 

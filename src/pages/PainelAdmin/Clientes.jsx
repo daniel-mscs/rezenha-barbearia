@@ -87,6 +87,10 @@ function Clientes() {
   const [salvando, setSalvando] = useState(false)
   const [clienteParaExcluir, setClienteParaExcluir] = useState(null)
   const [ehDono, setEhDono] = useState(false)
+  const [modalSenhaPlanilha, setModalSenhaPlanilha] = useState(false)
+  const [senhaPlanilha, setSenhaPlanilha] = useState('')
+  const [erroSenhaPlanilha, setErroSenhaPlanilha] = useState('')
+  const [verificandoSenha, setVerificandoSenha] = useState(false)
 
   useEffect(() => {
     const carregarBarbeirosAtivos = async () => {
@@ -263,6 +267,27 @@ function Clientes() {
     verificarDono()
   }, [])
 
+  const abrirSenhaPlanilha = () => {
+    setSenhaPlanilha('')
+    setErroSenhaPlanilha('')
+    setModalSenhaPlanilha(true)
+  }
+
+  const confirmarSenhaPlanilha = async (e) => {
+    e.preventDefault()
+    setErroSenhaPlanilha('')
+    setVerificandoSenha(true)
+    const { data: senhaCerta, error } = await supabase.rpc('verificar_senha_planilha', { p_senha: senhaPlanilha })
+    setVerificandoSenha(false)
+    if (error || !senhaCerta) {
+      setErroSenhaPlanilha('Senha incorreta.')
+      return
+    }
+    setModalSenhaPlanilha(false)
+    setSenhaPlanilha('')
+    baixarBackup()
+  }
+
   const baixarBackup = () => {
     const aspas = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
     const cabecalho = [
@@ -369,7 +394,7 @@ function Clientes() {
                 ))}
               </select>
               {ehDono && (
-                <button className="rz-btn-outline" onClick={baixarBackup}>
+                <button className="rz-btn-outline" onClick={abrirSenhaPlanilha}>
                   Baixar planilha
                 </button>
               )}
@@ -709,6 +734,55 @@ function Clientes() {
                 {enviandoConvite ? 'Criando...' : 'Criar e enviar pelo WhatsApp'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {modalSenhaPlanilha && (
+        <div
+          className="rz-modal-overlay"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setModalSenhaPlanilha(false)
+          }}
+        >
+          <div className="rz-modal">
+            <div className="rz-modal-title">Senha da planilha</div>
+            <p style={{ color: '#888', fontSize: 13, marginBottom: 16 }}>A planilha tem os dados de todos os clientes. Digite a senha pra baixar.</p>
+            {erroSenhaPlanilha && (
+              <div
+                style={{
+                  background: '#2b0d0d',
+                  border: '1px solid #e53935',
+                  color: '#ff6b6b',
+                  fontSize: 12,
+                  padding: '10px 14px',
+                  borderRadius: 6,
+                  marginBottom: 16,
+                }}
+              >
+                {erroSenhaPlanilha}
+              </div>
+            )}
+            <form onSubmit={confirmarSenhaPlanilha}>
+              <input
+                className="rz-input"
+                type="password"
+                autoComplete="off"
+                placeholder="Senha"
+                value={senhaPlanilha}
+                onChange={(e) => setSenhaPlanilha(e.target.value)}
+                autoFocus
+                required
+              />
+              <div className="rz-modal-actions">
+                <button type="button" className="rz-btn-outline" onClick={() => setModalSenhaPlanilha(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="rz-btn-primary" style={{ flex: 1 }} disabled={verificandoSenha}>
+                  {verificandoSenha ? 'Verificando...' : 'Baixar planilha'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

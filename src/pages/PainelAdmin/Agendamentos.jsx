@@ -69,6 +69,7 @@ function Agendamentos() {
   const [pendentesAntigos, setPendentesAntigos] = useState([])
   const [mostrarPendentesAntigos, setMostrarPendentesAntigos] = useState(false)
   const [modalAvulso, setModalAvulso] = useState(false)
+  const [avisoChip, setAvisoChip] = useState(undefined) // undefined = esconde; null = nunca recarregou; número = dias
   const [clientesLista, setClientesLista] = useState([])
   const [servicosLista, setServicosLista] = useState([])
   const [avulsoCliente, setAvulsoCliente] = useState('')
@@ -308,6 +309,31 @@ function Agendamentos() {
     else carregar()
   }
 
+  useEffect(() => {
+    const verificarChipRobo = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) return
+      const { data: eu } = await supabase.from('barbeiros').select('is_dono').eq('auth_id', session.user.id).maybeSingle()
+      if (!eu?.is_dono) return
+      const { data: cfg } = await supabase.from('configuracoes').select('chip_robo_recarregado_em').eq('id', 1).maybeSingle()
+      const ultima = cfg?.chip_robo_recarregado_em
+      const dias = ultima ? Math.floor((new Date(hojeLocal() + 'T00:00:00') - new Date(ultima + 'T00:00:00')) / 86400000) : null
+      if (dias === null || dias >= 85) setAvisoChip(dias)
+    }
+    verificarChipRobo()
+  }, [])
+
+  const marcarChipRecarregado = async () => {
+    const { error } = await supabase.from('configuracoes').update({ chip_robo_recarregado_em: hojeLocal() }).eq('id', 1)
+    if (error) {
+      alert('Não foi possível salvar: ' + error.message)
+      return
+    }
+    setAvisoChip(undefined)
+  }
+
   const sair = async () => {
     await supabase.auth.signOut()
     navigate('/admin/login')
@@ -401,6 +427,25 @@ function Agendamentos() {
               <div className="rz-stat-sub">estimado nessa data</div>
             </div>
           </div>
+
+          {avisoChip !== undefined && (
+            <div className="rz-bloqueios-futuros" style={{ borderColor: '#F07B00', background: '#1a1206' }}>
+              <div
+                className="rz-bloqueios-futuros-titulo"
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}
+              >
+                <span>
+                  📱{' '}
+                  {avisoChip === null
+                    ? 'Lembrete: recarrega o chip do robô (55 9124-0439) pra Claro não cancelar o número!'
+                    : `Faz ${avisoChip} dias que o chip do robô (55 9124-0439) foi recarregado. Recarrega pra Claro não cancelar o número!`}
+                </span>
+                <button className="rz-action-btn" onClick={marcarChipRecarregado}>
+                  Já recarreguei
+                </button>
+              </div>
+            </div>
+          )}
 
           {pendentesAntigos.length > 0 && (
             <div className="rz-bloqueios-futuros" style={{ borderColor: '#e53935', background: '#1a0a0a' }}>
